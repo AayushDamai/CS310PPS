@@ -1,0 +1,1 @@
+This is the Patient Portal System for CS310. 
