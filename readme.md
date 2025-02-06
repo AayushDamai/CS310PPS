@@ -1,7 +1,7 @@
 # Patient Portal System
 
 ## Overview
-The Patient Portal System is a website and/or app developed by Marshall Health to enhance communication between patients and healthcare stuff. This system enables patients to:
+The Patient Portal System is a website and/or app developed to enhance communication between patients and healthcare stuff. This system enables patients to:
 - Schedule and manage appointments
 - Access medical records securely
 - Communicate with healthcare professionals
@@ -41,10 +41,6 @@ The system can enables Doctors and nurses to:
 - Access Control: Role-based access to safeguard patient information
 
 ## System Requirements
-**Hardware Requirements**
-- Minimum 2 GHz processor
-- At least 4GB RAM
-- Storage: 10GB available disk space
 **Software Requirements**
 - Operating System: Windows, macOS, or Linux
 - Web Browser: Chrome, Firefox, or Safari (latest versions)
