@@ -62,7 +62,7 @@ Ensure you have the following installed:
 •	Git
 Steps to Run Locally
 1.	Clone the Repository:
-2.	git clone https://github.com/your-repository/patient-portal-system.git
+2.	git clone https://github.com/AayushDamai/CS310PPS.git
 cd patient-portal-system
 3.	Install Dependencies:
 npm install
@@ -83,12 +83,6 @@ Contribution Guidelines
 •	Fork the repository and create a feature branch
 •	Follow clean code principles and industry standards
 •	Submit pull requests with clear documentation and testing
-
-License
-This project is licensed under the MIT License
-
-Contact
-For support or inquiries, contact the Marshall Health IT Team at support@marshallhealth.com
 
 Contribute, innovate, and help make healthcare more accessible!
 
