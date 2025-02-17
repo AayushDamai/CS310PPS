@@ -1,0 +1,21 @@
+/**
+ * Global styles - Applies to entire application
+ * Base element styles (body, headings, etc.)
+*/
+
+/* Minimal Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+/* Basic Layout */
+.container {
+  width: min(100% - 2rem, 1600px);
+  margin-inline: auto;
+}

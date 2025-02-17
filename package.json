@@ -1,9 +1,13 @@
 {
-  "dependencies": {
-    "node": "^23.7.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-scripts": "^5.0.1",
-    "web-vitals": "^4.2.4"
+  "name": "cs310pps",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "start": "concurrently \"npm run start --workspace=client\" \"npm run start --workspace=server\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1"
   }
 }
