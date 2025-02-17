@@ -1,9 +1,6 @@
 # Editor/IDE
 .vscode/
 
-# Package-lock.json
-package-lock.json
-
 # External Packages
 node_modules/
 client/node_modules/
