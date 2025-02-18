@@ -26,9 +26,12 @@ app.post('/api/uppercase', (req, res) => {
         return res.status(400).json({ error: "Name is required" });
     }
     const modifiedName = name.toUpperCase();
+    console.log(modifiedName); // Log modified name to console
     res.json({ modifiedName }); // Return modified name in response
 });
 
 // Start server
 const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`)); // Listen for incoming requests
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+}); // Listen for incoming requests

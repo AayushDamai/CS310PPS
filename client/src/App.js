@@ -18,7 +18,7 @@ export default function App() {
   // post() routes use async/await and are invoked when the user interacts with the UI
   const sendData = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/uppercase', {
+      const res = await fetch('/api/uppercase', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name })
@@ -31,7 +31,7 @@ export default function App() {
         setResponse(data.error);
       }
     } catch (error) {
-      setResponse('Server connection failed.');
+      setResponse('Error sending data to server');
     }
   };
 
