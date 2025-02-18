@@ -15,7 +15,17 @@ export default function App() {
   const [password, setPassword] = useState('');
   const [response, setResponse] = useState('');
 
-  // Functions to send name to the server and update response state with altered name
+  // useEffects run code in response to changing state or props
+  // Here, we use it to fetch initial data from the backend
+  // get() routes use useEffects and are invoked when the page loads
+  useEffect(() => {
+    fetch('/api')
+      .then(res => res.text())          // Parse text response
+      .then(text => setStatus(text))   // Update status on success
+      .catch(() => setStatus('Failed to connect to backend')); // Handle errors
+  }, []); // Empty array = run once
+
+  // Functions to send name to the server and update response state
   // post() routes use async/await and are invoked when the user interacts with the UI
   const sendLoginInfo = async () => {
     try {
@@ -36,27 +46,17 @@ export default function App() {
     }
   };
 
-  // useEffects run code in response to changing state or props
-  // Here, we use it to fetch initial data from the backend
-  // get() routes use useEffects and are invoked when the page loads
-  useEffect(() => {
-    fetch('/api')
-      .then(res => res.text())          // Parse text response
-      .then(text => setStatus(text))   // Update status on success
-      .catch(() => setStatus('Failed to connect to backend')); // Handle errors
-  }, []); // Empty array = run once
-
   // Render UI
   return (
     <div className="container">
       <h1>CS310 Patient Portal System</h1>
       <p>Backend Status: {status}</p>
-        <h2>Enter your login info:</h2>
+        <form>Enter your login info:</form>
         <input 
           type="text" 
           value={userName} 
           onChange={(e) => setUserName(e.target.value)} 
-          placeholder="Type your user name"
+          placeholder="Type your username"
         />
         <input 
           type="text" 
@@ -65,8 +65,8 @@ export default function App() {
           placeholder="Type your password"
         />
         <button onClick={sendLoginInfo}>Submit</button>
-          <h3>Login Info:</h3>
-          <p>{response || "Waiting for input..."}</p>
+        <h3>Login Info:</h3>
+        <p>{response || "Waiting for input..."}</p>
     </div>
   );
 }
