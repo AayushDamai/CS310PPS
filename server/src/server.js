@@ -30,6 +30,16 @@ app.post('/api/uppercase', (req, res) => {
     res.json({ modifiedName }); // Return modified name in response
 });
 
+app.post('/api/lowercase', (req, res) => {
+    const { name } = req.body;  // Extract name from request body
+    if (!name) {
+        return res.status(400).json({ error: "Name is required" });
+    }
+    const modifiedName = name.toLowerCase();
+    console.log(modifiedName); // Log modified name to console
+    res.json({ modifiedName }); // Return modified name in response
+});
+
 // Start server
 const PORT = 5000;
 app.listen(PORT, () => {
