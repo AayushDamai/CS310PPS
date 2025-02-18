@@ -21,26 +21,6 @@ app.use(express.json()); // Parse incoming JSON requests
 app.get('/api', (req, res) => res.send('Server is alive!')); // Simple health check route
 
 // post() routes are for sending data to the server
-app.post('/api/uppercase', (req, res) => {
-    const { name } = req.body; // Extract name from request body
-    if (!name) {
-        return res.status(400).json({ error: "Name is required" });
-    }
-    const modifiedName = name.toUpperCase();
-    console.log(modifiedName); // Log modified name to console
-    res.json({ modifiedName }); // Return modified name in response
-});
-
-app.post('/api/lowercase', (req, res) => {
-    const { name } = req.body; // Extract name from request body
-    if (!name) {
-        return res.status(400).json({ error: "Name is required" });
-    }
-    const modifiedName = name.toLowerCase();
-    console.log(modifiedName); // Log modified name to console
-    res.json({ modifiedName }); // Return modified name in response
-});
-
 app.post('/api/login', (req, res) => {
     const { userName, password } = req.body; // Extract password from request body
     if (!userName || !password) {
