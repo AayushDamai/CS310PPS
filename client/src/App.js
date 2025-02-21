@@ -12,6 +12,7 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import ForgotInfoPage from './pages/ForgotInfoPage';
+import PatientPortalPage from './pages/PatientPortalPage';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegistrationPage />} />
         <Route path="/forgot-info" element={<ForgotInfoPage />} />
+        <Route path="/patient-portal" element={<PatientPortalPage />} />
       </Routes>
     </div>
   );

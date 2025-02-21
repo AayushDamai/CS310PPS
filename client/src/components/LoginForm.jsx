@@ -1,7 +1,7 @@
 // LoginForm.jsx
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/InputForm.css';
 
 const LoginForm = () => {
@@ -10,6 +10,7 @@ const LoginForm = () => {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [response, setResponse] = useState('');
+    const navigate = useNavigate();
 
     // useEffects run code in response to changing state or props
     // Here, we use it to fetch initial data from the backend
@@ -33,7 +34,7 @@ const LoginForm = () => {
         
         const data = await res.json();
         if (res.ok) {
-            setResponse(data.body);
+            navigate('/patient-portal');
         } else {
             setResponse(data.error);
         }
@@ -48,7 +49,7 @@ const LoginForm = () => {
       <h2>Login to your account</h2>
       <input 
         type="text"
-        id='Username'
+        id='username'
         value={userName} 
         onChange={(e) => setUserName(e.target.value)} 
         placeholder="Username"
@@ -65,7 +66,6 @@ const LoginForm = () => {
         <Link to="/register">New here? Sign up!</Link>
         <Link to="/forgot-info">Forgot Username/Password?</Link>
       </div>
-      <h3>Login Info:</h3>
       <p>{response || "Waiting for input..."}</p>
     </div>
     );
