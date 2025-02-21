@@ -7,6 +7,7 @@
 // Import core React libraries and styling
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { HashRouter } from 'react-router-dom'; // Router component for navigation
 import App from './App';          // Main component
 import './index.css';             // Global styles
 
@@ -15,7 +16,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 // Render application with strict mode checks
 root.render(
-  <React.StrictMode>   {/* Enables additional checks and warnings */}
+  <HashRouter>   
     <App />            {/* Main application component */}
-  </React.StrictMode>
+  </HashRouter>
 );
