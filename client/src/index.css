@@ -19,3 +19,19 @@ body {
   width: min(100% - 2rem, 1600px);
   margin-inline: auto;
 }
+
+.sections-container {
+  display: flex;
+  justify-content: space-between; /* Puts space between them */
+  align-items: flex-start; /* Aligns them at the top */
+  gap: 20px; /* Adds spacing between sections */
+  padding: 20px;
+  background-color: #fff;
+}
+
+/* Ensure sections take up appropriate space */
+.contact-card, .project-source-card {
+  flex: 1; /* Makes them take equal width */
+  max-width: 48%; /* Prevents them from stretching too much */
+  background-color: #f8f9fa;
+}
