@@ -33,7 +33,7 @@ app.post('/api/sendLoginData', (req, res) => {
     console.log(`Received login request for user: ${userName}, password: ${password}`); // Log modified name to console
     // Simple authentication check (for demonstration purposes only), will update to validate with database later
     console.log("User:", user = userData.find(user => user.userName === userName));
-    if (user) {
+    if (user && user.password === password) {
         console.log(`Successful login for user: ${user.userName}`); // Log success message to console
         res.json({ body: `Welcome back, ${user.userName}!`}); // Return success message in response)
     } else {
@@ -47,7 +47,7 @@ app.post('/api/sendRegistrationData', (req, res) => {
     if (!user.firstName || !user.lastName) {
         return res.status(400).json({ error: "Data not retrieved" });
     }
-    console.log(`Received registration request for: ${user}`); // Log users name to console
+    console.log(`Received registration request for: ${user.firstName} + ${user.lastName}`); // Log users name to console
     userData.push(user); // Add user to in-memory data storage
     res.json({ body: `Welcome, ${user.firstName}!`}); // Return success message in response)
 });
@@ -57,7 +57,7 @@ app.post('/api/sendUserData', (req, res) => {
     if (!email) {
         return res.status(400).json({ error: "Email Required" });
     }
-    console.log(`Received info request for: ${email}`); // Log users name to console
+    console.log(`Received info request for: ${email}`); // Log user's name to console
     
     const user = userData.find(user => user.email === email);
     if (!user) {
