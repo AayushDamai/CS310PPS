@@ -52,6 +52,21 @@ app.post('/api/sendRegistrationData', (req, res) => {
     res.json({ body: `Welcome, ${user.firstName}!`}); // Return success message in response)
 });
 
+app.post('/api/sendUserData', (req, res) => {
+    const { email } = req.body; // Extract password from request body
+    if (!email) {
+        return res.status(400).json({ error: "Email Required" });
+    }
+    console.log(`Received info request for: ${email}`); // Log users name to console
+    
+    const user = userData.find(user => user.email === email);
+    if (!user) {
+        console.log(`Failed info request for user: ${email}`); // Log failure message to console
+        res.status(400).json({ error: 'Invalid email' });
+    }
+    res.json({ body: `Name: ${user.firstName} ` + ` Username: ${user.userName} ` + ` Password: ${user.password}`}); // Return success message in response)
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)

@@ -6,17 +6,17 @@ import ContactCard from '../components/ContactCard';
 import ProjectSourceCard from '../components/ProjectSourceCard';
 
 const LandingPage = () => {
-  return (
-    <div className="landing-page">
-      <NavBar />
-      <Hero />
-      <div className="sections-container"> 
-        {/* Container for the contact card and project source card formatting*/}
-        <ContactCard />
-        <ProjectSourceCard />
+    return (
+      <div className="landing-page">
+        <NavBar />
+        <Hero />
+        <div className="sections-container"> 
+          {/* Container for the contact card and project source card formatting*/}
+          <ContactCard />
+          <ProjectSourceCard />
+        </div>
       </div>
-    </div>
-  )
+    )
 };
 
 export default LandingPage;

@@ -1,14 +1,13 @@
-// LoginForm.jsx
+// ForgotInfoForm.jsx
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/InputForm.css';
 
-const LoginForm = () => {
+const ForgotInfoForm = () => {
     // Component states for backend connection status, name input, and server response
     const [status, setStatus] = useState('Connecting...');
-    const [userName, setUserName] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
     const [response, setResponse] = useState('');
 
     // useEffects run code in response to changing state or props
@@ -23,12 +22,12 @@ const LoginForm = () => {
 
     // Functions to send name to the server and update response state
     // post() routes use async/await and are invoked when the user interacts with the UI
-    const sendLoginInfo = async () => {
+    const sendUserData = async () => {
     try {
-        const res = await fetch('/api/sendLoginData', {
+        const res = await fetch('/api/sendUserData', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userName, password })
+            body: JSON.stringify({ email })
         });
         
         const data = await res.json();
@@ -45,30 +44,22 @@ const LoginForm = () => {
     return (
     <div className="input-form">
       <p>Backend Status: {status}</p>
-      <h2>Login to your account</h2>
+      <h2>Enter your email address and we'll send you a link to reset your account</h2>
       <input 
         type="text"
-        id='Username'
-        value={userName} 
-        onChange={(e) => setUserName(e.target.value)} 
-        placeholder="Username"
+        id='email'
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)} 
+        placeholder="Email"
       />
-      <input 
-        type="password"
-        id='password'
-        value={password} 
-        onChange={(e) => setPassword(e.target.value)} 
-        placeholder="Password"
-      />
-      <button onClick={sendLoginInfo}>Login</button>
+      <button onClick={sendUserData}>Submit</button>
       <div className='redirect-buttons'>
-        <Link to="/register">New here? Sign up!</Link>
-        <Link to="/forgot-info">Forgot Username/Password?</Link>
+        <Link to="/login">Back to login</Link>
       </div>
-      <h3>Login Info:</h3>
+      <h3>Reset Info:</h3>
       <p>{response || "Waiting for input..."}</p>
     </div>
     );
 }
 
-export default LoginForm;
+export default ForgotInfoForm;
