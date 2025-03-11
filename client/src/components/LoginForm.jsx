@@ -64,7 +64,7 @@ const LoginForm = () => {
       <button onClick={sendLoginInfo}>Login</button>
       <div className='redirect-buttons'>
         <Link to="/register">New here? Sign up!</Link>
-        <Link to="/forgot-info">Forgot Username/Password?</Link>
+        <Link to="/forgot-info">Forgot Password?</Link>
       </div>
       <p>{response || "Waiting for input..."}</p>
     </div>
