@@ -1,9 +1,9 @@
-// ViewAppoitnmentPage.jsx
+// ViewAppointmentPage.jsx
 import React from 'react';
 import NavBar from '../components/NavBar';
-import Appointment  from '../components/Appointment';
+import Appointment from '../components/Appointment';
 
-const ViewAppoitnmentPage = () => {
+const ViewAppointmentPage = () => {
     return (
         <div className="forgot-info-page">
           <NavBar />
@@ -14,4 +14,4 @@ const ViewAppoitnmentPage = () => {
     );
 }
 
-export default ViewAppoitnmentPage;
+export default ViewAppointmentPage;
