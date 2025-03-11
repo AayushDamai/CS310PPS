@@ -14,7 +14,7 @@ const RegistrationForm = () => {
     const [address1, setAddress1] = useState('');
     const [address2, setAddress2] = useState('');
     const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
+    const [password, setPassword] = useState('');
     const [response, setResponse] = useState('');
 
     // useEffects run code in response to changing state or props
@@ -38,20 +38,20 @@ const RegistrationForm = () => {
             address1: address1,
             address2: address2,
             email: email,
-            phone: phone
+            password: password
         }
         try {
-            const res = await fetch('/api/sendRegistrationData', {
+            const res = await fetch('/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user })
+                body: JSON.stringify(user)
             });
             
             const data = await res.json();
             if (res.ok) {
-                setResponse(data.body);
+                setResponse(data.message);
             } else {
-                setResponse(data.error);
+                setResponse(data.message);
             }
         } catch (error) {
             setResponse('Error sending data to server');
@@ -80,18 +80,18 @@ const RegistrationForm = () => {
             placeholder="Last Name"
         />
         <input 
-            type="text"
+            type="date"
             id='DOB'
             value={dateOfBirth} 
             onChange={(e) => setDOB(e.target.value)} 
-            placeholder="DOB: MM/DD/YYYY"
+            placeholder="DOB: YYYY-MM-DD"
         />
         <input 
             type="text"
             id='Sex'
             value={sex} 
             onChange={(e) => setSex(e.target.value)} 
-            placeholder="Sex"
+            placeholder="Male, Female, Prefer Not To Say"
         />
         <input 
             type="text"
@@ -109,17 +109,17 @@ const RegistrationForm = () => {
         />
         <input 
             type="email"
-            id='Email'
+            id='email'
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             placeholder="Email"
         />
         <input 
-            type="number"
-            id='Phone'
-            value={phone} 
-            onChange={(e) => setPhone(e.target.value)} 
-            placeholder="Phone"
+            type="password"
+            id='password'
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            placeholder="Password"
         />
         <button onClick={sendRegistrationData}>Register</button>
         <div className='redirect-buttons'>
