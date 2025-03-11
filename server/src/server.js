@@ -8,6 +8,7 @@
 
 // server.js
 const express = require('express');
+const db = require('./db'); // Import database connection
 const cors = require('cors');
 const app = express();
 const PORT = 5000;
