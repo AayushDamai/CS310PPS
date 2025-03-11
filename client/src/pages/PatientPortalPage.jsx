@@ -8,7 +8,7 @@ const PatientPortalPage = () => {
         <NavBar />
         <h1>Patient Portal</h1>
       </div>
-    )
-};
+    );
+}
 
 export default PatientPortalPage;
