@@ -32,6 +32,6 @@ body {
 /* Ensure sections take up appropriate space */
 .contact-card, .project-source-card {
   flex: 1; /* Makes them take equal width */
-  max-width: 48%; /* Prevents them from stretching too much */
+   /* Prevents them from stretching too much */
   background-color: #f8f9fa;
 }

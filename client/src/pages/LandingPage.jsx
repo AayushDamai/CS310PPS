@@ -12,8 +12,7 @@ const LandingPage = () => {
         <Hero />
         <div className="sections-container"> 
           {/* Container for the contact card and project source card formatting*/}
-          <ContactCard />
-          <ProjectSourceCard />
+         
         </div>
       </div>
     )
