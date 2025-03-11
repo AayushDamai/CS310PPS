@@ -7,7 +7,9 @@ const NavBar = () => {
   const { pathname } = useLocation();
 
   // Determine if we are on an auth page (login/register)
-  const isLandingPage = pathname === '/';
+  const isNotLogin = pathname === '/login';
+  const isNotRegister = pathname === '/register';
+  const isNotForgotInfo = pathname === '/forgot-info';
 
   return (
     <nav className='nav'>
@@ -15,7 +17,7 @@ const NavBar = () => {
         <Link to="/" className="logo"> CS310PPS </Link>
       </div>
       {/* Only show these links if we are NOT on the login/signup page */}
-      {isLandingPage && (
+      {!isNotLogin && !isNotRegister && !isNotForgotInfo && (
         <div className="navlinks">
           <Link to="/contactUs">Contact Us</Link>
           <Link to="/register">Signup</Link>
