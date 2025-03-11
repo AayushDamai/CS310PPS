@@ -28,20 +28,19 @@ A full-stack system enabling patients and medical professionals to:
 
 ## Installation  
 
-## 1. 
--- Add Node.js installation
--- Add issue with having to run System as an admin and then add PS C:\> Set-ExecutionPolicy RemoteSigned code
+## 1. Install Node.js
+https://nodejs.org/en/
 
-### 1. Clone repo
+### 2. Clone repo
 ```bash    
 git clone https://github.com/AayushDamai/CS310PPS.git  
 cd CS310PPS  
 ```
-### 2. Install dependencies
+### 3. Install dependencies
 ```bash
 npm install
 ```
-### 3. Start development
+### 4. Start development
 ```bash
 npm start
 ```
@@ -59,3 +58,5 @@ npm start
 https://www.freecodecamp.org/news/how-to-install-react-a-step-by-step-guide/ 
 ## Potential Issues
 -- might need to run npm install require-directory
+
+-- Add issue with having to run System as an admin and then add PS C:\> Set-ExecutionPolicy RemoteSigned code
