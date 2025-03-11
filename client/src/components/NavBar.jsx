@@ -19,6 +19,7 @@ const NavBar = () => {
       {/* Only show these links if we are NOT on the login/signup page */}
       {!isNotLogin && !isNotRegister && !isNotForgotInfo && (
         <div className="navlinks">
+          <Link to="/contactUs">Contact Us</Link>
           <Link to="/register">Signup</Link>
           <Link to="/login">Login</Link>
         </div>
