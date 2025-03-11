@@ -9,7 +9,7 @@ const LandingPage = () => {
         <NavBar />
         <Hero />
       </div>
-    )
-};
+    );
+}
 
 export default LandingPage;
