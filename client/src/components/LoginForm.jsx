@@ -7,7 +7,7 @@ import '../styles/InputForm.css';
 const LoginForm = () => {
     // Component states for backend connection status, name input, and server response
     const [status, setStatus] = useState('Connecting...');
-    const [userName, setUserName] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [response, setResponse] = useState('');
     const navigate = useNavigate();
@@ -26,17 +26,17 @@ const LoginForm = () => {
     // post() routes use async/await and are invoked when the user interacts with the UI
     const sendLoginInfo = async () => {
     try {
-        const res = await fetch('/api/sendLoginData', {
+        const res = await fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userName, password })
+            body: JSON.stringify({ email, password })
         });
         
         const data = await res.json();
         if (res.ok) {
             navigate('/patient-portal');
         } else {
-            setResponse(data.error);
+            setResponse(data.message);
         }
     } catch (error) {
         setResponse('Error sending data to server');
@@ -48,11 +48,11 @@ const LoginForm = () => {
       <p>Backend Status: {status}</p>
       <h2>Login to your account</h2>
       <input 
-        type="text"
-        id='username'
-        value={userName} 
-        onChange={(e) => setUserName(e.target.value)} 
-        placeholder="Username"
+        type="email"
+        id='email'
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)} 
+        placeholder="Email"
       />
       <input 
         type="password"
@@ -64,7 +64,7 @@ const LoginForm = () => {
       <button onClick={sendLoginInfo}>Login</button>
       <div className='redirect-buttons'>
         <Link to="/register">New here? Sign up!</Link>
-        <Link to="/forgot-info">Forgot Username/Password?</Link>
+        <Link to="/forgot-info">Forgot Password?</Link>
       </div>
       <p>{response || "Waiting for input..."}</p>
     </div>

@@ -27,14 +27,14 @@ const ForgotInfoForm = () => {
         const res = await fetch('/api/sendUserData', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
+            body: JSON.stringify({email})
         });
         
         const data = await res.json();
         if (res.ok) {
             setResponse(data.body);
         } else {
-            setResponse(data.error);
+            setResponse(data.message);
         }
     } catch (error) {
         setResponse('Error sending data to server');
