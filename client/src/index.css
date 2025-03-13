@@ -29,9 +29,9 @@ body {
   background-color: #fff;
 }
 
-/* Ensure sections take up appropriate space */
-.contact-card, .project-source-card {
-  flex: 1; /* Makes them take equal width */
-   /* Prevents them from stretching too much */
-  background-color: #f8f9fa;
+.landing-page {
+  /* Subtract the navbar height from the viewport */
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }

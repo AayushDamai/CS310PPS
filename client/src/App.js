@@ -13,7 +13,6 @@ import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import ForgotInfoPage from './pages/ForgotInfoPage';
 import PatientPortalPage from './pages/PatientPortalPage';
-
 import ContactUs from './pages/ContactUs';
 import ViewAppointmentPage from './pages/ViewAppointmentPage';
 
