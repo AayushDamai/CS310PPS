@@ -61,12 +61,14 @@ app.post('/api/login', async (req, res) => {
       connection.release();
       
       if (rows.length == 0) {
+        console.log(`Failed login attempt for: ${email}`);
         return res.status(401).json({ message: 'Invalid email or password' });
       }
       
       const user = rows[0];
   
       if (user.password !== password) {
+        console.log(`Failed login attempt for: ${email}`);
         return res.status(401).json({ message: 'Invalid email or password' });
       }
   
