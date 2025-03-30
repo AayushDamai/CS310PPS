@@ -15,6 +15,8 @@ import ForgotInfoPage from './pages/ForgotInfoPage';
 import PatientPortalPage from './pages/PatientPortalPage';
 import ContactUs from './pages/ContactUs';
 import ViewAppointmentPage from './pages/ViewAppointmentPage';
+import ViewPrescription from './pages/ViewPrescription';
+import BillingPage from './pages/BillingPage';
 
 
 
@@ -29,6 +31,8 @@ const App = () => {
         <Route path="/patient-portal" element={<PatientPortalPage />} />
         <Route path="/contactUs" element={<ContactUs />} />
         <Route path="/appointment-page" element={<ViewAppointmentPage />} />
+        <Route path="/prescriptions" element={<ViewPrescription />} />
+        <Route path="/billing-page" element={<BillingPage />} />
       </Routes>
     </div>
   );
