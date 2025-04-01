@@ -11,6 +11,7 @@ const PatientPortalPage = () => {
         <Link to="/appointment-page">Appointments</Link> <br />
         <Link to="/prescriptions">Prescriptions</Link> <br />
         <Link to="/billing-page">Billing</Link>
+        
       </div>
     );
 }

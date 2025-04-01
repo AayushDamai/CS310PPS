@@ -3,14 +3,13 @@ import { useParams, Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import Prescription from '../components/Prescription';
 
-
 const ViewPrescription = () => {
     const { patient_id } = useParams(); 
     const [prescription, setPrescription] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log(`Fetching prescription for patient_id: ${patient_id}`); // Log the patient_id
+        console.log(`Fetching prescription for patient_id: ${patient_id}`); 
     
         fetch(`http://localhost:5000/prescriptions/${patient_id}`)
             .then((response) => {
@@ -20,7 +19,7 @@ const ViewPrescription = () => {
                 return response.json();
             })
             .then((data) => {
-                console.log('Prescription data:', data); // Log the response data
+                console.log('Prescription data:', data); 
                 setPrescription(data);
             })
             .catch((err) => {
@@ -40,11 +39,12 @@ const ViewPrescription = () => {
     return (
         <div className="medication-page">
             <NavBar />
-            <Link to="/prescriptions/1">View Prescription</Link>
+            <Link to="/patient-portal" className="back-button">Back to Portal</Link>
             <Prescription
                 medication={prescription.medication}
                 dosage={prescription.dosage}
-                frequency={prescription.frequency}
+                instructions={prescription.instructions}
+                prescription_date={prescription.prescription_date}
             />
         </div>
     );

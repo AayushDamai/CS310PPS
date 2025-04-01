@@ -16,6 +16,7 @@ const DoctorHomePage = () => {
         <button
           className="tab-button"
           onClick={() => navigate('/doctor/appointments')}
+          onClick={() => navigate('/doctor/prescriptions')}
         >
           Appointments
         </button>

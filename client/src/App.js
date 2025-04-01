@@ -9,7 +9,7 @@ import ContactUs from './pages/ContactUs';
 import ViewAppointmentPage from './pages/ViewAppointmentPage';
 import ViewPrescription from './pages/ViewPrescription';
 import BillingPage from './pages/BillingPage';
-import DoctorMain from './pages/DoctorMain';
+import DoctorHomePage from './pages/DoctorHomePage';
 
 
 const App = () => {
@@ -23,10 +23,11 @@ const App = () => {
         <Route path="/patient-portal" element={<PatientPortalPage />} />
         <Route path="/contactUs" element={<ContactUs />} />
         <Route path="/appointment-page" element={<ViewAppointmentPage />} />
-        <Route path="/prescriptions/" element={<ViewPrescription />} />
-
-        <Route path="/doctor-dashboard" element={<DoctorMain />} />
+        <Route path="/prescriptions/:patient_id" element={<ViewPrescription />} />
+        <Route path="/prescriptions" element={<Navigate to="/prescriptions/1" />} />
+        <Route path="/doctor-dashboard" element={<DoctorHomePage />} />
         <Route path="/billing-page" element={<BillingPage />} />
+        
       </Routes>
     </div>
   );

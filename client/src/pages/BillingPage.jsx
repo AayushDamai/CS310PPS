@@ -7,8 +7,9 @@ const BillingPage = () => {
     return ( 
         <div className="billing-page">
         <NavBar />
+       
         <h1 style={{padding: 10}}>Billing Information</h1>
-        <BillingInfo />
+        
         <h2 style={{padding: 10}}>Payment Information</h2>
         <p style={{padding: 10}}>Payment Method: Credit Card</p>
         <p style={{padding: 10}}>Card Number: **** **** **** 1234</p>
