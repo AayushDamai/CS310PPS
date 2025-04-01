@@ -10,7 +10,7 @@ const BillingInfo = () => {
     return (
         <div className="billing-info-page">
           <NavBar />
-          <BillingInfo payment={userPayment} insurance={userInsurance} />
+          <h1 style={{ padding: 10 }}>Billing Information</h1>
         </div>
     );
 };

@@ -47,37 +47,43 @@ app.get('/api', (req, res) => res.send('Server is alive!')); // Simple health ch
 
 // post() routes are for sending data to the server
 app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
-  
-    try {
+  const { email, password } = req.body;
+
+  try {
       // Get a connection from the pool
       const connection = await pool.getConnection();
-      
-      // Retrieve the user record
+
+      // Retrieve the user record along with their role
       const [rows] = await connection.execute(
-        'SELECT * FROM Users WHERE email = ?',
-        [email]
+          'SELECT id, role, password FROM users WHERE email = ?',
+          [email]
       );
       connection.release();
-      
+
       if (rows.length == 0) {
-        console.log(`Failed login attempt for: ${email}`);
-        return res.status(401).json({ message: 'Invalid email or password' });
+          console.log(`Failed login attempt for: ${email}`);
+          return res.status(401).json({ message: 'Invalid email or password' });
       }
-      
+
       const user = rows[0];
-  
+
       if (user.password !== password) {
-        console.log(`Failed login attempt for: ${email}`);
-        return res.status(401).json({ message: 'Invalid email or password' });
+          console.log(`Failed login attempt for: ${email}`);
+          return res.status(401).json({ message: 'Invalid email or password' });
       }
-  
+
       // If passwords match, login is successful
       console.log(`User ${user.email} logged in`);
-      res.status(200).json({ message: 'Login successful', userId: user.id });
-    } catch (error) {
+
+      // Send back user data, including role
+      res.status(200).json({
+          message: 'Login successful',
+          userId: user.id,
+          role: user.role,  // Include role in the response
+      });
+  } catch (error) {
       res.status(500).json({ error: 'Server error during login' });
-    }
+  }
 });
 
 // Register a new user
@@ -158,6 +164,42 @@ app.post('/api/sendUserData', async (req, res) => {
     }
 });
 
+app.get('/prescriptions/:patient_id', async (req, res) => {
+  const { patient_id } = req.params; // Extract patient_id from the URL
+  console.log(`Fetching prescription for patient_id: ${patient_id}`); // Log the patient_id
+
+  try {
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+
+      try {
+          // Query the database for the prescription data
+          const [rows] = await connection.execute(
+              'SELECT medication, dosage, instructions, prescription_date FROM prescriptions WHERE patient_id = ?',
+              [patient_id]
+          );
+
+          console.log('Query result:', rows); // Log the query result
+          connection.release();
+
+          if (rows.length === 0) {
+              // If no prescription is found, return a 404 error
+              console.log('No prescription found for this patient ID');
+              return res.status(404).json({ error: 'No prescription found for this patient ID' });
+          }
+
+          // Return the prescription data
+          res.status(200).json(rows[0]); // Assuming only one prescription per patient
+      } catch (err) {
+          connection.release();
+          console.error('Error querying the database:', err);
+          res.status(500).json({ error: 'Database query error' });
+      }
+  } catch (err) {
+      console.error('Error connecting to the database:', err);
+      res.status(500).json({ error: 'Database connection error' });
+  }
+});
 // Start server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)

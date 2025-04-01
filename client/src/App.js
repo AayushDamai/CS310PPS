@@ -1,13 +1,5 @@
-/**
- * Root component - Main application layout
- * Contains route definitions and global state
- * Renders persistent UI elements (headers, footers)
- * Changed frequently as new features are added
-*/
-
-// React core imports
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
@@ -17,7 +9,7 @@ import ContactUs from './pages/ContactUs';
 import ViewAppointmentPage from './pages/ViewAppointmentPage';
 import ViewPrescription from './pages/ViewPrescription';
 import BillingPage from './pages/BillingPage';
-
+import DoctorMain from './pages/DoctorMain';
 
 
 const App = () => {
@@ -31,11 +23,13 @@ const App = () => {
         <Route path="/patient-portal" element={<PatientPortalPage />} />
         <Route path="/contactUs" element={<ContactUs />} />
         <Route path="/appointment-page" element={<ViewAppointmentPage />} />
-        <Route path="/prescriptions" element={<ViewPrescription />} />
+        <Route path="/prescriptions/:patient_id" element={<ViewPrescription />} />
+        <Route path="/prescriptions" element={<Navigate to="/prescriptions/1" />} />
+        <Route path="/doctor-dashboard" element={<DoctorMain />} />
         <Route path="/billing-page" element={<BillingPage />} />
       </Routes>
     </div>
   );
-}
+};
 
 export default App;
