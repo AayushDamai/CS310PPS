@@ -36,6 +36,13 @@ https://nodejs.org/en/
 git clone https://github.com/AayushDamai/CS310PPS.git  
 cd CS310PPS  
 ```
+### 3. Download MySQL
+```bash
+https://dev.mysql.com/downloads/installer/
+```
+### 4. Run the Workbench
+In the workbench, go over to the Database tab at the top, click connect to 
+
 ### 3. Install dependencies
 ```bash
 npm install

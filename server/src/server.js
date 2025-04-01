@@ -164,42 +164,7 @@ app.post('/api/sendUserData', async (req, res) => {
     }
 });
 
-app.get('/prescriptions/:patient_id', async (req, res) => {
-  const { patient_id } = req.params; // Extract patient_id from the URL
-  console.log(`Fetching prescription for patient_id: ${patient_id}`); // Log the patient_id
 
-  try {
-      // Get a connection from the pool
-      const connection = await pool.getConnection();
-
-      try {
-          // Query the database for the prescription data
-          const [rows] = await connection.execute(
-              'SELECT medication, dosage, instructions, prescription_date FROM prescriptions WHERE patient_id = ?',
-              [patient_id]
-          );
-
-          console.log('Query result:', rows); // Log the query result
-          connection.release();
-
-          if (rows.length === 0) {
-              // If no prescription is found, return a 404 error
-              console.log('No prescription found for this patient ID');
-              return res.status(404).json({ error: 'No prescription found for this patient ID' });
-          }
-
-          // Return the prescription data
-          res.status(200).json(rows[0]); // Assuming only one prescription per patient
-      } catch (err) {
-          connection.release();
-          console.error('Error querying the database:', err);
-          res.status(500).json({ error: 'Database query error' });
-      }
-  } catch (err) {
-      console.error('Error connecting to the database:', err);
-      res.status(500).json({ error: 'Database connection error' });
-  }
-});
 // Start server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)

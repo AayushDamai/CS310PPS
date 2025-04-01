@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Portal.css';
-import DoctorCalendar from '../components/DoctorCalendar'; // Import the DoctorCalendar component
+import DoctorCalendar from '../components/DoctorCalendar';
 
 const DoctorHomePage = () => {
   const navigate = useNavigate(); // Hook to programmatically navigate
@@ -44,5 +44,3 @@ const App = () => {
     </div>
   );
 };
-
-
