@@ -62,14 +62,14 @@ app.post('/api/login', async (req, res) => {
       
       if (rows.length == 0) {
         console.log(`Failed login attempt for: ${email}`);
-        return res.status(401).json({ message: 'Invalid email or password' });
+        return res.status(401).json({ message: 'Invalid email' });
       }
       
       const user = rows[0];
   
       if (user.password !== password) {
-        console.log(`Failed login attempt for: ${email}`);
-        return res.status(401).json({ message: 'Invalid email or password' });
+        console.log(`Failed login attempt for: ${user.email}`);
+        return res.status(401).json({ message: `Invalid password for: ${user.email}` });
       }
   
       // If passwords match, login is successful
@@ -152,7 +152,7 @@ app.post('/api/sendUserData', async (req, res) => {
     
         const user = rows[0];
         // Send user data back to the client
-        res.status(200).json({ body: `Name: ${user.first_name}, ` + ` Email: ${user.email}, ` + ` Password: ${user.password}`});
+        res.status(200).json({ body: `Name: ${user.first_name}; ` + ` Email: ${user.email}; ` + ` Password: ${user.password}`});
     } catch (error) {
         res.status(500).json({ message: 'Server error during info request' });
     }
