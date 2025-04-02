@@ -7,6 +7,7 @@ import ForgotInfoPage from './pages/ForgotInfoPage';
 import PatientPortalPage from './pages/PatientPortalPage';
 import ContactUs from './pages/ContactUs';
 import ViewAppointmentPage from './pages/ViewAppointmentPage';
+import AddAppointmentPage from './pages/AddAppointmentPage';
 import ViewPrescription from './pages/ViewPrescription';
 import BillingPage from './pages/BillingPage';
 import DoctorHomePage from './pages/DoctorHomePage';
@@ -23,13 +24,14 @@ const App = () => {
         <Route path="/forgot-info" element={<ForgotInfoPage />} />
         <Route path="/patient-portal" element={<PatientPortalPage />} />
         <Route path="/contactUs" element={<ContactUs />} />
+        <Route path="/patient-appointment-page" element={<ViewAppointmentPage />} />
+        <Route path="/add-appointment-page" element={<AddAppointmentPage/>} />
         <Route path="/appointment-page" element={<ViewAppointmentPage />} />
         <Route path="/prescriptions/:patient_id" element={<ViewPrescription />} />
         <Route path="/prescriptions" element={<Navigate to="/prescriptions/1" />} />
         <Route path="/doctor-dashboard" element={<DoctorHomePage />} />
         <Route path="/doctor/add-prescription" element={<AddPrescriptionsPage/>} />
         <Route path="/billing-page" element={<BillingPage />} />
-        
       </Routes>
     </div>
   );
