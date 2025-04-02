@@ -61,14 +61,12 @@ app.post('/api/login', async (req, res) => {
       connection.release();
       
       if (rows.length == 0) {
-        console.log(`Failed login attempt for: ${email}`);
         return res.status(401).json({ message: 'Invalid email' });
       }
       
       const user = rows[0];
   
       if (user.password !== password) {
-        console.log(`Failed login attempt for: ${user.email}`);
         return res.status(401).json({ message: `Invalid password for: ${user.email}` });
       }
   
@@ -112,7 +110,6 @@ app.post('/api/register', async (req, res) => {
 
       // Commit the transaction
       await connection.commit();
-      console.log(`User ${email} registered`);
       res.status(201).json({ message: `User, ${firstName} ${lastName}, registered successfully`});
     } catch (err) {
       // Rollback in case of error
@@ -133,7 +130,6 @@ app.post('/api/sendUserData', async (req, res) => {
     if (!email) {
         return res.status(400).json({ error: "Email Required" });
     }
-    console.log(`Received info request for: ${email}`); // Log user's email to console
 
     try {
         // Get a connection from the pool

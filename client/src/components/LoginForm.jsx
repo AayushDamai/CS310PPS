@@ -2,6 +2,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/AuthContext';
 import '../styles/InputForm.css';
 
 const LoginForm = () => {
@@ -11,6 +12,7 @@ const LoginForm = () => {
     const [password, setPassword] = useState('');
     const [response, setResponse] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     // useEffects run code in response to changing state or props
     // Here, we use it to fetch initial data from the backend
@@ -34,6 +36,7 @@ const LoginForm = () => {
         
         const data = await res.json();
         if (res.ok) {
+            login({ userId: data.userId, email });
             navigate('/patient-portal');
         } else {
             setResponse(data.message);
