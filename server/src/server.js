@@ -160,7 +160,7 @@ app.post('/api/sendUserData', async (req, res) => {
 
 //add an appoitnment to the database
 app.post('/api/sendAppointmentData',async (req,res) => {
-  const {patientID,doctorID, nurseID, appointment_time} = req.body;
+  const {patientID,doctorID, appointmentLocation, appointment_time} = req.body;
 
   try {
     // Get a connection from the pool
@@ -175,7 +175,7 @@ app.post('/api/sendAppointmentData',async (req,res) => {
       // Insert into the base Users table
       const [userResult] = await connection.execute(
         'INSERT INTO appointments (patientID, doctorID, nurseID, appointment_time) VALUES (?, ?, ?, ?,)',
-        [patientID, doctorID, nurseID, appointment_time]
+        [patientID, doctorID, appointmentLocation, appointment_time]
       );
       
 

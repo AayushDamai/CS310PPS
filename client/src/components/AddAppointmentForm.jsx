@@ -9,7 +9,7 @@ const AddAppointmentForm = () =>{
         const [status, setStatus] = useState('Connecting...');
         const [patientID, setPatientID] = useState('');
         const [doctorID, setDoctorID] = useState('');
-        const [nurseID, setnurseID] = useState('');
+        const [appointmentLocation, setnurseID] = useState('');
         const [appointment_time, setTime] = useState('');
     
      // useEffects run code in response to changing state or props
@@ -22,11 +22,11 @@ const AddAppointmentForm = () =>{
                 .catch(() => setStatus('Failed to connect to backend')); // Handle errors
         }, []); // Empty array = run once
 
-        const sendRegistrationData = async () => {
+        const sendAppointmentData = async () => {
             var appointment = {
                 patientID: patientID,
                 doctorID: doctorID,
-                nurseID: nurseID,
+                appointmentLocation: appointmentLocation,
                 appointment_time: appointment_time,
                 
             }
@@ -47,6 +47,46 @@ const AddAppointmentForm = () =>{
                 setResponse('Error sending data to server');
             }
         };
+        return (
+                <div className="input-form">
+                <p>Backend Status: {status}</p>
+                <div className='form-header'>
+                    <h2>Add an Appointment</h2>
+                </div>
+                <input 
+                    type="text"
+                    id='PatientID'
+                    value={patientID} 
+                    onChange={(e) => setPatientID(e.target.value)} 
+                    placeholder="PatientID"
+                />
+                <input 
+                    type="text"
+                    id='DoctorID'
+                    value={doctorID} 
+                    onChange={(e) => setDoctorID(e.target.value)} 
+                    placeholder="DoctorID"
+                />
+                <input 
+                    type="text"
+                    id='Location'
+                    value={appointmentLocation} 
+                    onChange={(e) => setLocation(e.target.value)} 
+                    placeholder="Location: Building: Room #"
+                />
+                <input 
+                    type="date"
+                    id='DOA'
+                    value={appointment_time} 
+                    onChange={(e) => setTime(e.target.value)} 
+                    placeholder="Date: YYYY-MM-DD"
+                />
+            
+                <button onClick={sendAppointmentData}>Submit</button>
+                <p>{response || "Waiting for input..."}</p>
+                </div>
+            );
 
         
 }
+export default AddAppointmentForm;
