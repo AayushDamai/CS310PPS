@@ -5,7 +5,6 @@ import DoctorCalendar from '../components/DoctorCalendar';
 
 const DoctorHomePage = () => {
   const [activeTab, setActiveTab] = useState('calendar'); // State to track the active tab
-  const [doctorData, setDoctorData] = useState(null); // State to store doctor data
   const [prescriptions, setPrescriptions] = useState([]); // State to store prescriptions
   const [patientId, setPatientId] = useState(''); // State to track the patient ID
   const [medication, setMedication] = useState(''); // State to track medication
@@ -16,33 +15,11 @@ const DoctorHomePage = () => {
   const [selectedPatientId, setSelectedPatientId] = useState(''); // State to track selected patient ID
 
   useEffect(() => {
-    const fetchDoctorData = async () => {
-      try {
-        const response = await fetch('/api/doctor'); // Replace with your API endpoint
-        const data = await response.json();
-        console.log('Fetched doctor data:', data);
-
-        if (data && data.id) {
-          setDoctorData(data); // Store doctor data in state
-          localStorage.setItem('userId', data.id); // Store doctorId in localStorage
-        } else {
-          console.error('Doctor data is missing or invalid');
-        }
-      } catch (error) {
-        console.error('Error fetching doctor data:', error);
-      }
-    };
-
-    fetchDoctorData();
-  }, []);
-
-  useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch('/api/messages'); // Replace with your API endpoint
+        const response = await fetch('/api/messages');
         const data = await response.json();
-        console.log('Fetched messages:', data);
-        setMessages(data);
+        setMessages(data); // Store messages in state
       } catch (error) {
         console.error('Error fetching messages:', error);
       }
@@ -53,100 +30,83 @@ const DoctorHomePage = () => {
     }
   }, [activeTab]);
 
-  const handleAddPrescription = async (e) => {
+  const handleAddPrescription = (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch('/api/prescriptions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          patientId,
-          doctorId: localStorage.getItem('userId'),
-          medication,
-          dosage,
-          instructions,
-        }),
-      });
-
-      if (response.ok) {
-        const newPrescription = await response.json();
-        setPrescriptions([...prescriptions, newPrescription]); // Add the new prescription to the list
-        console.log('Prescription added:', newPrescription);
-        // Clear the form
-        setPatientId('');
-        setMedication('');
-        setDosage('');
-        setInstructions('');
-      } else {
-        console.error('Failed to add prescription:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error adding prescription:', error);
-    }
+    const newPrescription = {
+      patientId,
+      medication,
+      dosage,
+      instructions,
+    };
+    setPrescriptions([...prescriptions, newPrescription]);
+    setPatientId('');
+    setMedication('');
+    setDosage('');
+    setInstructions('');
   };
 
-  const handleSendMessage = async (e) => {
+  const handleSendMessage = (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch('/api/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          patientId: selectedPatientId,
-          doctorId: localStorage.getItem('userId'),
-          message: newMessage,
-        }),
-      });
-
-      if (response.ok) {
-        const sentMessage = await response.json();
-        setMessages([...messages, sentMessage]); // Add the new message to the list
-        console.log('Message sent:', sentMessage);
-        setNewMessage(''); // Clear the input field
-        setSelectedPatientId(''); // Clear the patient ID field
-      } else {
-        console.error('Failed to send message:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
+    const newMessageObj = {
+      patientId: selectedPatientId,
+      message: newMessage,
+      sentBy: 'doctor',
+      date: new Date().toLocaleString(),
+    };
+    setMessages([...messages, newMessageObj]);
+    setSelectedPatientId('');
+    setNewMessage('');
   };
 
   return (
-    <div className="portal-container">
-      <h1 className="portal-header">Doctor Portal</h1>
-      <div className="tabs">
+    <div className="doctor-dashboard">
+      {/* Sidebar */}
+      <div className="sidebar">
+        <div className="logo">Doctor Dashboard</div>
         <button
-          className={activeTab === 'calendar' ? 'active-tab' : ''}
+          className={activeTab === 'calendar' ? 'active-link' : ''}
           onClick={() => setActiveTab('calendar')}
         >
           Calendar
         </button>
         <button
-          className={activeTab === 'prescription' ? 'active-tab' : ''}
+          className={activeTab === 'prescription' ? 'active-link' : ''}
           onClick={() => setActiveTab('prescription')}
         >
-          Prescription
+          Manage Prescriptions
         </button>
         <button
-          className={activeTab === 'messages' ? 'active-tab' : ''}
+          className={activeTab === 'messages' ? 'active-link' : ''}
           onClick={() => setActiveTab('messages')}
         >
-          Messages
+          Message Patients
+        </button>
+        <button
+          className={activeTab === 'profile' ? 'active-link' : ''}
+          onClick={() => setActiveTab('profile')}
+        >
+          Profile
         </button>
       </div>
-      <div className="tab-content">
+
+      {/* Main Content */}
+      <div className="main-content">
+        <div className="header">
+          <h1>Welcome, Doctor</h1>
+          <div className="account">
+            <a href="/profile">Your Profile</a> | <a href="/logout">Log Out</a>
+          </div>
+        </div>
+
+        {/* Tab Content */}
         {activeTab === 'calendar' && (
-          <div className="calendar-section">
+          <div className="dashboard-section">
+            <h2>Upcoming Appointments</h2>
             <DoctorCalendar doctorId={localStorage.getItem('userId')} />
           </div>
         )}
         {activeTab === 'prescription' && (
-          <div className="prescription-section">
+          <div className="dashboard-section">
             <h2>Manage Prescriptions</h2>
             <form className="prescription-form" onSubmit={handleAddPrescription}>
               <div className="form-group">
@@ -206,8 +166,8 @@ const DoctorHomePage = () => {
           </div>
         )}
         {activeTab === 'messages' && (
-          <div className="messages-section">
-            <h2>Messages</h2>
+          <div className="dashboard-section">
+            <h2>Message Patients</h2>
             <form className="message-form" onSubmit={handleSendMessage}>
               <div className="form-group">
                 <label>Patient ID:</label>
@@ -239,9 +199,20 @@ const DoctorHomePage = () => {
                   <strong>Patient ID:</strong> {message.patientId} <br />
                   <strong>Message:</strong> {message.message} <br />
                   <strong>Sent By:</strong> {message.sentBy} <br />
-                  <strong>Date:</strong> {new Date(message.date).toLocaleString()}
+                  <strong>Date:</strong> {message.date}
                 </li>
               ))}
+            </ul>
+          </div>
+        )}
+        {activeTab === 'profile' && (
+          <div className="dashboard-section">
+            <h2>Doctor Profile</h2>
+            <p>Here you can view and update your profile information.</p>
+            <ul>
+              <li><strong>Name:</strong> Dr. John Doe</li>
+              <li><strong>Email:</strong> doctor@example.com</li>
+              <li><strong>Specialization:</strong> Cardiology</li>
             </ul>
           </div>
         )}
