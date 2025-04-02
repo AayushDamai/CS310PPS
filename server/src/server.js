@@ -17,6 +17,7 @@ const PORT = 5000;
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
+  password: 'Beastmode#5292',
   database: 'cs310ppsdb',
   waitForConnections: true
 });
@@ -46,37 +47,43 @@ app.get('/api', (req, res) => res.send('Server is alive!')); // Simple health ch
 
 // post() routes are for sending data to the server
 app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
-  
-    try {
+  const { email, password } = req.body;
+
+  try {
       // Get a connection from the pool
       const connection = await pool.getConnection();
-      
-      // Retrieve the user record
+
+      // Retrieve the user record along with their role
       const [rows] = await connection.execute(
-        'SELECT * FROM Users WHERE email = ?',
-        [email]
+          'SELECT id, role, password FROM users WHERE email = ?',
+          [email]
       );
       connection.release();
-      
+
       if (rows.length == 0) {
-        console.log(`Failed login attempt for: ${email}`);
-        return res.status(401).json({ message: 'Invalid email or password' });
+          console.log(`Failed login attempt for: ${email}`);
+          return res.status(401).json({ message: 'Invalid email or password' });
       }
-      
+
       const user = rows[0];
-  
+
       if (user.password !== password) {
-        console.log(`Failed login attempt for: ${email}`);
-        return res.status(401).json({ message: 'Invalid email or password' });
+          console.log(`Failed login attempt for: ${email}`);
+          return res.status(401).json({ message: 'Invalid email or password' });
       }
-  
+
       // If passwords match, login is successful
       console.log(`User ${user.email} logged in`);
-      res.status(200).json({ message: 'Login successful', userId: user.id });
-    } catch (error) {
+
+      // Send back user data, including role
+      res.status(200).json({
+          message: 'Login successful',
+          userId: user.id,
+          role: user.role,  // Include role in the response
+      });
+  } catch (error) {
       res.status(500).json({ error: 'Server error during login' });
-    }
+  }
 });
 
 // Register a new user
@@ -157,7 +164,118 @@ app.post('/api/sendUserData', async (req, res) => {
     }
 });
 
+// Endpoint to fetch appointments for a specific doctor
+app.get('/api/appointments', async (req, res) => {
+  const { doctorId } = req.query; // Get doctorId from query parameters
+
+  if (!doctorId) {
+    return res.status(400).json({ error: 'Doctor ID is required' });
+  }
+
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
+
+    // Query to fetch appointments for the given doctor
+    const [rows] = await connection.execute(
+      `
+      SELECT 
+        a.id, 
+        a.appointment_time, 
+        a.status, 
+        CONCAT(p.first_name, ' ', p.last_name) AS patient_name
+      FROM Appointments a
+      JOIN Users p ON a.patient_id = p.id
+      WHERE a.doctor_id = ?
+      `,
+      [doctorId]
+    );
+
+    connection.release();
+
+    // Return the appointments as JSON
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    res.status(500).json({ error: 'Failed to fetch appointments' });
+  }
+});
+
+// Endpoint to fetch all messages
+app.get('/api/messages', async (req, res) => {
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
+
+    // Query to fetch all messages
+    const [rows] = await connection.execute(
+      `
+      SELECT 
+        m.id, 
+        m.patient_id, 
+        m.doctor_id, 
+        m.message, 
+        m.sent_by, 
+        m.date, 
+        CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
+        CONCAT(d.first_name, ' ', d.last_name) AS doctor_name
+      FROM Messages m
+      JOIN Users p ON m.patient_id = p.id
+      JOIN Users d ON m.doctor_id = d.id
+      ORDER BY m.date DESC
+      `
+    );
+
+    connection.release();
+
+    // Return the messages as JSON
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    res.status(500).json({ error: 'Failed to fetch messages' });
+  }
+});
+
+// Endpoint to send a message
+app.post('/api/messages', async (req, res) => {
+  const { patientId, doctorId, message } = req.body;
+
+  // Validate the request body
+  if (!patientId || !doctorId || !message) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
+
+    // Insert the message into the Messages table
+    const [result] = await connection.execute(
+      `
+      INSERT INTO Messages (patient_id, doctor_id, message, sent_by, date) 
+      VALUES (?, ?, ?, "doctor", NOW())
+      `,
+      [patientId, doctorId, message]
+    );
+
+    connection.release();
+
+    // Return the newly created message as JSON
+    res.status(201).json({
+      id: result.insertId,
+      patientId,
+      doctorId,
+      message,
+      sentBy: 'doctor',
+      date: new Date(),
+    });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({ error: 'Failed to send message' });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-}); // Listen for incoming requests
+  console.log(`Server running on port ${PORT}`);
+});

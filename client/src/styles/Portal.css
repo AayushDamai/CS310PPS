@@ -1,44 +1,160 @@
 /* src/styles/Portal.css */
+/* General container styles */
 .portal-container {
-    max-width: 900px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .portal-container h1 {
-    color: #4a90e2;
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  .portal-container p {
-    font-size: 1.2rem;
-    color: #333;
-  }
-  
-  /* Appointment List Styles */
-  .appointment-list {
-    list-style: none;
-    padding: 0;
-    text-align: left;
-  }
-  
-  .appointment-item {
-    background-color: #fff;
-    padding: 15px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .error {
-    color: red;
-    font-weight: bold;
-  }
-  
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+button.active-tab {
+  background-color: #0056b3;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.tab-content {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.portal-container h1 {
+  color: #4a90e2;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.portal-container p {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Appointment List Styles */
+.appointment-list {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+}
+
+.appointment-item {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
+
+/* Form styles */
+.prescription-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input,
+textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+textarea {
+  resize: none;
+  height: 80px;
+}
+
+.btn-submit {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-submit:hover {
+  background-color: #218838;
+}
+
+/* Prescription list styles */
+.prescription-list {
+  list-style: none;
+  padding: 0;
+}
+
+.prescription-item {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Messages Section */
+.messages-section {
+  text-align: left;
+}
+
+.message-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.message-list {
+  list-style: none;
+  padding: 0;
+}
+
+.message-item {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}

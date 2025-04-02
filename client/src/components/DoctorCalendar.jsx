@@ -1,31 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { format, parseISO } from 'date-fns';
 
-const DoctorCalendar = () => {
-  const [appointments, setAppointments] = useState([]);
+const DoctorCalendar = ({ doctorId }) => {
   const localizer = momentLocalizer(require('moment'));
+  const [events, setEvents] = useState([]); // State to store calendar events
 
   useEffect(() => {
-    const doctorId = localStorage.getItem('userId');
-    fetch(`/api/getDoctorAppointments?doctorId=${doctorId}`)
-      .then(res => res.json())
-      .then(data => {
-        const events = data.appointments.map(app => ({
-          title: `${app.patient_name} - ${app.status}`,
-          start: new Date(app.appointment_time),
-          end: new Date(new Date(app.appointment_time).getTime() + 30 * 60000) // +30 mins
+    const fetchAppointments = async () => {
+      try {
+        console.log('Fetching appointments for doctorId:', doctorId);
+
+        if (!doctorId) {
+          console.error('No doctorId provided');
+          return;
+        }
+
+        const response = await fetch(`http://localhost:5000/api/appointments?doctorId=${doctorId}`);
+        if (!response.ok) {
+          console.error('Failed to fetch appointments:', response.statusText);
+          return;
+        }
+
+        const data = await response.json();
+        console.log('Fetched appointments:', data);
+
+        const formattedEvents = data.map((appointment) => ({
+          title: `${appointment.patient_name} - ${appointment.status}`,
+          start: new Date(appointment.appointment_time),
+          end: new Date(new Date(appointment.appointment_time).getTime() + 30 * 60000), // Add 30 minutes
         }));
-        setAppointments(events);
-      });
-  }, []);
+
+        setEvents(formattedEvents);
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      }
+    };
+
+    fetchAppointments();
+  }, [doctorId]);
 
   return (
     <div style={{ height: 600, margin: '2rem auto', width: '90%' }}>
       <Calendar
         localizer={localizer}
-        events={appointments}
+        events={events} // Use fetched events
         startAccessor="start"
         endAccessor="end"
         titleAccessor="title"
