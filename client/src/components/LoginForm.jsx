@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/AuthContext';
 import '../styles/InputForm.css';
 
 const LoginForm = () => {
@@ -9,6 +10,7 @@ const LoginForm = () => {
     const [password, setPassword] = useState('');
     const [response, setResponse] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     // useEffect to check backend connection status
     useEffect(() => {
@@ -20,30 +22,32 @@ const LoginForm = () => {
 
    
     const sendLoginInfo = async () => {
-        try {
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-    
-            const data = await res.json();
-            if (res.ok) {
-                // this stores the userId in the local storage, so if the userId is a doctor it will allow verification 
-                localStorage.setItem('userId', data.userId);
-    
-                if (data.role === 'Doctor') {
-                    navigate('/doctor-dashboard');
-                } else {
-                    navigate('/patient-portal');  
-                }
+    try {
+        const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await res.json();
+        if (res.ok) {
+            // this stores the userId in the local storage, so if the userId is a doctor it will allow verification 
+            localStorage.setItem('userId', data.userId);
+            login({ userId: data.userId, email });
+          
+            if (data.role === 'Doctor') {
+                navigate('/doctor-dashboard');
             } else {
-                setResponse(data.message);  
+                navigate('/patient-portal');  
             }
-        } catch (error) {
-            setResponse('Error sending data to server');  
+        } else {
+            setResponse(data.message);
+        }
+    } catch (error) {
+        setResponse('Error sending data to server');
         }
     };
+  
     return (
         <div className="input-form">
             <p>Backend Status: {status}</p>
