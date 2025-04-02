@@ -17,7 +17,7 @@ const PORT = 5000;
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: 'password',
+  password: 'Timnpw4sql!',
   database: 'cs310ppsdb',
   waitForConnections: true
 });
@@ -157,6 +157,46 @@ app.post('/api/sendUserData', async (req, res) => {
         res.status(500).json({ message: 'Server error during info request' });
     }
 });
+
+//add an appoitnment to the database
+app.post('/api/sendAppointmentData',async (req,res) => {
+  const {patientID,doctorID, nurseID, appointment_time} = req.body;
+
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
+    
+    
+    
+    try {
+      // Start transaction
+      await connection.beginTransaction();
+
+      // Insert into the base Users table
+      const [userResult] = await connection.execute(
+        'INSERT INTO appointments (patientID, doctorID, nurseID, appointment_time) VALUES (?, ?, ?, ?,)',
+        [patientID, doctorID, nurseID, appointment_time]
+      );
+      
+
+
+      // Commit the transaction
+      await connection.commit();
+      console.log(`Appointment Added`);
+      res.status(201).json({ message: `Appointment on ${date} registered successfully `});
+    }catch (err) {
+      // Rollback in case of error
+      await connection.rollback();
+      res.status(500).json({ message: 'Registration failed' });
+  } finally{
+    connection.release();
+  }
+
+    
+} catch (error) {
+    res.status(500).json({ message: 'Server error' });
+}
+})
 
 // Start server
 app.listen(PORT, () => {
