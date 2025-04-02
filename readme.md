@@ -36,6 +36,14 @@ https://nodejs.org/en/
 git clone https://github.com/AayushDamai/CS310PPS.git  
 cd CS310PPS  
 ```
+### 3. Download MySQL & Workbench
+```bash
+https://dev.mysql.com/downloads/installer/
+https://www.mysql.com/products/workbench/
+```
+### 4. Workbench
+In the workbench, go over to the Database tab at the top, click Connect to Database... Make sure its running on Port 3306. Click OK. Now add the scripts and then run the scripts for the data. 
+
 ### 3. Install dependencies
 ```bash
 npm install
