@@ -10,6 +10,7 @@ import ViewAppointmentPage from './pages/ViewAppointmentPage';
 import ViewPrescription from './pages/ViewPrescription';
 import BillingPage from './pages/BillingPage';
 import DoctorHomePage from './pages/DoctorHomePage';
+import AddPrescriptionsPage from './pages/AddPrescriptionsPage'
 
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/prescriptions/:patient_id" element={<ViewPrescription />} />
         <Route path="/prescriptions" element={<Navigate to="/prescriptions/1" />} />
         <Route path="/doctor-dashboard" element={<DoctorHomePage />} />
+        <Route path="/doctor/add-prescription" element={<AddPrescriptionsPage/>} />
         <Route path="/billing-page" element={<BillingPage />} />
         
       </Routes>

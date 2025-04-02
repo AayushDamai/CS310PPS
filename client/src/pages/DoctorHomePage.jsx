@@ -1,47 +1,45 @@
-// src/pages/DoctorHomePage.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Portal.css';
 import DoctorCalendar from '../components/DoctorCalendar';
+import AddPrescriptions from '../components/AddPrescriptions';
 
 const DoctorHomePage = () => {
-  const navigate = useNavigate(); // Hook to programmatically navigate
+    const navigate = useNavigate();
+    const doctor_id = localStorage.getItem('userId'); // Retrieve doctor_id from localStorage
 
-  return (
-    <div className="portal-container">
-      <h1>Welcome to the Doctor Portal</h1>
+    return (
+        <div className="portal-container">
+            <h1>Welcome to the Doctor Portal</h1>
 
-      {/* Tabs Navigation */}
-      <div className="tabs">
-        <button
-          className="tab-button"
-          onClick={() => navigate('/doctor/appointments')}
-          onClick={() => navigate('/doctor/prescriptions')}
-        >
-          Appointments
-        </button>
-      </div>
+            {/* Tabs Navigation */}
+            <div className="tabs">
+                <button
+                    className="tab-button"
+                    onClick={() => navigate('/doctor/appointments')}
+                >
+                    Appointments
+                </button>
+                <button
+                    className="tab-button"
+                    onClick={() => navigate('/doctor/add-prescription')}
+                >
+                    Add Prescription
+                </button>
+            </div>
 
-      {/* Calendar Section */}
-      <div className="calendar-section">
-        <h2>Your Calendar</h2>
-        <DoctorCalendar /> {/* Render the DoctorCalendar component */}
-      </div>
-    </div>
-  );
+            {/* Calendar Section */}
+            <div className="calendar-section">
+                <h2>Your Calendar</h2>
+                <DoctorCalendar />
+            </div>
+
+            {/* Add Prescription Section */}
+            <div className="add-prescription">
+                <AddPrescriptions doctor_id={doctor_id} />
+            </div>
+        </div>
+    );
 };
 
 export default DoctorHomePage;
-
-// filepath: c:\Users\ethan\OneDrive\Documents\CS310pps\CS310PPS\client\src\App.js
-
-const App = () => {
-  return (
-    <div className="App">
-      <Routes>
-        {/* Other routes */}
-        <Route path="/doctor/messages" element={<MessagesPage />} /> {/* Messages Page */}
-      </Routes>
-    </div>
-  );
-};

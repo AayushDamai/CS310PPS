@@ -164,6 +164,33 @@ app.post('/api/sendUserData', async (req, res) => {
     }
 });
 
+app.post('/api/addPrescription', async(req, res) => { 
+  const { patiend_id, doctor_id, medidication, dosage, instructions, prescription_date } = req.body;
+
+  try { 
+    const connection = await pool.getConnection(); //connect to database
+
+    try {  //if connect, then insert into prescriptions table
+      await connection.execute(
+        'INSERT INTO prescriptions (patient_id, doctor_id, medidication, dosage, instructions, prescription_date) VALUES (?, ? , ?, ?, ?, ?)',
+        [patiend_id, doctor_id, medidication, dosage, instructions, prescription_date]    
+      );
+
+      connection.release();
+      res.status(201).json({ message: 'Prescription has been added!' });
+    } catch (error) { //catch error with insertions
+      connection.release();
+      console.error('ERROR in prescription adding: ', error);
+      res.status(500).json({message: 'Prescription was not added!'});
+  } 
+} catch (error){ // catch database error
+    console.error('ERROR: with database:', error);
+    res.status(500).json({message: 'Prescription was not added!'});
+  
+} 
+});
+
+
 
 // Start server
 app.listen(PORT, () => {

@@ -40,12 +40,15 @@ const ViewPrescription = () => {
         <div className="medication-page">
             <NavBar />
             <Link to="/patient-portal" className="back-button">Back to Portal</Link>
-            <Prescription
-                medication={prescription.medication}
-                dosage={prescription.dosage}
-                instructions={prescription.instructions}
-                prescription_date={prescription.prescription_date}
-            />
+            {prescription.map((pres, index) => (
+                <Prescription
+                    key={index}
+                    medication={pres.medication}
+                    dosage={pres.dosage}
+                    instructions={pres.instructions}
+                    prescription_date={pres.prescription_date}
+                />
+            ))}
         </div>
     );
 };
