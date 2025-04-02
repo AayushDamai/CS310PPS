@@ -164,30 +164,55 @@ app.post('/api/sendUserData', async (req, res) => {
     }
 });
 
-app.post('/api/addPrescription', async(req, res) => { 
-  const { patiend_id, doctor_id, medidication, dosage, instructions, prescription_date } = req.body;
+app.post('/api/addprescriptions', async(req, res) => { 
+  const { patient_id, doctor_id, medication, dosage, instructions, prescription_date } = req.body;
+  
+  if (!patient_id || !doctor_id || !medication || !dosage || !instructions || !prescription_date) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
 
   try { 
-    const connection = await pool.getConnection(); //connect to database
+    const connection = await pool.getConnection();
 
-    try {  //if connect, then insert into prescriptions table
+    try {
       await connection.execute(
-        'INSERT INTO prescriptions (patient_id, doctor_id, medidication, dosage, instructions, prescription_date) VALUES (?, ? , ?, ?, ?, ?)',
-        [patiend_id, doctor_id, medidication, dosage, instructions, prescription_date]    
+        'INSERT INTO prescriptions (patient_id, doctor_id, medication, dosage, instructions, prescription_date) VALUES (?, ?, ?, ?, ?, ?)',
+        [patient_id, doctor_id, medication, dosage, instructions, prescription_date]    
       );
 
       connection.release();
       res.status(201).json({ message: 'Prescription has been added!' });
-    } catch (error) { //catch error with insertions
+    } catch (error) {
       connection.release();
       console.error('ERROR in prescription adding: ', error);
       res.status(500).json({message: 'Prescription was not added!'});
-  } 
-} catch (error){ // catch database error
-    console.error('ERROR: with database:', error);
+    } 
+  } catch (error) {
+    console.error('ERROR with database:', error);
     res.status(500).json({message: 'Prescription was not added!'});
-  
-} 
+  } 
+});
+
+app.get('/api/prescriptions/:patient_id', async (req, res) => {
+  const { patient_id } = req.params; 
+
+  try { //gets connection
+      const connection = await pool.getConnection();
+      const [rows] = await connection.execute(
+          'SELECT * FROM prescriptions WHERE patient_id = ?',
+          [patient_id]
+      );
+      connection.release(); 
+
+      if (rows.length === 0) {
+          return res.status(404).json({ message: 'No prescribed medication found' });
+      }
+
+      res.status(200).json(rows); 
+  } catch (error) {
+      console.error('Error getting prescription:', error);
+      res.status(500).json({ message: 'Server error' });
+  }
 });
 
 

@@ -18,7 +18,7 @@ const LoginForm = () => {
             .catch(() => setStatus('Failed to connect to backend')); // Handle errors
     }, []); // Empty array = run once
 
-    // Function to send login info and handle response
+   
     const sendLoginInfo = async () => {
         try {
             const res = await fetch('/api/login', {
@@ -26,23 +26,24 @@ const LoginForm = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
-
+    
             const data = await res.json();
             if (res.ok) {
-                // Handle redirection based on role
+                // this stores the userId in the local storage, so if the userId is a doctor it will allow verification 
+                localStorage.setItem('userId', data.userId);
+    
                 if (data.role === 'Doctor') {
-                    navigate('/doctor-dashboard');  // Redirect to doctor dashboard
+                    navigate('/doctor-dashboard');
                 } else {
-                    navigate('/patient-portal');  // Redirect to patient portal
+                    navigate('/patient-portal');  
                 }
             } else {
-                setResponse(data.message);  // Show error message from backend
+                setResponse(data.message);  
             }
         } catch (error) {
-            setResponse('Error sending data to server');  // Handle errors
+            setResponse('Error sending data to server');  
         }
     };
-
     return (
         <div className="input-form">
             <p>Backend Status: {status}</p>

@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const AddPrescriptions = ({ doctor_id }) => {
+const AddPrescriptions = () => {
+    const doctor_id = localStorage.getItem('userId');
+    const navigate = useNavigate();
+    
     const [prescData, setPrescData] = useState({
         patient_id: '',
         medication: '',
         dosage: '',
-        frequency: '',
         instructions: '',
-        prescription_date: ''
+        prescription_date: new Date().toISOString().split('T')[0] // Default to today's date
     });
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -17,29 +21,31 @@ const AddPrescriptions = ({ doctor_id }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         try {
-            const response = await fetch('http://localhost:5000/api/AddPrescriptions', {
+            const response = await fetch('http://localhost:5000/api/addprescriptions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     ...prescData,
-                    doctor_id: doctor_id // Use the correct variable
+                    doctor_id: doctor_id
                 })
             });
+            
             if (response.ok) {
                 alert('Prescription has been added!');
                 setPrescData({
                     patient_id: '',
                     medication: '',
                     dosage: '',
-                    frequency: '',
                     instructions: '',
-                    prescription_date: ''
+                    prescription_date: new Date().toISOString().split('T')[0]
                 });
             } else {
-                alert('Failed to add prescription!');
+                const errorData = await response.json();
+                alert(`Failed to add prescription: ${errorData.message || 'Unknown error'}`);
             }
         } catch (error) {
             console.error('Error adding prescription:', error);
@@ -78,6 +84,7 @@ const AddPrescriptions = ({ doctor_id }) => {
                     value={prescData.dosage}
                     onChange={handleChange}
                     required
+                    placeholder="5mg"
                 />
             </label>
             <label>
@@ -87,7 +94,8 @@ const AddPrescriptions = ({ doctor_id }) => {
                     value={prescData.instructions}
                     onChange={handleChange}
                     required
-                />
+                    placeholder="Take with food x times a day."
+                />y
             </label>
             <label>
                 Prescription Date:
