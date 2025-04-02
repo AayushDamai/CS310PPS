@@ -17,7 +17,7 @@ const PORT = 5000;
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: 'Timnpw4sql!',
+  password: 'password',
   database: 'cs310ppsdb',
   waitForConnections: true
 });
@@ -160,13 +160,11 @@ app.post('/api/sendUserData', async (req, res) => {
 
 //add an appoitnment to the database
 app.post('/api/sendAppointmentData',async (req,res) => {
-  const {patientID,doctorID, appointmentLocation, appointment_time} = req.body;
+  const {patientID, doctorID, appointmentLocation, appointment_time} = req.body;
 
   try {
     // Get a connection from the pool
     const connection = await pool.getConnection();
-    
-    
     
     try {
       // Start transaction
@@ -174,16 +172,14 @@ app.post('/api/sendAppointmentData',async (req,res) => {
 
       // Insert into the base Users table
       const [userResult] = await connection.execute(
-        'INSERT INTO appointments (patientID, doctorID, nurseID, appointment_time) VALUES (?, ?, ?, ?,)',
+        'INSERT INTO appointments (patient_id, doctor_id, location, appointment_time) VALUES (?, ?, ?, ?)',
         [patientID, doctorID, appointmentLocation, appointment_time]
       );
       
-
-
       // Commit the transaction
       await connection.commit();
       console.log(`Appointment Added`);
-      res.status(201).json({ message: `Appointment on ${date} registered successfully `});
+      res.status(201).json({ message: `Appointment on ${appointment_time} registered successfully `});
     }catch (err) {
       // Rollback in case of error
       await connection.rollback();

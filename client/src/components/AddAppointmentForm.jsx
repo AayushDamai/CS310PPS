@@ -9,7 +9,7 @@ const AddAppointmentForm = () =>{
         const [status, setStatus] = useState('Connecting...');
         const [patientID, setPatientID] = useState('');
         const [doctorID, setDoctorID] = useState('');
-        const [appointmentLocation, setnurseID] = useState('');
+        const [appointmentLocation, setLocation] = useState('');
         const [appointment_time, setTime] = useState('');
     
      // useEffects run code in response to changing state or props
@@ -34,56 +34,56 @@ const AddAppointmentForm = () =>{
                 const res = await fetch('/api/sendAppointmentData', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(user)
+                    body: JSON.stringify(appointment)
                 });
                 
                 const data = await res.json();
                 if (res.ok) {
-                    setResponse(data.message);
+                    setStatus(data.message);
                 } else {
-                    setResponse(data.message);
+                    setStatus(data.message);
                 }
             } catch (error) {
-                setResponse('Error sending data to server');
+                setStatus('Error sending data to server');
             }
         };
         return (
                 <div className="input-form">
-                <p>Backend Status: {status}</p>
-                <div className='form-header'>
-                    <h2>Add an Appointment</h2>
-                </div>
-                <input 
-                    type="text"
-                    id='PatientID'
-                    value={patientID} 
-                    onChange={(e) => setPatientID(e.target.value)} 
-                    placeholder="PatientID"
-                />
-                <input 
-                    type="text"
-                    id='DoctorID'
-                    value={doctorID} 
-                    onChange={(e) => setDoctorID(e.target.value)} 
-                    placeholder="DoctorID"
-                />
-                <input 
-                    type="text"
-                    id='Location'
-                    value={appointmentLocation} 
-                    onChange={(e) => setLocation(e.target.value)} 
-                    placeholder="Location: Building: Room #"
-                />
-                <input 
-                    type="date"
-                    id='DOA'
-                    value={appointment_time} 
-                    onChange={(e) => setTime(e.target.value)} 
-                    placeholder="Date: YYYY-MM-DD"
-                />
-            
-                <button onClick={sendAppointmentData}>Submit</button>
-                <p>{response || "Waiting for input..."}</p>
+                    <p>Backend Status: {status}</p>
+                    <div className='form-header'>
+                        <h2>Add an Appointment</h2>
+                    </div>
+                    <input 
+                        type="text"
+                        id='PatientID'
+                        value={patientID} 
+                        onChange={(e) => setPatientID(e.target.value)} 
+                        placeholder="PatientID"
+                    />
+                    <input 
+                        type="text"
+                        id='DoctorID'
+                        value={doctorID} 
+                        onChange={(e) => setDoctorID(e.target.value)} 
+                        placeholder="DoctorID"
+                    />
+                    <input 
+                        type="text"
+                        id='Location'
+                        value={appointmentLocation} 
+                        onChange={(e) => setLocation(e.target.value)} 
+                        placeholder="Location: Building: Room #"
+                    />
+                    <input 
+                        type="date"
+                        id='DOA'
+                        value={appointment_time} 
+                        onChange={(e) => setTime(e.target.value)} 
+                        placeholder="Date: YYYY-MM-DD"
+                    />
+                
+                    <button onClick={sendAppointmentData}>Submit</button>
+                    <p>{status || "Waiting for input..."}</p>
                 </div>
             );
 
