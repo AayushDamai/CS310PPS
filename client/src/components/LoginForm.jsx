@@ -29,6 +29,8 @@ const LoginForm = () => {
     
             const data = await res.json();
             if (res.ok) {
+
+                localStorage.removeItem('userId'); // remove the userId from local storage if it exists, so it doesn't show the wrong
                 // this stores the userId in the local storage, so if the userId is a doctor it will allow verification 
                 localStorage.setItem('userId', data.userId);
     

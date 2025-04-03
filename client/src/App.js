@@ -8,7 +8,6 @@ import PatientPortalPage from './pages/PatientPortalPage';
 import ContactUs from './pages/ContactUs';
 import ViewAppointmentPage from './pages/ViewAppointmentPage';
 import ViewPrescription from './pages/ViewPrescription';
-import BillingPage from './pages/BillingPage';
 import DoctorHomePage from './pages/DoctorHomePage';
 import AddPrescriptionsPage from './pages/AddPrescriptionsPage'
 
@@ -25,10 +24,17 @@ const App = () => {
         <Route path="/contactUs" element={<ContactUs />} />
         <Route path="/appointment-page" element={<ViewAppointmentPage />} />
         <Route path="/prescriptions/:patient_id" element={<ViewPrescription />} />
-        <Route path="/prescriptions" element={<Navigate to="/prescriptions/1" />} />
+        <Route
+  path="/prescriptions"
+  element={
+    localStorage.getItem('userId')
+      ? <Navigate to={`/prescriptions/${localStorage.getItem('userId')}`} />
+      : <Navigate to="/login" />
+  }
+/>
         <Route path="/doctor-dashboard" element={<DoctorHomePage />} />
         <Route path="/doctor/add-prescription" element={<AddPrescriptionsPage/>} />
-        <Route path="/billing-page" element={<BillingPage />} />
+
         
       </Routes>
     </div>
