@@ -201,6 +201,50 @@ app.get('/api/appointments', async (req, res) => {
   }
 });
 
+// Endpoint to update an appointment
+app.put('/api/appointments/:id', async (req, res) => {
+  const { id } = req.params; // Get the appointment ID from the URL
+  const { appointment_time, status } = req.body; // Get updated data from the request body
+
+  console.log('Request Params:', req.params); // Log the appointment ID
+  console.log('Request Body:', req.body); // Log the request body
+
+  // Validate the request body
+  if (!appointment_time || !status) {
+    console.error('Validation Error: Missing appointment_time or status');
+    return res.status(400).json({ error: 'Appointment time and status are required' });
+  }
+
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
+
+    // Query to update the appointment
+    const [result] = await connection.execute(
+      `
+      UPDATE Appointments
+      SET appointment_time = ?, status = ?
+      WHERE id = ?
+      `,
+      [appointment_time, status, id]
+    );
+
+    connection.release();
+
+    // Check if the appointment was updated
+    if (result.affectedRows === 0) {
+      console.error('Appointment not found for ID:', id);
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    console.log('Appointment updated successfully for ID:', id);
+    res.status(200).json({ message: 'Appointment updated successfully' });
+  } catch (error) {
+    console.error('Error updating appointment:', error);
+    res.status(500).json({ error: 'Failed to update appointment' });
+  }
+});
+
 // Endpoint to fetch all messages
 app.get('/api/messages', async (req, res) => {
   try {

@@ -15,6 +15,9 @@ const DoctorHomePage = () => {
     const [messages, setMessages] = useState([]); // State to store messages
     const [newMessage, setNewMessage] = useState(''); // State to track new message input
     const [selectedPatientId, setSelectedPatientId] = useState(''); // State to track selected patient ID
+    const [appointments, setAppointments] = useState([]); // State to store appointments
+    const [selectedAppointment, setSelectedAppointment] = useState(null); // State to track selected appointment
+    const [updatedAppointment, setUpdatedAppointment] = useState({}); // State for editing appointment
 
     useEffect(() => {
         const fetchMessages = async () => {
@@ -32,6 +35,22 @@ const DoctorHomePage = () => {
         }
     }, [activeTab]);
 
+    useEffect(() => {
+        const fetchAppointments = async () => {
+            try {
+                const response = await fetch(`/api/appointments?doctorId=${doctorId}`);
+                const data = await response.json();
+                setAppointments(data); // Store appointments in state
+            } catch (error) {
+                console.error('Error fetching appointments:', error);
+            }
+        };
+
+        if (activeTab === 'edit-appointments') {
+            fetchAppointments();
+        }
+    }, [activeTab, doctorId]);
+
     const handleSendMessage = (e) => {
         e.preventDefault();
         const newMessageObj = {
@@ -43,6 +62,36 @@ const DoctorHomePage = () => {
         setMessages([...messages, newMessageObj]);
         setSelectedPatientId('');
         setNewMessage('');
+    };
+
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+        setUpdatedAppointment({ ...updatedAppointment, [name]: value });
+    };
+
+    const handleEditSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(`/api/appointments/${selectedAppointment.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedAppointment),
+            });
+
+            if (response.ok) {
+                alert('Appointment updated successfully!');
+                setSelectedAppointment(null);
+                setUpdatedAppointment({});
+                setActiveTab('calendar'); // Redirect back to the calendar tab
+            } else {
+                alert('Failed to update appointment.');
+            }
+        } catch (error) {
+            console.error('Error updating appointment:', error);
+            alert('Error updating appointment.');
+        }
     };
 
     return (
@@ -67,6 +116,12 @@ const DoctorHomePage = () => {
                     onClick={() => setActiveTab('messages')}
                 >
                     Message Patients
+                </button>
+                <button
+                    className={activeTab === 'edit-appointments' ? 'active-link' : ''}
+                    onClick={() => setActiveTab('edit-appointments')}
+                >
+                    Edit Appointments
                 </button>
             </div>
 
@@ -145,6 +200,68 @@ const DoctorHomePage = () => {
                                 </li>
                             ))}
                         </ul>
+                    </div>
+                )}
+                {activeTab === 'edit-appointments' && (
+                    <div className="dashboard-section">
+                        <h2>Edit Appointments</h2>
+                        <div>
+                            <label>Select Appointment:</label>
+                            <select
+                                onChange={(e) =>
+                                    setSelectedAppointment(
+                                        appointments.find((appt) => appt.id === parseInt(e.target.value))
+                                    )
+                                }
+                            >
+                                <option value="">-- Select an Appointment --</option>
+                                {appointments.map((appointment) => (
+                                    <option key={appointment.id} value={appointment.id}>
+                                        {appointment.patient_name} - {new Date(appointment.appointment_time).toLocaleString()}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        {selectedAppointment && (
+                            <form onSubmit={handleEditSubmit}>
+                                <label>
+                                    Appointment Date:
+                                    <input
+                                        type="text"
+                                        name="appointment_date"
+                                        placeholder="MM-DD-YYYY"
+                                        value={updatedAppointment.appointment_date || ''}
+                                        onChange={handleEditChange}
+                                        required
+                                    />
+                                </label>
+                                <label>
+                                    Appointment Time:
+                                    <input
+                                        type="text"
+                                        name="appointment_time"
+                                        placeholder="HH:MM AM/PM"
+                                        value={updatedAppointment.appointment_time || ''}
+                                        onChange={handleEditChange}
+                                        required
+                                    />
+                                </label>
+                                <label>
+                                    Status:
+                                    <select
+                                        name="status"
+                                        value={updatedAppointment.status || ''}
+                                        onChange={handleEditChange}
+                                        required
+                                    >
+                                        <option value="Scheduled">Scheduled</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </select>
+                                </label>
+                                <button type="submit">Update Appointment</button>
+                            </form>
+                        )}
                     </div>
                 )}
             </div>
