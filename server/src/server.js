@@ -17,7 +17,7 @@ const PORT = 5000;
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: '1234', /// Change this to your MySQL password
+  password: 'Timnpw4sql!', /// Change this to your MySQL password
   database: 'cs310ppsdb',
   waitForConnections: true
 });
@@ -190,6 +190,8 @@ app.post('/api/sendAppointmentData',async (req,res) => {
     connection.release();
   }
 
+
+
     
 } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -245,6 +247,48 @@ app.get('/api/prescriptions/:patient_id', async (req, res) => {
       console.error('Error getting prescription:', error);
       res.status(500).json({ message: 'Server error' });
   }
+});
+
+app.get('/api/appointments/:patient_id', async (req, res) => {
+  const {patient_id} = req.params;
+  try { //gets connection
+    const connection = await pool.getConnection();
+    const [rows] = await connection.execute(
+        'SELECT * FROM appointments WHERE patient_id = ?',
+        [patient_id]
+    );
+    connection.release(); 
+
+    if (rows.length === 0) {
+        return res.status(404).json({ message: 'No appointments found' });
+    }
+
+    return res.status(200).json(rows); 
+} catch (error) {
+    console.error('Error getting appointments:', error);
+    res.status(500).json({ message: 'Server error' });
+}
+});
+
+app.get('/api/appointments/:doctor_id', async (req, res) => {
+  const {patient_id} = req.params;
+  try { //gets connection
+    const connection = await pool.getConnection();
+    const [rows] = await connection.execute(
+        'SELECT * FROM appointments WHERE doctor_id = ?',
+        [patient_id]
+    );
+    connection.release(); 
+
+    if (rows.length === 0) {
+        return res.status(404).json({ message: 'No appointments found' });
+    }
+
+    return res.status(200).json(rows); 
+} catch (error) {
+    console.error('Error getting appointments:', error);
+    res.status(500).json({ message: 'Server error' });
+}
 });
 
 // Start server
