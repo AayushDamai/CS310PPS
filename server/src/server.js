@@ -249,13 +249,13 @@ app.get('/api/prescriptions/:patient_id', async (req, res) => {
   }
 });
 
-app.get('/api/appointments/:patient_id', async (req, res) => {
-  const {patient_id} = req.params;
+app.post('/api/appointments/:patient_id', async (req, res) => {
+  const {user_id} = req.body;
   try { //gets connection
     const connection = await pool.getConnection();
     const [rows] = await connection.execute(
         'SELECT * FROM appointments WHERE patient_id = ?',
-        [patient_id]
+        [user_id]
     );
     connection.release(); 
 
