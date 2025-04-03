@@ -15,12 +15,15 @@ const NavBar = () => {
   const isForgotInfo = pathname === '/forgot-info';
   const isPatientPortal = pathname === '/patient-portal';
   const isAppointmentPage = pathname === '/appointment-page';
+  const isPrescriptionPage = pathname === '/prescriptions';
 
-  // Handler for logging out
-  const handleLogout = () => {
-    logout(); // Call the logout function from AuthContext
-    navigate('/'); // Redirect to the landing page after logout
-  };
+// better logout. basically ensures that no userId is in localStorage when logging out
+const handleLogout = () => {
+  console.log('Before logout:', localStorage.getItem('userId')); // Debugging log
+  localStorage.removeItem('userId');
+  window.location.href = '/login';
+
+};
 
   return (
     <nav className='nav'>

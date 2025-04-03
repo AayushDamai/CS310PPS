@@ -11,7 +11,6 @@ import ViewAppointmentPage from './pages/ViewAppointmentPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AddAppointmentPage from './pages/AddAppointmentPage';
 import ViewPrescription from './pages/ViewPrescription';
-import BillingPage from './pages/BillingPage';
 import DoctorHomePage from './pages/DoctorHomePage';
 import AddPrescriptionsPage from './pages/AddPrescriptionsPage'
 
@@ -32,7 +31,6 @@ const App = () => {
           <Route path="/prescriptions" element={<Navigate to="/prescriptions/1" />} />
           <Route path="/doctor-dashboard" element={<DoctorHomePage />} />
           <Route path="/doctor/add-prescription" element={<AddPrescriptionsPage/>} />
-          <Route path="/billing-page" element={<BillingPage />} />
           <Route path="/patient-portal" element={<ProtectedRoute> <PatientPortalPage /> </ProtectedRoute>}/>
           <Route path="/appointment-page" element={<ProtectedRoute> <ViewAppointmentPage /> </ProtectedRoute>} />
         </Routes>
