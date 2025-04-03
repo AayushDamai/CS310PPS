@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../styles/NavBar.css';
 
-const  NavBar = () => {
+const NavBar = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -12,14 +12,16 @@ const  NavBar = () => {
   const isForgotInfo = pathname === '/forgot-info';
   const isPatientPortal = pathname === '/patient-portal';
   const isAppointmentPage = pathname === '/appointment-page';
+  const isPrescriptionPage = pathname === '/prescriptions';
 
-  // Logout function
+  // better logout. basically ensures that no userId is in localStorage when logging out
   const handleLogout = () => {
     console.log('Before logout:', localStorage.getItem('userId')); // Debugging log
-    localStorage.removeItem('userId'); 
-    console.log('After logout:', localStorage.getItem('userId')); // Debugging log
-    navigate('/login'); 
-};
+    localStorage.removeItem('userId');
+    window.location.href = '/login';
+
+  };
+  
   return (
     <nav className="nav">
       {!isPatientPortal && !isAppointmentPage && (
@@ -37,10 +39,10 @@ const  NavBar = () => {
         <div className="navlinks">
           <Link to="/contactUs">Contact Us</Link>
           <Link to="/register">Signup</Link>
-          <button onClick={handleLogout} className="logout-button">Logout</button>
+          <Link to="/login">Login</Link>
         </div>
       )}
-      {(isPatientPortal || isAppointmentPage) && (
+      {(isPatientPortal || isAppointmentPage || isPrescriptionPage) && (
         <div className="navlinks">
           <button onClick={handleLogout} className="logout-button">Logout</button>
         </div>

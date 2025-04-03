@@ -24,14 +24,6 @@ const App = () => {
         <Route path="/contactUs" element={<ContactUs />} />
         <Route path="/appointment-page" element={<ViewAppointmentPage />} />
         <Route path="/prescriptions/:patient_id" element={<ViewPrescription />} />
-        <Route
-  path="/prescriptions"
-  element={
-    localStorage.getItem('userId')
-      ? <Navigate to={`/prescriptions/${localStorage.getItem('userId')}`} />
-      : <Navigate to="/login" />
-  }
-/>
         <Route path="/doctor-dashboard" element={<DoctorHomePage />} />
         <Route path="/doctor/add-prescription" element={<AddPrescriptionsPage/>} />
 

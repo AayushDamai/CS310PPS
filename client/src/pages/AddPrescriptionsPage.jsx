@@ -9,9 +9,6 @@ const AddPrescriptionsPage = () => {
         <div className="add-prescriptions-page">
                <NavBar />
                <AddPrescriptions doctor_id={doctor_id} />
-
-
-           
         </div>
     );
 };

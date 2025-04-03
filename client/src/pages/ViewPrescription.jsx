@@ -11,19 +11,19 @@ const ViewPrescription = () => {
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
-    console.log('Checking userId in ViewPrescription:', userId); // Debugging log
+    console.log('Checking userId in ViewPrescription:', userId); 
     if (!userId) {
-        console.log('Redirecting to login because userId is missing'); // Debugging log
+        console.log('Redirecting to login because userId is missing'); // this is mostly for debugging but if something goes wrong with prescriptions, this will help 
         navigate('/login');
         return;
     }
 
     const fetchPrescriptions = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/prescriptions/${patient_id}`);
+            const response = await fetch(`http://localhost:5000/api/prescriptions/${patient_id}`); //get patient id
             if (response.ok) {
                 const data = await response.json();
-                setPrescriptions(data);
+                setPrescriptions(data); //if good, set prescriptions to that patient
             } else {
                 const errorData = await response.json();
                 setError(errorData.message || 'Failed to fetch prescriptions');
