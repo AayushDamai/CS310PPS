@@ -7,7 +7,7 @@ import ExistingPrescriptions from '../components/ExistingPrescriptions';
 
 const DoctorHomePage = () => {
     const navigate = useNavigate();
-    const doctor_id = localStorage.getItem('userId'); // Retrieve doctor_id from localStorage
+    const doctorId = localStorage.getItem('userId'); // Retrieve doctor_id from localStorage
 
     // State for tabs and functionality
     const [activeTab, setActiveTab] = useState('calendar'); // State to track the active tab
@@ -83,7 +83,7 @@ const DoctorHomePage = () => {
                 {activeTab === 'calendar' && (
                     <div className="dashboard-section">
                         <h2>Upcoming Appointments</h2>
-                        <DoctorCalendar doctorId={doctor_id} />
+                        <DoctorCalendar doctorId={doctorId} />
                     </div>
                 )}
                 {activeTab === 'prescription' && (

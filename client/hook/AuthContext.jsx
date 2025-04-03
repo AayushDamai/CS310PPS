@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
 
   // Call this function after a successful login
   const login = (userData) => {
+    console.log('Logging in user:', userData); // Debugging log
     setIsAuthenticated(true);
     setUser(userData);
   };

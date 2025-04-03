@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
+const localizer = momentLocalizer(moment);
+
 const DoctorCalendar = ({ doctorId }) => {
-  const localizer = momentLocalizer(require('moment'));
-  const [events, setEvents] = useState([]); // State to store calendar events
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -16,7 +18,7 @@ const DoctorCalendar = ({ doctorId }) => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/api/appointments?doctorId=${doctorId}`);
+        const response = await fetch(`/api/getDoctorAppointments?doctorId=${doctorId}`);
         if (!response.ok) {
           console.error('Failed to fetch appointments:', response.statusText);
           return;
@@ -25,13 +27,12 @@ const DoctorCalendar = ({ doctorId }) => {
         const data = await response.json();
         console.log('Fetched appointments:', data);
 
-        const formattedEvents = data.map((appointment) => ({
-          title: `${appointment.patient_name} - ${appointment.status}`,
+        const formattedEvents = data.appointments.map((appointment) => ({
+          title: `Patient: ${appointment.patient_name}`,
           start: new Date(appointment.appointment_time),
-          end: new Date(new Date(appointment.appointment_time).getTime() + 30 * 60000), // Add 30 minutes
-          status: appointment.status, // Include status for styling
+          end: new Date(new Date(appointment.appointment_time).getTime() + 30 * 60 * 1000), // 30-minute block
+          allDay: false,
         }));
-
         setEvents(formattedEvents);
       } catch (error) {
         console.error('Error fetching appointments:', error);
@@ -41,40 +42,21 @@ const DoctorCalendar = ({ doctorId }) => {
     fetchAppointments();
   }, [doctorId]);
 
-  // Function to style events dynamically
-  const eventPropGetter = (event) => {
-    let backgroundColor = '#007bff'; // Default color for appointments
-    if (event.status === 'confirmed') {
-      backgroundColor = '#28a745'; // Green for confirmed appointments
-    } else if (event.status === 'pending') {
-      backgroundColor = '#ffc107'; // Yellow for pending appointments
-    } else if (event.status === 'cancelled') {
-      backgroundColor = '#dc3545'; // Red for cancelled appointments
-    }
-
-    return {
-      style: {
-        backgroundColor,
-        color: 'white',
-        borderRadius: '5px',
-        border: 'none',
-        padding: '5px',
-      },
-    };
-  };
+  if (!doctorId) {
+    return <div>Please log in to view your appointments.</div>;
+  }
 
   return (
-    <div style={{ height: 600, margin: '2rem auto', width: '90%' }}>
+    <div style={{ height: '500px' }}>
       <Calendar
         localizer={localizer}
-        events={events} // Use fetched events
+        events={events}
         startAccessor="start"
         endAccessor="end"
-        titleAccessor="title"
-        defaultView="week"
-        views={['month', 'week', 'day']}
-        style={{ height: '100%' }}
-        eventPropGetter={eventPropGetter} // Apply custom styling to events
+        style={{ height: 500 }}
+        eventPropGetter={() => ({
+          style: { backgroundColor: 'blue', color: 'white' },
+        })}
       />
     </div>
   );
