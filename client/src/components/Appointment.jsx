@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 
 const Appointment = () => {
   let appointmentData = "";
-    const {user} = useAuth();
+    const {user} = userAuth();
         const  {patient_id} = user.userId;
        
          // useEffect to check backend connection status
