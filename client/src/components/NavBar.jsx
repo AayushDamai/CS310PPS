@@ -5,9 +5,9 @@ import '../styles/NavBar.css';
 
 const NavBar = () => {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
+
   const { logout } = useAuth(); // Import the logout function from AuthContext
-  const navigate = useNavigate(); // Import the navigate function from react-router-dom
+
 
 
   // Determine if we are on specific pages
