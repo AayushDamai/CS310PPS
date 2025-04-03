@@ -22,24 +22,25 @@ const LoginForm = () => {
 
    
     const sendLoginInfo = async () => {
-    try {
-        const res = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-        
-        const data = await res.json();
-        if (res.ok) {
-            // this stores the userId in the local storage, so if the userId is a doctor it will allow verification 
-            localStorage.setItem('userId', data.userId);
-            login({ userId: data.userId, email });
-          
-            if (data.role === 'Doctor') {
-                navigate('/doctor-dashboard');
-            } else {
-                navigate('/patient-portal');  
-            }
+
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+    
+            const data = await res.json();
+            if (res.ok) {
+                // this stores the userId in the local storage, so if the userId is a doctor it will allow verification 
+                localStorage.setItem('userId', data.userId);
+                login({ userId: data.userId, email });
+    
+                if (data.role === 'Doctor') {
+                    navigate('/doctor-dashboard');
+                } else {
+                    navigate('/patient-portal');  
+                }
         } else {
             setResponse(data.message);
         }
