@@ -3,21 +3,18 @@
 ## Overview  
 A full-stack system enabling patients and medical professionals to:  
 * Schedule/manage appointments  
-* Access medical records securely  
-* Communicate via encrypted messaging  
 
 ## Features  
 ### Patients  
 - Book/reschedule/cancel appointments  
 - View lab results & prescriptions  
-- Message doctors securely  
-- Receive email reminders  
+
 
 ### Medical Staff  
 - Manage patient EHR (Electronic Health Records)  
 - Manage patient prescriptions  
 - View appointment calendar  
-- Export visit summaries  
+
 
 ## Technology Stack  
 | Component       | Technology          |  
