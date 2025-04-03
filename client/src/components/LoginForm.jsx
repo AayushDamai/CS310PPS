@@ -34,7 +34,7 @@ const LoginForm = () => {
             if (res.ok) {
                 // this stores the userId in the local storage, so if the userId is a doctor it will allow verification 
                 localStorage.setItem('userId', data.userId);
-                login({ userId: data.userId, email });
+                login({userId: data.userId});
     
                 if (data.role === 'Doctor') {
                     navigate('/doctor-dashboard');

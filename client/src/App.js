@@ -25,12 +25,11 @@ const App = () => {
           <Route path="/register" element={<RegistrationPage />} />
           <Route path="/forgot-info" element={<ForgotInfoPage />} />
           <Route path="/contactUs" element={<ContactUs />} />
-          <Route path="/add-appointment-page" element={<AddAppointmentPage/>} />
-          <Route path="/prescriptions/:patient_id" element={<ViewPrescription />} />
-          <Route path="/prescriptions" element={<Navigate to="/prescriptions/1" />} />
-          <Route path="/doctor-dashboard" element={<DoctorHomePage />} />
-          <Route path="/doctor/add-prescription" element={<AddPrescriptionsPage/>} />
-          <Route path="/billing-page" element={<BillingPage />} />
+          <Route path="/add-appointment-page" element={<ProtectedRoute> <AddAppointmentPage/> </ProtectedRoute>} />
+          <Route path="/prescriptions/:patient_id" element={<ProtectedRoute> <ViewPrescription /> </ProtectedRoute>} />
+          <Route path="/prescriptions" element={<ProtectedRoute> <Navigate to="/prescriptions/1" /> </ProtectedRoute>} />
+          <Route path="/doctor-dashboard" element={<ProtectedRoute> <DoctorHomePage /> </ProtectedRoute>} />
+          <Route path="/doctor/add-prescription" element={<ProtectedRoute> <AddPrescriptionsPage/> </ProtectedRoute>} />
           <Route path="/patient-portal" element={<ProtectedRoute> <PatientPortalPage /> </ProtectedRoute>}/>
           <Route path="/appointment-page" element={<ProtectedRoute> <ViewAppointmentPage /> </ProtectedRoute>} />
         </Routes>

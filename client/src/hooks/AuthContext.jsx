@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     setIsAuthenticated(true);
     setUser(userData);
+    console.log('User logged in:', userData); // Debugging line to check user data
   };
 
   // Logout function resets authentication state

@@ -8,8 +8,6 @@ const ViewAppointmentPage = () => {
         <div className="forgot-info-page">
           <NavBar />
           <Appointment />
-          <Appointment />
-          <Appointment />
         </div>
     );
 }

@@ -1,40 +1,41 @@
 // Appointment.js
 import React, { useEffect } from 'react';
+import { useAuth } from '../hooks/AuthContext'; 
+
 
 const Appointment = () => {
-  let appointmentData = "";
-    const {user} = userAuth();
-        const  {patient_id} = user.userId;
+  const [status, setStatus] = React.useState('');
+  const [appointmentData, setAppointmentData] = React.useState('');
+  const {user} = useAuth();
        
-         // useEffect to check backend connection status
-            useEffect(() => {
-                fetch('/api')
-                    .then(res => res.text())         // Parse text response
-                    .then(text => setStatus(text))   // Update status on success
-                    .catch(() => setStatus('Failed to connect to backend')); // Handle errors
-            }, []); // Empty array = run once
-            const sendAppointmentData = async () => {
-             
-              try {
-                  const res = await fetch('/api/appointments/:patient_id', {
-                      method: 'GET',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(patient_id)
-                  });
-                  
-                  const data = await res.json();
-                  if (res.ok) {
-                      setStatus(data.message);
-                     appointmentData = data.stringify; 
-                  } else {
-                      setStatus(data.message);
-                      appointmentData = "";
-                  }
-              } catch (error) {
-                  setStatus('Error sending data to server');
-              }
-          };
-    
+  // useEffect to check backend connection status
+  useEffect(() => {
+    fetch('/api')
+      .then(res => res.text())         // Parse text response
+      .then(text => setStatus(text))   // Update status on success
+      .catch(() => setStatus('Failed to connect to backend')); // Handle errors
+
+    const sendAppointmentData = async () => {
+      try {
+        console.log(`Sending userId: ${user}`); // Debugging line to check status
+        const res = await fetch('/api/appointments/:patient_id', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({user_id: user.userId})
+        });
+              
+        const data = await res.json();
+        if (res.ok) {
+            setAppointmentData(JSON.stringify(data)); 
+        } else {
+        }
+      } catch (error) {
+          console.log('Error sending data to server:', error);
+      }
+    }
+    sendAppointmentData(); // Call the function to send data
+  }, []);
+
   return (
     <section className='project-source-card'>
       <p>{appointmentData}</p>
