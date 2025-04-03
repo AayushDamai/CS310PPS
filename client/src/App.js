@@ -30,7 +30,6 @@ const App = () => {
           <Route path="/prescriptions" element={<Navigate to="/prescriptions/1" />} />
           <Route path="/doctor-dashboard" element={<DoctorHomePage />} />
           <Route path="/doctor/add-prescription" element={<AddPrescriptionsPage/>} />
-          <Route path="/billing-page" element={<BillingPage />} />
           <Route path="/patient-portal" element={<ProtectedRoute> <PatientPortalPage /> </ProtectedRoute>}/>
           <Route path="/appointment-page" element={<ProtectedRoute> <ViewAppointmentPage /> </ProtectedRoute>} />
         </Routes>
