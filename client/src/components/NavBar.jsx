@@ -1,10 +1,14 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/AuthContext';
 import '../styles/NavBar.css';
 
 const NavBar = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { logout } = useAuth(); // Import the logout function from AuthContext
+  const navigate = useNavigate(); // Import the navigate function from react-router-dom
+
 
   // Determine if we are on specific pages
   const isLogin = pathname === '/login';
@@ -22,6 +26,7 @@ const NavBar = () => {
 
   };
   
+
   return (
     <nav className="nav">
       {!isPatientPortal && !isAppointmentPage && (
@@ -44,7 +49,7 @@ const NavBar = () => {
       )}
       {(isPatientPortal || isAppointmentPage || isPrescriptionPage) && (
         <div className="navlinks">
-          <button onClick={handleLogout} className="logout-button">Logout</button>
+          <Link to="/" onClick={handleLogout}>Logout</Link>
         </div>
       )}
     </nav>

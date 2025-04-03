@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/AuthContext';
 import '../styles/InputForm.css';
 
 const LoginForm = () => {
@@ -9,6 +10,7 @@ const LoginForm = () => {
     const [password, setPassword] = useState('');
     const [response, setResponse] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     // useEffect to check backend connection status
     useEffect(() => {
@@ -20,6 +22,7 @@ const LoginForm = () => {
 
    
     const sendLoginInfo = async () => {
+
         try {
             const res = await fetch('/api/login', {
                 method: 'POST',
@@ -39,13 +42,18 @@ const LoginForm = () => {
                 } else {
                     navigate('/patient-portal');  
                 }
+
             } else {
-                setResponse(data.message);  
+                navigate('/patient-portal');  
             }
-        } catch (error) {
-            setResponse('Error sending data to server');  
+        } else {
+            setResponse(data.message);
+        }
+    } catch (error) {
+        setResponse('Error sending data to server');
         }
     };
+  
     return (
         <div className="input-form">
             <p>Backend Status: {status}</p>

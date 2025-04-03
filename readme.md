@@ -3,21 +3,17 @@
 ## Overview  
 A full-stack system enabling patients and medical professionals to:  
 * Schedule/manage appointments  
-* Access medical records securely  
-* Communicate via encrypted messaging  
 
 ## Features  
 ### Patients  
 - Book/reschedule/cancel appointments  
 - View lab results & prescriptions  
-- Message doctors securely  
-- Receive email reminders  
+
 
 ### Medical Staff  
-- Manage patient EHR (Electronic Health Records)  
 - Manage patient prescriptions  
 - View appointment calendar  
-- Export visit summaries  
+
 
 ## Technology Stack  
 | Component       | Technology          |  
@@ -37,10 +33,10 @@ git clone https://github.com/AayushDamai/CS310PPS.git
 cd CS310PPS  
 ```
 ### 3. Download MySQL & Workbench
-```bash
+
 https://dev.mysql.com/downloads/installer/
 https://www.mysql.com/products/workbench/
-```
+
 ### 4. Workbench
 In the workbench, go over to the Database tab at the top, click Connect to Database... Make sure its running on Port 3306. Click OK. Now add the scripts and then run the scripts for the data. 
 
@@ -57,14 +53,14 @@ npm start
 - Frontend: http://localhost:3000 
 - Backend API: http://localhost:5000/api
 
-## Security
-- HIPAA-compliant data handling
-- Role-based access control (RBAC)
-
 
 ## Further Help
 https://www.freecodecamp.org/news/how-to-install-react-a-step-by-step-guide/ 
 ## Potential Issues
--- might need to run npm install require-directory
-
--- Add issue with having to run System as an admin and then add PS C:\> Set-ExecutionPolicy RemoteSigned code
+- Might need to run npm install require-directory instead of simple npm install 
+- You might have to run cmd as an admin
+- If you're missing the calendar, run
+```bash
+  npm install react-big-calendar
+  npm install moment
+```
