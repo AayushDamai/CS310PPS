@@ -1,7 +1,6 @@
 // Appointment.js
 import React, { useEffect } from 'react';
 
-
 const Appointment = () => {
   let appointmentData = "";
     const {user} = userAuth();

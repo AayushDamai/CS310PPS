@@ -11,7 +11,6 @@ import ViewAppointmentPage from './pages/ViewAppointmentPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AddAppointmentPage from './pages/AddAppointmentPage';
 import ViewPrescription from './pages/ViewPrescription';
-import BillingPage from './pages/BillingPage';
 import DoctorHomePage from './pages/DoctorHomePage';
 import AddPrescriptionsPage from './pages/AddPrescriptionsPage'
 

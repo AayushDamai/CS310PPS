@@ -1,4 +1,3 @@
-// NavBar.js
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/AuthContext';
@@ -6,32 +5,38 @@ import '../styles/NavBar.css';
 
 const NavBar = () => {
   const { pathname } = useLocation();
-  const { logout } = useAuth(); // Import the logout function from AuthContext
-  const navigate = useNavigate(); // Import the navigate function from react-router-dom
 
-  // Determine if we are on an auth page (login/register)
+  const { logout } = useAuth(); // Import the logout function from AuthContext
+
+
+
+  // Determine if we are on specific pages
   const isLogin = pathname === '/login';
   const isRegister = pathname === '/register';
   const isForgotInfo = pathname === '/forgot-info';
   const isPatientPortal = pathname === '/patient-portal';
   const isAppointmentPage = pathname === '/appointment-page';
+  const isPrescriptionPage = pathname === '/prescriptions';
 
-  // Handler for logging out
+  // better logout. basically ensures that no userId is in localStorage when logging out
   const handleLogout = () => {
-    logout(); // Call the logout function from AuthContext
-    navigate('/'); // Redirect to the landing page after logout
+    console.log('Before logout:', localStorage.getItem('userId')); // Debugging log
+    localStorage.removeItem('userId');
+    window.location.href = '/login';
+
   };
+  
 
   return (
-    <nav className='nav'>
+    <nav className="nav">
       {!isPatientPortal && !isAppointmentPage && (
         <div className="logo">
-          <Link to="/" className="logo"> CS310PPS </Link>
+          <Link to="/" className="logo">CS310PPS</Link>
         </div>
       )}
       {(isPatientPortal || isAppointmentPage) && (
         <div className="logo">
-          <Link to="/patient-portal" className="logo"> Home </Link>
+          <Link to="/patient-portal" className="logo">Home</Link>
         </div>
       )}
       {/* Only show these links if we are NOT on the login/signup page */}
@@ -42,7 +47,7 @@ const NavBar = () => {
           <Link to="/login">Login</Link>
         </div>
       )}
-      {(isPatientPortal || isAppointmentPage) && (
+      {(isPatientPortal || isAppointmentPage || isPrescriptionPage) && (
         <div className="navlinks">
           <Link to="/" onClick={handleLogout}>Logout</Link>
         </div>
