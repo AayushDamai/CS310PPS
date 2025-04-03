@@ -11,7 +11,6 @@ A full-stack system enabling patients and medical professionals to:
 
 
 ### Medical Staff  
-- Manage patient EHR (Electronic Health Records)  
 - Manage patient prescriptions  
 - View appointment calendar  
 
