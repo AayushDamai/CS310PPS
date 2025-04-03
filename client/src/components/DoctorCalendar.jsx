@@ -29,6 +29,7 @@ const DoctorCalendar = ({ doctorId }) => {
           title: `${appointment.patient_name} - ${appointment.status}`,
           start: new Date(appointment.appointment_time),
           end: new Date(new Date(appointment.appointment_time).getTime() + 30 * 60000), // Add 30 minutes
+          status: appointment.status, // Include status for styling
         }));
 
         setEvents(formattedEvents);
@@ -39,6 +40,28 @@ const DoctorCalendar = ({ doctorId }) => {
 
     fetchAppointments();
   }, [doctorId]);
+
+  // Function to style events dynamically
+  const eventPropGetter = (event) => {
+    let backgroundColor = '#007bff'; // Default color for appointments
+    if (event.status === 'confirmed') {
+      backgroundColor = '#28a745'; // Green for confirmed appointments
+    } else if (event.status === 'pending') {
+      backgroundColor = '#ffc107'; // Yellow for pending appointments
+    } else if (event.status === 'cancelled') {
+      backgroundColor = '#dc3545'; // Red for cancelled appointments
+    }
+
+    return {
+      style: {
+        backgroundColor,
+        color: 'white',
+        borderRadius: '5px',
+        border: 'none',
+        padding: '5px',
+      },
+    };
+  };
 
   return (
     <div style={{ height: 600, margin: '2rem auto', width: '90%' }}>
@@ -51,6 +74,7 @@ const DoctorCalendar = ({ doctorId }) => {
         defaultView="week"
         views={['month', 'week', 'day']}
         style={{ height: '100%' }}
+        eventPropGetter={eventPropGetter} // Apply custom styling to events
       />
     </div>
   );

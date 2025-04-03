@@ -275,6 +275,80 @@ app.post('/api/messages', async (req, res) => {
   }
 });
 
+// Endpoint to fetch all prescriptions
+app.get('/api/prescriptions', async (req, res) => {
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
+
+    // Query to fetch all prescriptions
+    const [rows] = await connection.execute(
+      `
+      SELECT 
+        p.id, 
+        p.patient_id, 
+        CONCAT(u.first_name, ' ', u.last_name) AS patient_name,
+        p.doctor_id,
+        CONCAT(d.first_name, ' ', d.last_name) AS doctor_name,
+        p.medication, 
+        p.dosage, 
+        p.instructions, 
+        p.prescription_date
+      FROM Prescriptions p
+      JOIN Users u ON p.patient_id = u.id
+      JOIN Users d ON p.doctor_id = d.id
+      `
+    );
+
+    connection.release();
+
+    // Return the prescriptions as JSON
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching prescriptions:', error);
+    res.status(500).json({ error: 'Failed to fetch prescriptions' });
+  }
+});
+
+// Endpoint to update a prescription
+app.put('/api/prescriptions/:id', async (req, res) => {
+  const { id } = req.params; // Get the prescription ID from the URL
+  const { patientId, doctorId, medication, dosage, instructions } = req.body; // Get updated data from the request body
+
+  // Validate the request body
+  if (!patientId || !doctorId || !medication || !dosage || !instructions) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
+
+    // Query to update the prescription
+    const [result] = await connection.execute(
+      `
+      UPDATE Prescriptions
+      SET patient_id = ?, doctor_id = ?, medication = ?, dosage = ?, instructions = ?
+      WHERE id = ?
+      `,
+      [patientId, doctorId, medication, dosage, instructions, id]
+    );
+
+    connection.release();
+
+    // Check if the prescription was updated
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Prescription not found' });
+    }
+
+    // Return a success message
+    res.status(200).json({ message: 'Prescription updated successfully' });
+  } catch (error) {
+    console.error('Error updating prescription:', error);
+    res.status(500).json({ error: 'Failed to update prescription' });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
