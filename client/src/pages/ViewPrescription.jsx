@@ -1,56 +1,70 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import NavBar from '../components/NavBar';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Prescription from '../components/Prescription';
+import NavBar from '../components/NavBar';
 
 const ViewPrescription = () => {
-    const { patient_id } = useParams(); 
-    const [prescription, setPrescription] = useState(null);
-    const [error, setError] = useState(null);
+  const { patient_id } = useParams();
+  const navigate = useNavigate();
+  const [prescriptions, setPrescriptions] = useState([]);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        console.log(`Fetching prescription for patient_id: ${patient_id}`); 
-    
-        fetch(`http://localhost:5000/prescriptions/${patient_id}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch prescription data');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log('Prescription data:', data); 
-                setPrescription(data);
-            })
-            .catch((err) => {
-                console.error('Error fetching prescription data:', err);
-                setError('Failed to load prescription data');
-            });
-    }, [patient_id]);
-
-    if (error) {
-        return <div>Error: {error}</div>;
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+    console.log('Checking userId in ViewPrescription:', userId); 
+    if (!userId) {
+        console.log('Redirecting to login because userId is missing'); // this is mostly for debugging but if something goes wrong with prescriptions, this will help 
+        navigate('/login');
+        return;
     }
 
-    if (!prescription) {
-        return <div>Loading...</div>;
-    }
+    const fetchPrescriptions = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/prescriptions/${patient_id}`); //get patient id
+            if (response.ok) {
+                const data = await response.json();
+                setPrescriptions(data); //if good, set prescriptions to that patient
+            } else {
+                const errorData = await response.json();
+                setError(errorData.message || 'Failed to fetch prescriptions');
+            }
+        } catch (err) {
+            console.error('Error fetching prescriptions:', err);
+            setError('Error fetching prescriptions');
+        }
+    };
 
-    return (
-        <div className="medication-page">
-            <NavBar />
-            <Link to="/patient-portal" className="back-button">Back to Portal</Link>
-            {prescription.map((pres, index) => (
-                <Prescription
-                    key={index}
-                    medication={pres.medication}
-                    dosage={pres.dosage}
-                    instructions={pres.instructions}
-                    prescription_date={pres.prescription_date}
-                />
-            ))}
-        </div>
-    );
+    fetchPrescriptions();
+
+    return () => {
+        setPrescriptions([]);
+        setError(null);
+    };
+}, [patient_id, navigate]);
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  return (
+    <div className="prescriptions-page">
+      <NavBar />
+      <h1>Your Prescriptions</h1>
+      {prescriptions.length > 0 ? (
+        prescriptions.map((prescription) => (
+          <Prescription
+            key={prescription.id}
+            medication={prescription.medication}
+            dosage={prescription.dosage}
+            instructions={prescription.instructions}
+            prescription_date={prescription.prescription_date}
+          />
+        ))
+      ) : (
+        <p>No prescriptions found.</p>
+      )}
+    </div>
+  );
 };
 
 export default ViewPrescription;

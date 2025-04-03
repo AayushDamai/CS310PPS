@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AddPrescriptions = () => {
-    const doctor_id = localStorage.getItem('userId');
+    const doctor_id = localStorage.getItem('userId'); //get doctorId 
     const navigate = useNavigate();
     
     const [prescData, setPrescData] = useState({
@@ -10,7 +10,7 @@ const AddPrescriptions = () => {
         medication: '',
         dosage: '',
         instructions: '',
-        prescription_date: new Date().toISOString().split('T')[0] // Default to today's date
+        prescription_date: new Date().toISOString().split('T')[0] //this pulls up todays date only
     });
     
 
@@ -23,7 +23,7 @@ const AddPrescriptions = () => {
         e.preventDefault();
         
         try {
-            const response = await fetch('http://localhost:5000/api/addprescriptions', {
+            const response = await fetch('http://localhost:5000/api/addprescriptions', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -41,7 +41,7 @@ const AddPrescriptions = () => {
                     medication: '',
                     dosage: '',
                     instructions: '',
-                    prescription_date: new Date().toISOString().split('T')[0]
+                    prescription_date: new Date().toISOString().split('T')[0]  
                 });
             } else {
                 const errorData = await response.json();
@@ -53,7 +53,7 @@ const AddPrescriptions = () => {
         }
     };
 
-    return (
+    return ( //the actual like form stuff
         <form onSubmit={handleSubmit}>
             <h2>Add a Prescription</h2>
             <label>
@@ -89,13 +89,13 @@ const AddPrescriptions = () => {
             </label>
             <label>
                 Instructions:
-                <textarea
+                <input
                     name="instructions"
                     value={prescData.instructions}
                     onChange={handleChange}
                     required
                     placeholder="Take with food x times a day."
-                />y
+                />
             </label>
             <label>
                 Prescription Date:
