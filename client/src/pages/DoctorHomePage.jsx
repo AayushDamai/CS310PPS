@@ -33,11 +33,6 @@ const DoctorHomePage = () => {
                 <h2>Your Calendar</h2>
                 <DoctorCalendar />
             </div>
-
-            {/* Add Prescription Section */}
-            <div className="add-prescription">
-                <AddPrescriptions doctor_id={doctor_id} />
-            </div>
         </div>
     );
 };

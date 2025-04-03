@@ -18,23 +18,23 @@ import AddPrescriptionsPage from './pages/AddPrescriptionsPage'
 const App = () => {
   return (
     <div className="App">
-     <AuthProvider>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegistrationPage />} />
-        <Route path="/forgot-info" element={<ForgotInfoPage />} />
-        <Route path="/patient-appointment-page" element={<ViewAppointmentPage />} />
-        <Route path="/add-appointment-page" element={<AddAppointmentPage/>} />
-        <Route path="/contactUs" element={<ContactUs />} />
-        <Route path="/appointment-page" element={<ProtectedRoute> <ViewAppointmentPage /> </ProtectedRoute>} />
-        <Route path="/prescriptions/:patient_id" element={<ViewPrescription />} />
-        <Route path="/doctor-dashboard" element={<DoctorHomePage />} />
-        <Route path="/doctor/add-prescription" element={<AddPrescriptionsPage/>} />
-        <Route path="/patient-portal" element={<ProtectedRoute> <PatientPortalPage /> </ProtectedRoute>}/>
-
-      </Routes>
-   </AuthProvider>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/forgot-info" element={<ForgotInfoPage />} />
+          <Route path="/contactUs" element={<ContactUs />} />
+          <Route path="/add-appointment-page" element={<AddAppointmentPage/>} />
+          <Route path="/prescriptions/:patient_id" element={<ViewPrescription />} />
+          <Route path="/prescriptions" element={<Navigate to="/prescriptions/1" />} />
+          <Route path="/doctor-dashboard" element={<DoctorHomePage />} />
+          <Route path="/doctor/add-prescription" element={<AddPrescriptionsPage/>} />
+          <Route path="/billing-page" element={<BillingPage />} />
+          <Route path="/patient-portal" element={<ProtectedRoute> <PatientPortalPage /> </ProtectedRoute>}/>
+          <Route path="/appointment-page" element={<ProtectedRoute> <ViewAppointmentPage /> </ProtectedRoute>} />
+        </Routes>
+      </AuthProvider>
     </div>
   );
 };

@@ -1,7 +1,6 @@
 // Appointment.js
 import React from 'react';
 
-
 const Appointment = () => {
     let roomNumber = 101
     let doctorName= "Dr. John Doe"

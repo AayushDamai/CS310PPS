@@ -17,7 +17,7 @@ const PORT = 5000;
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: '1234', /// Change this to your MySQL password
+  password: 'password', /// Change this to your MySQL password
   database: 'cs310ppsdb',
   waitForConnections: true
 });
