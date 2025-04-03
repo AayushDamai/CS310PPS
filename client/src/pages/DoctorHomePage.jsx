@@ -4,6 +4,10 @@ import '../styles/Dochomepage.css';
 import DoctorCalendar from '../components/DoctorCalendar';
 import AddPrescriptions from '../components/AddPrescriptions';
 import ExistingPrescriptions from '../components/ExistingPrescriptions';
+import DatePicker from 'react-datepicker';
+import TimePicker from 'react-time-picker';
+import 'react-datepicker/dist/react-datepicker.css';
+import 'react-time-picker/dist/TimePicker.css';
 
 const DoctorHomePage = () => {
     const navigate = useNavigate();
@@ -71,14 +75,34 @@ const DoctorHomePage = () => {
 
     const handleEditSubmit = async (e) => {
         e.preventDefault();
+
+        const { appointment_date, appointment_time, status } = updatedAppointment;
+
+        if (!appointment_date || !appointment_time || !status) {
+            alert('Please fill out all fields before submitting.');
+            return;
+        }
+
+        // Combine date and time into MySQL-compatible format
+        const formattedDateTime = `${appointment_date} ${appointment_time}`;
+
+        console.log('Formatted DateTime for MySQL:', formattedDateTime); // Log the formatted datetime
+        console.log('Updated Appointment:', { appointment_time: formattedDateTime, status });
+
         try {
             const response = await fetch(`/api/appointments/${selectedAppointment.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(updatedAppointment),
+                body: JSON.stringify({
+                    appointment_time: formattedDateTime, // Send combined datetime
+                    status, // Send status
+                }),
             });
+
+            const responseData = await response.json();
+            console.log('API Response:', responseData); // Log the API response
 
             if (response.ok) {
                 alert('Appointment updated successfully!');
@@ -86,7 +110,7 @@ const DoctorHomePage = () => {
                 setUpdatedAppointment({});
                 setActiveTab('calendar'); // Redirect back to the calendar tab
             } else {
-                alert('Failed to update appointment.');
+                alert(`Failed to update appointment: ${responseData.error || 'Unknown error'}`);
             }
         } catch (error) {
             console.error('Error updating appointment:', error);
@@ -226,23 +250,21 @@ const DoctorHomePage = () => {
                             <form onSubmit={handleEditSubmit}>
                                 <label>
                                     Appointment Date:
-                                    <input
-                                        type="text"
-                                        name="appointment_date"
-                                        placeholder="MM-DD-YYYY"
-                                        value={updatedAppointment.appointment_date || ''}
-                                        onChange={handleEditChange}
+                                    <DatePicker
+                                        selected={updatedAppointment.appointment_date ? new Date(updatedAppointment.appointment_date) : null}
+                                        onChange={(date) => handleEditChange({ target: { name: 'appointment_date', value: date.toISOString().split('T')[0] } })}
+                                        dateFormat="MM/dd/yyyy"
+                                        placeholderText="Select a date"
                                         required
                                     />
                                 </label>
                                 <label>
                                     Appointment Time:
-                                    <input
-                                        type="text"
-                                        name="appointment_time"
-                                        placeholder="HH:MM AM/PM"
+                                    <TimePicker
                                         value={updatedAppointment.appointment_time || ''}
-                                        onChange={handleEditChange}
+                                        onChange={(time) => handleEditChange({ target: { name: 'appointment_time', value: time } })}
+                                        disableClock={true}
+                                        format="hh:mm a"
                                         required
                                     />
                                 </label>
@@ -254,6 +276,7 @@ const DoctorHomePage = () => {
                                         onChange={handleEditChange}
                                         required
                                     >
+                                        <option value="">-- Select Status --</option>
                                         <option value="Scheduled">Scheduled</option>
                                         <option value="Completed">Completed</option>
                                         <option value="Cancelled">Cancelled</option>
