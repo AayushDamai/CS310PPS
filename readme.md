@@ -6,7 +6,6 @@ A full-stack system enabling patients and medical professionals to:
 
 ## Features  
 ### Patients  
-- Book/reschedule/cancel appointments  
 - View lab results & prescriptions  
 
 
