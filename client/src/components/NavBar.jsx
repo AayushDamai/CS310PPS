@@ -51,12 +51,12 @@ const NavBar = () => {
             )}
             {showPatientLogo && (
                 <div className="logo">
-                    <Link to="/patient-portal" className="logo">Home</Link>
+                    <Link to="/patient-portal" className="logo">CS310PPS</Link>
                 </div>
             )}
             {showDoctorLogo && (
                 <div className="logo">
-                    <Link to="/doctor-dashboard" className="logo">Home</Link>
+                    <Link to="/doctor-dashboard" className="logo">CS310PPS</Link>
                 </div>
             )}
 

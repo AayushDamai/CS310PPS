@@ -15,7 +15,7 @@
   font-weight: bold;
   text-decoration: none;
   color: #fff;
-  padding: 5px 11px;
+  padding: 5px 15px;
 }
 
 /* Right group: navigation links */
@@ -23,7 +23,7 @@
   list-style: none;
   /* Removes bullet points */
   display: flex;
-  padding: 5px 11px;
+  padding: 5px 15px;
   gap: 15px;
 }
 

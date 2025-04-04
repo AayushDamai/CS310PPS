@@ -1,22 +1,22 @@
 // PatientPortalPage.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../hooks/AuthContext';
 import NavBar from '../components/NavBar';
+import NavPanel from '../components/NavPanel';
+import '../styles/PatientPortal.css';
 
 const PatientPortalPage = () => {
-    // const userId = localStorage.getItem('userId'); //gets userId
-    const { user } = useAuth(); //gets userId from AuthContext
 
     return (
         <div className="patient-portal-page">
             <NavBar />
-            <h1 style={{ padding: 10 }}>Patient Portal</h1>
-            <Link to="/appointment-page">Appointments</Link> <br />
-
-            <Link to={`/prescriptions/${user.userId}`}>Prescriptions</Link> <br />
+            <div className="portal-content">
+                <NavPanel />
+                <div className="main-section">
+                    <h1>Calendar will go here</h1>
+                </div>
+            </div>
         </div>
     );
-}
+};
 
 export default PatientPortalPage;
