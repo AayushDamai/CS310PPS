@@ -1,44 +1,43 @@
 /* src/styles/Portal.css */
 .portal-container {
-    max-width: 900px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .portal-container h1 {
-    color: #4a90e2;
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  .portal-container p {
-    font-size: 1.2rem;
-    color: #333;
-  }
-  
-  /* Appointment List Styles */
-  .appointment-list {
-    list-style: none;
-    padding: 0;
-    text-align: left;
-  }
-  
-  .appointment-item {
-    background-color: #fff;
-    padding: 15px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .error {
-    color: red;
-    font-weight: bold;
-  }
-  
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.portal-container h1 {
+  color: #4a90e2;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.portal-container p {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Appointment List Styles */
+.appointment-list {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+}
+
+.appointment-item {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}

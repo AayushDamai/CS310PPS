@@ -2,11 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Portal.css';
 import DoctorCalendar from '../components/DoctorCalendar';
-import AddPrescriptions from '../components/AddPrescriptions';
 
 const DoctorHomePage = () => {
     const navigate = useNavigate();
-    const doctor_id = localStorage.getItem('userId'); // Retrieve doctor_id from localStorage
 
     return (
         <div className="portal-container">
