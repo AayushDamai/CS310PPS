@@ -6,10 +6,10 @@ import AddAppointmentForm from '../components/AddAppointmentForm'
 const AddAppointmentPage = () => {
     return (
         <div className="registration-page">
-          <NavBar />
-          <AddAppointmentForm/>
+            <NavBar />
+            <AddAppointmentForm />
         </div>
-        );
+    );
 }
 
 export default AddAppointmentPage;

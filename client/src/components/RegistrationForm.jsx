@@ -46,7 +46,7 @@ const RegistrationForm = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(user)
             });
-            
+
             const data = await res.json();
             if (res.ok) {
                 setResponse(data.message);
@@ -61,72 +61,72 @@ const RegistrationForm = () => {
     // Todo: Implement dropdown for user role selection
     return (
         <div className="input-form">
-        <p>Backend Status: {status}</p>
-        <div className='form-header'>
-            <h2>Sign up for our Portal System!</h2>
-        </div>
-        <input 
-            type="text"
-            id='Firstname'
-            value={firstName} 
-            onChange={(e) => setFirstName(e.target.value)} 
-            placeholder="First Name"
-        />
-        <input 
-            type="text"
-            id='Lastname'
-            value={lastName} 
-            onChange={(e) => setLastName(e.target.value)} 
-            placeholder="Last Name"
-        />
-        <input 
-            type="date"
-            id='DOB'
-            value={dateOfBirth} 
-            onChange={(e) => setDOB(e.target.value)} 
-            placeholder="DOB: YYYY-MM-DD"
-        />
-        <input 
-            type="text"
-            id='Sex'
-            value={sex} 
-            onChange={(e) => setSex(e.target.value)} 
-            placeholder="Male, Female, Prefer Not To Say"
-        />
-        <input 
-            type="text"
-            id='Address1'
-            value={address1} 
-            onChange={(e) => setAddress1(e.target.value)} 
-            placeholder="Address Line 1"
-        />
-        <input 
-            type="text"
-            id='Address2'
-            value={address2} 
-            onChange={(e) => setAddress2(e.target.value)} 
-            placeholder="Address Line 2"
-        />
-        <input 
-            type="email"
-            id='email'
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            placeholder="Email"
-        />
-        <input 
-            type="password"
-            id='password'
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            placeholder="Password"
-        />
-        <button onClick={sendRegistrationData}>Register</button>
-        <div className='redirect-buttons'>
-            <Link to='/login'>Already have an account? Login!</Link>
-        </div>
-        <h3>Registration Info:</h3>
-        <p>{response || "Waiting for input..."}</p>
+            <p>Backend Status: {status}</p>
+            <div className='form-header'>
+                <h2>Sign up for our Portal System!</h2>
+            </div>
+            <input
+                type="text"
+                id='Firstname'
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="First Name"
+            />
+            <input
+                type="text"
+                id='Lastname'
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Last Name"
+            />
+            <input
+                type="date"
+                id='DOB'
+                value={dateOfBirth}
+                onChange={(e) => setDOB(e.target.value)}
+                placeholder="DOB: YYYY-MM-DD"
+            />
+            <input
+                type="text"
+                id='Sex'
+                value={sex}
+                onChange={(e) => setSex(e.target.value)}
+                placeholder="Male, Female, Prefer Not To Say"
+            />
+            <input
+                type="text"
+                id='Address1'
+                value={address1}
+                onChange={(e) => setAddress1(e.target.value)}
+                placeholder="Address Line 1"
+            />
+            <input
+                type="text"
+                id='Address2'
+                value={address2}
+                onChange={(e) => setAddress2(e.target.value)}
+                placeholder="Address Line 2"
+            />
+            <input
+                type="email"
+                id='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+            />
+            <input
+                type="password"
+                id='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+            />
+            <button onClick={sendRegistrationData}>Register</button>
+            <div className='redirect-buttons'>
+                <Link to='/login'>Already have an account? Login!</Link>
+            </div>
+            <h3>Registration Info:</h3>
+            <p>{response || "Waiting for input..."}</p>
         </div>
     );
 }

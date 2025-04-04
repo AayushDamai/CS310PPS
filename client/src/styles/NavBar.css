@@ -1,11 +1,12 @@
 .nav {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   height: 60px;
   align-items: center;
-  background-color: #222; 
-  color: #fff; 
+  background-color: #222;
+  color: #fff;
 }
+
 .logo {
   list-style-type: none;
   display: flex;
@@ -16,20 +17,23 @@
   color: #fff;
   padding: 5px 11px;
 }
-  
-  /* Right group: navigation links */
+
+/* Right group: navigation links */
 .navlinks {
-  list-style: none; /* Removes bullet points */
+  list-style: none;
+  /* Removes bullet points */
   display: flex;
   padding: 5px 11px;
   gap: 15px;
 }
 
 .navlinks a {
-  text-decoration: none; /* Removes underline */
+  text-decoration: none;
+  /* Removes underline */
   font-size: 1rem;
   color: #fff;
-  transition: color 0.3s ease-in-out; /* Smooth color transition */
+  transition: color 0.3s ease-in-out;
+  /* Smooth color transition */
 }
 
 .navlinks a:hover {

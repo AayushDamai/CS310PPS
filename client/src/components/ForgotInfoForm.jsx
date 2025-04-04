@@ -23,42 +23,42 @@ const ForgotInfoForm = () => {
     // Functions to send name to the server and update response state
     // post() routes use async/await and are invoked when the user interacts with the UI
     const sendUserData = async () => {
-    try {
-        const res = await fetch('/api/sendUserData', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({email})
-        });
-        
-        const data = await res.json();
-        if (res.ok) {
-            setResponse(data.body);
-        } else {
-            setResponse(data.message);
-        }
-    } catch (error) {
-        setResponse('Error sending data to server');
+        try {
+            const res = await fetch('/api/sendUserData', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                setResponse(data.body);
+            } else {
+                setResponse(data.message);
+            }
+        } catch (error) {
+            setResponse('Error sending data to server');
         }
     };
 
     return (
-    <div className="input-form">
-      <p>Backend Status: {status}</p>
-      <h2>Enter your email address and we'll send you a link to reset your account</h2>
-      <input 
-        type="text"
-        id='email'
-        value={email} 
-        onChange={(e) => setEmail(e.target.value)} 
-        placeholder="Email"
-      />
-      <button onClick={sendUserData}>Submit</button>
-      <div className='redirect-buttons'>
-        <Link to="/login">Back to login</Link>
-      </div>
-      <h3>Reset Info:</h3>
-      <p>{response || "Waiting for input..."}</p>
-    </div>
+        <div className="input-form">
+            <p>Backend Status: {status}</p>
+            <h2>Enter your email address and we'll send you a link to reset your account</h2>
+            <input
+                type="text"
+                id='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+            />
+            <button onClick={sendUserData}>Submit</button>
+            <div className='redirect-buttons'>
+                <Link to="/login">Back to login</Link>
+            </div>
+            <h3>Reset Info:</h3>
+            <p>{response || "Waiting for input..."}</p>
+        </div>
     );
 }
 
