@@ -2,12 +2,15 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Portal.css';
 import DoctorCalendar from '../components/DoctorCalendar';
+import NavBar from '../components/NavBar';
 
 const DoctorHomePage = () => {
     const navigate = useNavigate();
 
     return (
         <div className="portal-container">
+            <NavBar />
+            
             <h1>Welcome to the Doctor Portal</h1>
 
             {/* Tabs Navigation */}
