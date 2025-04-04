@@ -65,13 +65,12 @@ app.post('/api/login', async (req, res) => {
         }
 
         const user = rows[0];
-
         if (user.password !== password) {
-            return res.status(401).json({ message: `Invalid password for: ${user.email}` });
+            return res.status(401).json({ message: `Invalid password for: ${email}` });
         }
 
         // If passwords match, login is successful
-        console.log(`User ${user.email} logged in`);
+        console.log(`User ${email} logged in`);
 
         // Send back user data, including role
         res.status(200).json({
