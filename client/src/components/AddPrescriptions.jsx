@@ -3,7 +3,7 @@ import { useAuth } from '../hooks/AuthContext';
 
 const AddPrescriptions = () => {
     // const doctor_id = localStorage.getItem('userId'); //get doctorId 
-    const {user} = useAuth(); //get userId from AuthContext
+    const { user } = useAuth(); //get userId from AuthContext
 
     const [prescData, setPrescData] = useState({
         patient_id: '',
