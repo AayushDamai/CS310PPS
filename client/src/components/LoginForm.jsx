@@ -34,7 +34,7 @@ const LoginForm = () => {
 
             if (res.ok) { 
                 // localStorage.setItem('userId', data.userId);
-                login({ userId: data.userId });
+                login(data);
 
                 if (data.role === 'Doctor') {
                     navigate('/doctor-dashboard');

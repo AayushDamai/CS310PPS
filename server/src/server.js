@@ -248,6 +248,36 @@ app.get('/api/prescriptions/:patient_id', async (req, res) => {
     }
 });
 
+app.post('/api/appointments/:user_id', async (req, res) => {
+    const { user } = req.body;
+    try { //gets connection
+        const connection = await pool.getConnection();
+        const [rows] = await connection.execute(
+            `SELECT a.id, 
+                a.patient_id,
+                a.doctor_id, 
+                d.last_name AS doctor_name, 
+                a.location, 
+                a.appointment_time, 
+                a.status 
+                FROM appointments a
+                JOIN users d ON a.doctor_id = d.id
+                WHERE a.patient_id = ? AND a.status = 'Scheduled';`,
+            [user_id]
+        );
+        connection.release();
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'No appointments found' });
+        }
+
+        return res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error getting appointments:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 app.post('/api/appointments/:patient_id', async (req, res) => {
     const { user_id } = req.body;
     try { //gets connection
