@@ -1,0 +1,32 @@
+.side-nav {
+    width: 200px;
+    background-color: #2c3e50; /* A dark blue-gray tone to complement the #222 nav */
+    color: #fff;
+    padding: 20px;
+    height: calc(100vh - 60px); /* Fills the viewport height minus the navbar height */
+  }
+  
+  .side-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .side-nav li {
+    margin-bottom: 10px;
+  }
+  
+  .side-nav a {
+    text-decoration: none;
+    font-size: 1rem;
+    color: #fff;
+    display: block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .side-nav a:hover {
+    background-color: #4A90E2; /* Matches the navbar link hover color */
+    color: #fff;
+  }
