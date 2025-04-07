@@ -8,6 +8,7 @@ import DatePicker from 'react-datepicker';
 import TimePicker from 'react-time-picker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-time-picker/dist/TimePicker.css';
+import MessagesPage from '../components/MessagesPage';
 
 const DoctorHomePage = () => {
     const navigate = useNavigate();
@@ -16,29 +17,9 @@ const DoctorHomePage = () => {
     // State for tabs and functionality
     const [activeTab, setActiveTab] = useState('calendar'); // State to track the active tab
     const [prescriptionSubTab, setPrescriptionSubTab] = useState('add'); // Sub-tab for prescriptions
-    const [messages, setMessages] = useState([]); // State to store messages
-    const [newMessage, setNewMessage] = useState(''); // State to track new message input
-    const [selectedPatientId, setSelectedPatientId] = useState(''); // State to track selected patient ID
     const [appointments, setAppointments] = useState([]); // State to store appointments
     const [selectedAppointment, setSelectedAppointment] = useState(null); // State to track selected appointment
     const [updatedAppointment, setUpdatedAppointment] = useState({}); // State for editing appointment
-
-    // Fetch messages when the "Messages" tab is active
-    useEffect(() => {
-        const fetchMessages = async () => {
-            try {
-                const response = await fetch('/api/messages');
-                const data = await response.json();
-                setMessages(data); // Store messages in state
-            } catch (error) {
-                console.error('Error fetching messages:', error);
-            }
-        };
-
-        if (activeTab === 'messages') {
-            fetchMessages();
-        }
-    }, [activeTab]);
 
     // Fetch appointments when the "Edit Appointments" tab is active
     useEffect(() => {
@@ -56,20 +37,6 @@ const DoctorHomePage = () => {
             fetchAppointments();
         }
     }, [activeTab, doctorId]);
-
-    // Handle sending a message
-    const handleSendMessage = (e) => {
-        e.preventDefault();
-        const newMessageObj = {
-            patientId: selectedPatientId,
-            message: newMessage,
-            sentBy: 'doctor',
-            date: new Date().toLocaleString(),
-        };
-        setMessages([...messages, newMessageObj]);
-        setSelectedPatientId('');
-        setNewMessage('');
-    };
 
     // Handle changes in the appointment editing form
     const handleEditChange = (e) => {
@@ -91,9 +58,6 @@ const DoctorHomePage = () => {
         // Combine date and time into MySQL-compatible format
         const formattedDateTime = `${appointment_date} ${appointment_time}`;
 
-        console.log('Formatted DateTime for MySQL:', formattedDateTime); // Log the formatted datetime
-        console.log('Updated Appointment:', { appointment_time: formattedDateTime, status });
-
         try {
             const response = await fetch(`/api/appointments/${selectedAppointment.id}`, {
                 method: 'PUT',
@@ -106,16 +70,13 @@ const DoctorHomePage = () => {
                 }),
             });
 
-            const responseData = await response.json();
-            console.log('API Response:', responseData); // Log the API response
-
             if (response.ok) {
                 alert('Appointment updated successfully!');
                 setSelectedAppointment(null);
                 setUpdatedAppointment({});
                 setActiveTab('calendar'); // Redirect back to the calendar tab
             } else {
-                alert(`Failed to update appointment: ${responseData.error || 'Unknown error'}`);
+                alert('Failed to update appointment.');
             }
         } catch (error) {
             console.error('Error updating appointment:', error);
@@ -193,42 +154,7 @@ const DoctorHomePage = () => {
                 )}
                 {activeTab === 'messages' && (
                     <div className="dashboard-section">
-                        <h2>Message Patients</h2>
-                        <form className="message-form" onSubmit={handleSendMessage}>
-                            <div className="form-group">
-                                <label>Patient ID:</label>
-                                <input
-                                    type="text"
-                                    value={selectedPatientId}
-                                    onChange={(e) => setSelectedPatientId(e.target.value)}
-                                    placeholder="Enter Patient ID"
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Message:</label>
-                                <textarea
-                                    value={newMessage}
-                                    onChange={(e) => setNewMessage(e.target.value)}
-                                    placeholder="Enter your message"
-                                    required
-                                />
-                            </div>
-                            <button type="submit" className="btn-submit">
-                                Send Message
-                            </button>
-                        </form>
-                        <h3>Message History</h3>
-                        <ul className="message-list">
-                            {messages.map((message, index) => (
-                                <li key={index} className="message-item">
-                                    <strong>Patient ID:</strong> {message.patientId} <br />
-                                    <strong>Message:</strong> {message.message} <br />
-                                    <strong>Sent By:</strong> {message.sentBy} <br />
-                                    <strong>Date:</strong> {message.date}
-                                </li>
-                            ))}
-                        </ul>
+                        <MessagesPage doctorId={doctorId} />
                     </div>
                 )}
                 {activeTab === 'edit-appointments' && (
@@ -298,17 +224,4 @@ const DoctorHomePage = () => {
 };
 
 export default DoctorHomePage;
-
-// filepath: c:\Users\ethan\OneDrive\Documents\CS310pps\CS310PPS\client\src\App.js
-
-const App = () => {
-  return (
-    <div className="App">
-      <Routes>
-        {/* Other routes */}
-        <Route path="/doctor/messages" element={<MessagesPage />} /> {/* Messages Page */}
-      </Routes>
-    </div>
-  );
-};
 

@@ -240,78 +240,73 @@ app.put('/api/appointments/:id', async (req, res) => {
   }
 });
 
-// Endpoint to fetch all messages
+// Endpoint to fetch messages for a doctor (and optionally a specific patient)
 app.get('/api/messages', async (req, res) => {
-  try {
-    // Get a connection from the pool
-    const connection = await pool.getConnection();
+    const { doctorId, patientId } = req.query;
 
-    // Query to fetch all messages
-    const [rows] = await connection.execute(
-      `
-      SELECT 
-        m.id, 
-        m.patient_id, 
-        m.doctor_id, 
-        m.message, 
-        m.sent_by, 
-        m.date, 
-        CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
-        CONCAT(d.first_name, ' ', d.last_name) AS doctor_name
-      FROM Messages m
-      JOIN Users p ON m.patient_id = p.id
-      JOIN Users d ON m.doctor_id = d.id
-      ORDER BY m.date DESC
-      `
-    );
+    if (!doctorId) {
+        return res.status(400).json({ error: 'Doctor ID is required' });
+    }
 
-    connection.release();
+    try {
+        const connection = await pool.getConnection();
 
-    // Return the messages as JSON
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error('Error fetching messages:', error);
-    res.status(500).json({ error: 'Failed to fetch messages' });
-  }
+        // Base query to fetch messages for the doctor
+        let query = `
+            SELECT * FROM Messages
+            WHERE doctor_id = ?
+        `;
+        const params = [doctorId];
+
+        // If a patientId is provided, add it to the query
+        if (patientId) {
+            query += ` AND patient_id = ?`;
+            params.push(patientId);
+        }
+
+        query += ` ORDER BY patient_id, date ASC`;
+
+        const [rows] = await connection.execute(query, params);
+        connection.release();
+
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+        res.status(500).json({ error: 'Failed to fetch messages' });
+    }
 });
 
 // Endpoint to send a message
 app.post('/api/messages', async (req, res) => {
-  const { patientId, doctorId, message } = req.body;
+    const { doctorId, patientId, message, sentBy } = req.body;
 
-  // Validate the request body
-  if (!patientId || !doctorId || !message) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
+    if (!doctorId || !patientId || !message || !sentBy) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
 
-  try {
-    // Get a connection from the pool
-    const connection = await pool.getConnection();
+    try {
+        const connection = await pool.getConnection();
+        const [result] = await connection.execute(
+            `
+            INSERT INTO Messages (doctor_id, patient_id, message, sent_by, date)
+            VALUES (?, ?, ?, ?, NOW())
+            `,
+            [doctorId, patientId, message, sentBy]
+        );
+        connection.release();
 
-    // Insert the message into the Messages table
-    const [result] = await connection.execute(
-      `
-      INSERT INTO Messages (patient_id, doctor_id, message, sent_by, date) 
-      VALUES (?, ?, ?, "doctor", NOW())
-      `,
-      [patientId, doctorId, message]
-    );
-
-    connection.release();
-
-    // Return the newly created message as JSON
-    res.status(201).json({
-      id: result.insertId,
-      patientId,
-      doctorId,
-      message,
-      sentBy: 'doctor',
-      date: new Date(),
-    });
-  } catch (error) {
-    console.error('Error sending message:', error);
-    res.status(500).json({ error: 'Failed to send message' });
-  }
+        res.status(201).json({
+            id: result.insertId,
+            doctorId,
+            patientId,
+            message,
+            sentBy,
+            date: new Date(),
+        });
+    } catch (error) {
+        console.error('Error sending message:', error);
+        res.status(500).json({ error: 'Failed to send message' });
+    }
 });
 
 // Endpoint to fetch all prescriptions

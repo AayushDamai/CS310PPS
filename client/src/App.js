@@ -12,8 +12,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AddAppointmentPage from './pages/AddAppointmentPage';
 import ViewPrescription from './pages/ViewPrescription';
 import DoctorHomePage from './pages/DoctorHomePage';
-import AddPrescriptionsPage from './pages/AddPrescriptionsPage'
-
+import AddPrescriptionsPage from './pages/AddPrescriptionsPage';
+import MessagesPage from './components/MessagesPage';
 
 const App = () => {
     return (
@@ -32,6 +32,7 @@ const App = () => {
                     <Route path="/doctor/add-prescription" element={<ProtectedRoute> <AddPrescriptionsPage /> </ProtectedRoute>} />
                     <Route path="/patient-portal" element={<ProtectedRoute> <PatientPortalPage /> </ProtectedRoute>} />
                     <Route path="/appointment-page" element={<ProtectedRoute> <ViewAppointmentPage /> </ProtectedRoute>} />
+                    <Route path="/doctor/messages" element={<MessagesPage doctorId={localStorage.getItem('userId')} />} />
                 </Routes>
             </AuthProvider>
         </div>
