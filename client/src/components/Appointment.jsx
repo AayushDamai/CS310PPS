@@ -26,7 +26,18 @@ const Appointment = () => {
               
         const data = await res.json();
         if (res.ok) {
-            setAppointmentData(JSON.stringify(data)); 
+          let outputString = "";
+          for (let index = 0; index < data.length; index++) {
+            const appointmentJSON = data[index];
+            for (const p in appointmentJSON){
+              const appointmentField = appointmentJSON[p];
+              outputString += p+": "+appointmentField +"\n";
+
+            }
+            
+          }
+            
+            setAppointmentData(outputString); 
         } else {
         }
       } catch (error) {
