@@ -25,13 +25,13 @@
   }
   
   button {
-    padding: 10px 20px;
+    background-color: black; /* Black background */
+    color: blue; /* Blue text */
     border: none;
-    background-color: #007bff;
-    color: white;
+    padding: 10px 20px;
     cursor: pointer;
-    border-radius: 5px;
     font-size: 16px;
+    border-radius: 4px;
   }
   
   button.active-tab {
@@ -39,7 +39,8 @@
   }
   
   button:hover {
-    background-color: #0056b3;
+    background-color: #333; /* Slightly lighter black on hover */
+    color: lightblue; /* Lighter blue text on hover */
   }
   
   .tab-content {
@@ -306,8 +307,8 @@
 .sub-tabs button {
     padding: 10px 20px;
     border: none;
-    background-color: #007bff;
-    color: white;
+    background-color: black; /* Black background */
+    color: black; /* White text */
     cursor: pointer;
     border-radius: 5px;
     font-size: 16px;
@@ -317,11 +318,14 @@
 }
 
 .sub-tabs button.active-link {
-    background-color: #0056b3;
+    background-color: #333; /* Slightly lighter black for active buttons */
+    color: lightblue; /* Highlight active button text */
+    font-weight: bold;
 }
 
 .sub-tabs button:hover {
-    background-color: #0056b3;
+    background-color: #555; /* Lighter black on hover */
+    color: lightblue; /* Lighter blue text on hover */
 }
 
 .popup {
@@ -350,4 +354,10 @@
 
 .popup button:hover {
   background-color: darkblue;
+}
+
+button.active-link {
+    background-color: #000; /* Keep black background for active buttons */
+    color: deepskyblue; /* Highlight active button text */
+    font-weight: bold;
 }

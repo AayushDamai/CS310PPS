@@ -383,6 +383,96 @@ app.put('/api/prescriptions/:id', async (req, res) => {
   }
 });
 
+app.get('/api/lab-tests', async (req, res) => {
+    const { doctorId } = req.query;
+
+    if (!doctorId) {
+        return res.status(400).json({ error: 'Doctor ID is required' });
+    }
+
+    try {
+        const connection = await pool.getConnection();
+        const [rows] = await connection.execute(
+            `
+            SELECT 
+                l.id, 
+                l.patient_id, 
+                CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
+                l.test_type, 
+                l.result, 
+                l.test_date
+            FROM LabTestResults l
+            JOIN Users p ON l.patient_id = p.id
+            WHERE l.doctor_id = ?
+            ORDER BY l.test_date DESC
+            `,
+            [doctorId]
+        );
+        connection.release();
+
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error fetching lab test results:', error);
+        res.status(500).json({ error: 'Failed to fetch lab test results' });
+    }
+});
+
+app.post('/api/lab-tests', async (req, res) => {
+    const { patientId, doctorId, testType, result, testDate } = req.body;
+
+    if (!patientId || !doctorId || !testType || !result || !testDate) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    try {
+        const connection = await pool.getConnection();
+        const [resultData] = await connection.execute(
+            `
+            INSERT INTO LabTestResults (patient_id, doctor_id, test_type, result, test_date)
+            VALUES (?, ?, ?, ?, ?)
+            `,
+            [patientId, doctorId, testType, result, testDate]
+        );
+        connection.release();
+
+        res.status(201).json({ message: 'Lab test result added successfully', id: resultData.insertId });
+    } catch (error) {
+        console.error('Error adding lab test result:', error);
+        res.status(500).json({ error: 'Failed to add lab test result' });
+    }
+});
+
+// Endpoint to fetch doctor details
+app.get('/api/doctor-details', async (req, res) => {
+    const { doctorId } = req.query;
+
+    if (!doctorId) {
+        return res.status(400).json({ error: 'Doctor ID is required' });
+    }
+
+    try {
+        const connection = await pool.getConnection();
+        const [rows] = await connection.execute(
+            `
+            SELECT CONCAT(first_name, ' ', last_name) AS doctor_name
+            FROM Users
+            WHERE id = ? AND role = 'Doctor'
+            `,
+            [doctorId]
+        );
+        connection.release();
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Doctor not found' });
+        }
+
+        res.status(200).json({ doctorName: rows[0].doctor_name });
+    } catch (error) {
+        console.error('Error fetching doctor details:', error);
+        res.status(500).json({ error: 'Failed to fetch doctor details' });
+    }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

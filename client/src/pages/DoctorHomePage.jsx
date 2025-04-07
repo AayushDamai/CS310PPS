@@ -9,6 +9,7 @@ import TimePicker from 'react-time-picker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-time-picker/dist/TimePicker.css';
 import MessagesPage from '../components/MessagesPage';
+import LabTestResultsPage from '../components/LabTestResultsPage';
 
 const DoctorHomePage = () => {
     const navigate = useNavigate();
@@ -20,6 +21,26 @@ const DoctorHomePage = () => {
     const [appointments, setAppointments] = useState([]); // State to store appointments
     const [selectedAppointment, setSelectedAppointment] = useState(null); // State to track selected appointment
     const [updatedAppointment, setUpdatedAppointment] = useState({}); // State for editing appointment
+    const [doctorName, setDoctorName] = useState('Doctor'); // State to store the doctor's name
+
+    // Fetch the doctor's name when the component loads
+    useEffect(() => {
+        const fetchDoctorName = async () => {
+            try {
+                const response = await fetch(`/api/doctor-details?doctorId=${doctorId}`);
+                const data = await response.json();
+                if (response.ok) {
+                    setDoctorName(data.doctorName); // Update the doctor's name
+                } else {
+                    console.error('Failed to fetch doctor name:', data.error);
+                }
+            } catch (error) {
+                console.error('Error fetching doctor name:', error);
+            }
+        };
+
+        fetchDoctorName();
+    }, [doctorId]);
 
     // Fetch appointments when the "Edit Appointments" tab is active
     useEffect(() => {
@@ -113,12 +134,18 @@ const DoctorHomePage = () => {
                 >
                     Edit Appointments
                 </button>
+                <button
+                    className={activeTab === 'lab-tests' ? 'active-link' : ''}
+                    onClick={() => setActiveTab('lab-tests')}
+                >
+                    Lab Test Results
+                </button>
             </div>
 
             {/* Main Content */}
             <div className="main-content">
                 <div className="header">
-                    <h1>Welcome, Doctor</h1>
+                    <h1>Welcome, {doctorName}</h1>
                     <div className="account">
                         <a href="/profile">Your Profile</a> | <a href="/logout">Log Out</a>
                     </div>
@@ -216,6 +243,11 @@ const DoctorHomePage = () => {
                                 <button type="submit">Update Appointment</button>
                             </form>
                         )}
+                    </div>
+                )}
+                {activeTab === 'lab-tests' && (
+                    <div className="dashboard-section">
+                        <LabTestResultsPage doctorId={doctorId} />
                     </div>
                 )}
             </div>
