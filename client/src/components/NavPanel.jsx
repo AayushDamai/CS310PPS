@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../hook/AuthContext.jsx'; // Corrected path
+import { useAuth } from '../hooks/AuthContext';
 import '../styles/NavPanel.css';
 
 const NavPanel = () => {

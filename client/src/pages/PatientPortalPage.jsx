@@ -1,6 +1,6 @@
 // PatientPortalPage.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // Ensure Link is imported
 import NavBar from '../components/NavBar';
 import NavPanel from '../components/NavPanel';
 import '../styles/PatientPortal.css';

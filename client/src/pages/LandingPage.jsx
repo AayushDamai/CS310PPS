@@ -6,10 +6,10 @@ import '../index.css'
 
 const LandingPage = () => {
     return (
-      <div className="landing-page">
-        <NavBar />
-        <Hero />
-      </div>
+        <div className="landing-page">
+            <NavBar />
+            <Hero />
+        </div>
     );
 }
 

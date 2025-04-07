@@ -6,10 +6,8 @@ import Appointment from '../components/Appointment';
 const ViewAppointmentPage = () => {
     return (
         <div className="forgot-info-page">
-          <NavBar />
-          <Appointment />
-          <Appointment />
-          <Appointment />
+            <NavBar />
+            <Appointment />
         </div>
     );
 }

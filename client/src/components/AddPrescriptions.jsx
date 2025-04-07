@@ -1,91 +1,114 @@
 import React, { useState } from 'react';
+import { useAuth } from '../hooks/AuthContext';
 
 const AddPrescriptions = () => {
-    const [patientId, setPatientId] = useState(''); // State to track patient ID
-    const [medication, setMedication] = useState(''); // State to track medication
-    const [dosage, setDosage] = useState(''); // State to track dosage
-    const [instructions, setInstructions] = useState(''); // State to track instructions
-    const [prescriptions, setPrescriptions] = useState([]); // State to store prescriptions
+    // const doctor_id = localStorage.getItem('userId'); //get doctorId 
+    const { user } = useAuth(); //get userId from AuthContext
 
-    const handleAddPrescription = (e) => {
-        e.preventDefault();
-        const newPrescription = {
-            patientId,
-            medication,
-            dosage,
-            instructions,
-        };
+    const [prescData, setPrescData] = useState({
+        patient_id: '',
+        medication: '',
+        dosage: '',
+        instructions: '',
+        prescription_date: new Date().toISOString().split('T')[0] //this pulls up todays date only
+    });
 
-        // Add the new prescription to the list
-        setPrescriptions([...prescriptions, newPrescription]);
 
-        // Clear the form fields
-        setPatientId('');
-        setMedication('');
-        setDosage('');
-        setInstructions('');
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setPrescData({ ...prescData, [name]: value });
     };
 
-    return (
-        <div className="add-prescriptions">
-            <h2>Add a Prescription</h2>
-            <form className="prescription-form" onSubmit={handleAddPrescription}>
-                <div className="form-group">
-                    <label>Patient ID:</label>
-                    <input
-                        type="text"
-                        value={patientId}
-                        onChange={(e) => setPatientId(e.target.value)}
-                        placeholder="Enter Patient ID"
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Medication:</label>
-                    <input
-                        type="text"
-                        value={medication}
-                        onChange={(e) => setMedication(e.target.value)}
-                        placeholder="Enter Medication Name"
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Dosage:</label>
-                    <input
-                        type="text"
-                        value={dosage}
-                        onChange={(e) => setDosage(e.target.value)}
-                        placeholder="Enter Dosage"
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Instructions:</label>
-                    <textarea
-                        value={instructions}
-                        onChange={(e) => setInstructions(e.target.value)}
-                        placeholder="Enter Instructions"
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn-submit">
-                    Add Prescription
-                </button>
-            </form>
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-            <h3></h3>
-            <ul className="prescription-list">
-                {prescriptions.map((prescription, index) => (
-                    <li key={index} className="prescription-item">
-                        <strong>Patient ID:</strong> {prescription.patientId} <br />
-                        <strong>Medication:</strong> {prescription.medication} <br />
-                        <strong>Dosage:</strong> {prescription.dosage} <br />
-                        <strong>Instructions:</strong> {prescription.instructions}
-                    </li>
-                ))}
-            </ul>
-        </div>
+        try {
+            const response = await fetch('http://localhost:5000/api/addprescriptions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...prescData,
+                    doctor_id: user.userId //send doctorId to backend
+                })
+            });
+
+            if (response.ok) {
+                alert('Prescription has been added!');
+                setPrescData({
+                    patient_id: '',
+                    medication: '',
+                    dosage: '',
+                    instructions: '',
+                    prescription_date: new Date().toISOString().split('T')[0]
+                });
+            } else {
+                const errorData = await response.json();
+                alert(`Failed to add prescription: ${errorData.message || 'Unknown error'}`);
+            }
+        } catch (error) {
+            console.error('Error adding prescription:', error);
+            alert('Error adding prescription!');
+        }
+    };
+
+    return ( //the actual like form stuff
+        <form onSubmit={handleSubmit}>
+            <h2>Add a Prescription</h2>
+            <label>
+                Patient ID:
+                <input
+                    type="text"
+                    name="patient_id"
+                    value={prescData.patient_id}
+                    onChange={handleChange}
+                    required
+                />
+            </label>
+            <label>
+                Medicine:
+                <input
+                    type="text"
+                    name="medication"
+                    value={prescData.medication}
+                    onChange={handleChange}
+                    required
+                />
+            </label>
+            <label>
+                Dosage:
+                <input
+                    type="text"
+                    name="dosage"
+                    value={prescData.dosage}
+                    onChange={handleChange}
+                    required
+                    placeholder="5mg"
+                />
+            </label>
+            <label>
+                Instructions:
+                <input
+                    name="instructions"
+                    value={prescData.instructions}
+                    onChange={handleChange}
+                    required
+                    placeholder="Take with food x times a day."
+                />
+            </label>
+            <label>
+                Prescription Date:
+                <input
+                    type="date"
+                    name="prescription_date"
+                    value={prescData.prescription_date}
+                    onChange={handleChange}
+                    required
+                />
+            </label>
+            <button type="submit">Add the Prescription</button>
+        </form>
     );
 };
 
