@@ -23,6 +23,7 @@ const DoctorHomePage = () => {
     const [selectedAppointment, setSelectedAppointment] = useState(null); // State to track selected appointment
     const [updatedAppointment, setUpdatedAppointment] = useState({}); // State for editing appointment
 
+    // Fetch messages when the "Messages" tab is active
     useEffect(() => {
         const fetchMessages = async () => {
             try {
@@ -39,6 +40,7 @@ const DoctorHomePage = () => {
         }
     }, [activeTab]);
 
+    // Fetch appointments when the "Edit Appointments" tab is active
     useEffect(() => {
         const fetchAppointments = async () => {
             try {
@@ -55,6 +57,7 @@ const DoctorHomePage = () => {
         }
     }, [activeTab, doctorId]);
 
+    // Handle sending a message
     const handleSendMessage = (e) => {
         e.preventDefault();
         const newMessageObj = {
@@ -68,11 +71,13 @@ const DoctorHomePage = () => {
         setNewMessage('');
     };
 
+    // Handle changes in the appointment editing form
     const handleEditChange = (e) => {
         const { name, value } = e.target;
         setUpdatedAppointment({ ...updatedAppointment, [name]: value });
     };
 
+    // Handle submitting the appointment editing form
     const handleEditSubmit = async (e) => {
         e.preventDefault();
 
@@ -133,7 +138,7 @@ const DoctorHomePage = () => {
                     className={activeTab === 'prescription' ? 'active-link' : ''}
                     onClick={() => setActiveTab('prescription')}
                 >
-                    Add Prescription
+                    Prescriptions
                 </button>
                 <button
                     className={activeTab === 'messages' ? 'active-link' : ''}
