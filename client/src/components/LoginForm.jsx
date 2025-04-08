@@ -22,7 +22,6 @@ const LoginForm = () => {
 
 
     const sendLoginInfo = async () => {
-
         try {
             const res = await fetch('/api/login', {
                 method: 'POST',
@@ -33,11 +32,12 @@ const LoginForm = () => {
             const data = await res.json();
 
             if (res.ok) { 
-                // localStorage.setItem('userId', data.userId);
                 login(data);
 
                 if (data.role === 'Doctor') {
                     navigate('/doctor-dashboard');
+                } else if (data.role === 'Admin') {
+                    navigate('/admin-dashboard'); // Redirect admin to admin_dashboard.jsx
                 } else {
                     navigate('/patient-portal');
                 }
