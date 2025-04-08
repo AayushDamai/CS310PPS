@@ -10,6 +10,6 @@ const ForgotInfoPage = () => {
             <ForgotInfoForm />
         </div>
     );
-}
+};
 
 export default ForgotInfoPage;

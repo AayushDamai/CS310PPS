@@ -1,7 +1,7 @@
 // ContactUs.jsx
 import React from 'react';
 import NavBar from '../components/NavBar';
-import LinkCard from '../components/LinkCard';;
+import LinkCard from '../components/LinkCard';
 
 const ContactUsPage = () => {
     const emailLinks = [

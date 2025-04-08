@@ -57,7 +57,7 @@ const AddPrescriptions = () => {
         <form onSubmit={handleSubmit}>
             <h2>Add a Prescription</h2>
             <label>
-                Patient ID:
+                Patient ID: 
                 <input
                     type="text"
                     name="patient_id"

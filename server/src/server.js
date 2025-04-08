@@ -15,11 +15,11 @@ const PORT = 5000;
 
 // Create a connection pool to your database
 const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'password', /// Change this to your MySQL password
-    database: 'cs310ppsdb',
-    waitForConnections: true
+  host: 'localhost',
+  user: 'root',
+  password: 'Beastmode#5292',
+  database: 'cs310ppsdb',
+  waitForConnections: true
 });
 
 async function testDBConnection() {
@@ -159,138 +159,321 @@ app.post('/api/sendUserData', async (req, res) => {
     }
 });
 
-//add an appoitnment to the database
-app.post('/api/sendAppointmentData', async (req, res) => {
-    const { patientID, doctorID, appointmentLocation, appointment_time } = req.body;
+// Endpoint to fetch appointments for a specific doctor
+app.get('/api/appointments', async (req, res) => {
+  const { doctorId } = req.query; // Get doctorId from query parameters
 
-    try {
-        // Get a connection from the pool
-        const connection = await pool.getConnection();
+  if (!doctorId) {
+    return res.status(400).json({ error: 'Doctor ID is required' });
+  }
 
-        try {
-            // Start transaction
-            await connection.beginTransaction();
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
 
-            // Insert into the base Users table
-            const [userResult] = await connection.execute(
-                'INSERT INTO appointments (patient_id, doctor_id, location, appointment_time) VALUES (?, ?, ?, ?)',
-                [patientID, doctorID, appointmentLocation, appointment_time]
-            );
+    // Query to fetch appointments for the given doctor
+    const [rows] = await connection.execute(
+      `
+      SELECT 
+        a.id, 
+        a.appointment_time, 
+        a.status, 
+        CONCAT(p.first_name, ' ', p.last_name) AS patient_name
+      FROM Appointments a
+      JOIN Users p ON a.patient_id = p.id
+      WHERE a.doctor_id = ?
+      `,
+      [doctorId]
+    );
 
-            // Commit the transaction
-            await connection.commit();
-            console.log(`Appointment Added`);
-            res.status(201).json({ message: `Appointment on ${appointment_time} registered successfully ` });
-        } catch (err) {
-            // Rollback in case of error
-            await connection.rollback();
-            res.status(500).json({ message: 'Registration failed' });
-        } finally {
-            connection.release();
-        }
+    connection.release();
 
-
-
-
-    } catch (error) {
-        res.status(500).json({ message: 'Server error' });
-    }
-})
-
-app.post('/api/addprescriptions', async (req, res) => {
-    const { patient_id, doctor_id, medication, dosage, instructions, prescription_date } = req.body;
-
-    if (!patient_id || !doctor_id || !medication || !dosage || !instructions || !prescription_date) {
-        return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    try {
-        const connection = await pool.getConnection();
-
-        try {
-            await connection.execute(
-                'INSERT INTO prescriptions (patient_id, doctor_id, medication, dosage, instructions, prescription_date) VALUES (?, ?, ?, ?, ?, ?)',
-                [patient_id, doctor_id, medication, dosage, instructions, prescription_date]
-            );
-
-            connection.release();
-            res.status(201).json({ message: 'Prescription has been added!' });
-        } catch (error) {
-            connection.release();
-            console.error('ERROR in prescription adding: ', error);
-            res.status(500).json({ message: 'Prescription was not added!' });
-        }
-    } catch (error) {
-        console.error('ERROR with database:', error);
-        res.status(500).json({ message: 'Prescription was not added!' });
-    }
+    // Return the appointments as JSON
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    res.status(500).json({ error: 'Failed to fetch appointments' });
+  }
 });
 
-app.get('/api/prescriptions/:patient_id', async (req, res) => {
-    const { patient_id } = req.params;
+// Endpoint to update an appointment
+app.put('/api/appointments/:id', async (req, res) => {
+  const { id } = req.params; // Get the appointment ID from the URL
+  const { appointment_time, status } = req.body; // Get updated data from the request body
 
-    try { //gets connection
+  console.log('Request Params:', req.params); // Log the appointment ID
+  console.log('Request Body:', req.body); // Log the request body
+
+  // Validate the request body
+  if (!appointment_time || !status) {
+    console.error('Validation Error: Missing appointment_time or status');
+    return res.status(400).json({ error: 'Appointment time and status are required' });
+  }
+
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
+
+    // Query to update the appointment
+    const [result] = await connection.execute(
+      `
+      UPDATE Appointments
+      SET appointment_time = ?, status = ?
+      WHERE id = ?
+      `,
+      [appointment_time, status, id]
+    );
+
+    connection.release();
+
+    // Check if the appointment was updated
+    if (result.affectedRows === 0) {
+      console.error('Appointment not found for ID:', id);
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    console.log('Appointment updated successfully for ID:', id);
+    res.status(200).json({ message: 'Appointment updated successfully' });
+  } catch (error) {
+    console.error('Error updating appointment:', error);
+    res.status(500).json({ error: 'Failed to update appointment' });
+  }
+});
+
+// Endpoint to fetch messages for a doctor (and optionally a specific patient)
+app.get('/api/messages', async (req, res) => {
+    const { doctorId, patientId } = req.query;
+
+    if (!doctorId) {
+        return res.status(400).json({ error: 'Doctor ID is required' });
+    }
+
+    try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute(
-            'SELECT * FROM prescriptions WHERE patient_id = ?',
-            [patient_id]
-        );
-        connection.release();
 
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'No prescribed medication found' });
+        // Base query to fetch messages for the doctor
+        let query = `
+            SELECT * FROM Messages
+            WHERE doctor_id = ?
+        `;
+        const params = [doctorId];
+
+        // If a patientId is provided, add it to the query
+        if (patientId) {
+            query += ` AND patient_id = ?`;
+            params.push(patientId);
         }
+
+        query += ` ORDER BY patient_id, date ASC`;
+
+        const [rows] = await connection.execute(query, params);
+        connection.release();
 
         res.status(200).json(rows);
     } catch (error) {
-        console.error('Error getting prescription:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error fetching messages:', error);
+        res.status(500).json({ error: 'Failed to fetch messages' });
     }
 });
 
-app.post('/api/appointments/:patient_id', async (req, res) => {
-    const { user_id } = req.body;
-    try { //gets connection
+// Endpoint to send a message
+app.post('/api/messages', async (req, res) => {
+    const { doctorId, patientId, message, sentBy } = req.body;
+
+    if (!doctorId || !patientId || !message || !sentBy) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    try {
+        const connection = await pool.getConnection();
+        const [result] = await connection.execute(
+            `
+            INSERT INTO Messages (doctor_id, patient_id, message, sent_by, date)
+            VALUES (?, ?, ?, ?, NOW())
+            `,
+            [doctorId, patientId, message, sentBy]
+        );
+        connection.release();
+
+        res.status(201).json({
+            id: result.insertId,
+            doctorId,
+            patientId,
+            message,
+            sentBy,
+            date: new Date(),
+        });
+    } catch (error) {
+        console.error('Error sending message:', error);
+        res.status(500).json({ error: 'Failed to send message' });
+    }
+});
+
+// Endpoint to fetch all prescriptions
+app.get('/api/prescriptions', async (req, res) => {
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
+
+    // Query to fetch all prescriptions
+    const [rows] = await connection.execute(
+      `
+      SELECT 
+        p.id, 
+        p.patient_id, 
+        CONCAT(u.first_name, ' ', u.last_name) AS patient_name,
+        p.doctor_id,
+        CONCAT(d.first_name, ' ', d.last_name) AS doctor_name,
+        p.medication, 
+        p.dosage, 
+        p.instructions, 
+        p.prescription_date
+      FROM Prescriptions p
+      JOIN Users u ON p.patient_id = u.id
+      JOIN Users d ON p.doctor_id = d.id
+      `
+    );
+
+    connection.release();
+
+    // Return the prescriptions as JSON
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching prescriptions:', error);
+    res.status(500).json({ error: 'Failed to fetch prescriptions' });
+  }
+});
+
+// Endpoint to update a prescription
+app.put('/api/prescriptions/:id', async (req, res) => {
+  const { id } = req.params; // Get the prescription ID from the URL
+  const { patientId, doctorId, medication, dosage, instructions } = req.body; // Get updated data from the request body
+
+  // Validate the request body
+  if (!patientId || !doctorId || !medication || !dosage || !instructions) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
+
+    // Query to update the prescription
+    const [result] = await connection.execute(
+      `
+      UPDATE Prescriptions
+      SET patient_id = ?, doctor_id = ?, medication = ?, dosage = ?, instructions = ?
+      WHERE id = ?
+      `,
+      [patientId, doctorId, medication, dosage, instructions, id]
+    );
+
+    connection.release();
+
+    // Check if the prescription was updated
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Prescription not found' });
+    }
+
+    // Return a success message
+    res.status(200).json({ message: 'Prescription updated successfully' });
+  } catch (error) {
+    console.error('Error updating prescription:', error);
+    res.status(500).json({ error: 'Failed to update prescription' });
+  }
+});
+
+app.get('/api/lab-tests', async (req, res) => {
+    const { doctorId } = req.query;
+
+    if (!doctorId) {
+        return res.status(400).json({ error: 'Doctor ID is required' });
+    }
+
+    try {
         const connection = await pool.getConnection();
         const [rows] = await connection.execute(
-            'SELECT * FROM appointments WHERE patient_id = ?',
-            [user_id]
+            `
+            SELECT 
+                l.id, 
+                l.patient_id, 
+                CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
+                l.test_type, 
+                l.result, 
+                l.test_date
+            FROM LabTestResults l
+            JOIN Users p ON l.patient_id = p.id
+            WHERE l.doctor_id = ?
+            ORDER BY l.test_date DESC
+            `,
+            [doctorId]
+        );
+        connection.release();
+
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error fetching lab test results:', error);
+        res.status(500).json({ error: 'Failed to fetch lab test results' });
+    }
+});
+
+app.post('/api/lab-tests', async (req, res) => {
+    const { patientId, doctorId, testType, result, testDate } = req.body;
+
+    if (!patientId || !doctorId || !testType || !result || !testDate) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    try {
+        const connection = await pool.getConnection();
+        const [resultData] = await connection.execute(
+            `
+            INSERT INTO LabTestResults (patient_id, doctor_id, test_type, result, test_date)
+            VALUES (?, ?, ?, ?, ?)
+            `,
+            [patientId, doctorId, testType, result, testDate]
+        );
+        connection.release();
+
+        res.status(201).json({ message: 'Lab test result added successfully', id: resultData.insertId });
+    } catch (error) {
+        console.error('Error adding lab test result:', error);
+        res.status(500).json({ error: 'Failed to add lab test result' });
+    }
+});
+
+// Endpoint to fetch doctor details
+app.get('/api/doctor-details', async (req, res) => {
+    const { doctorId } = req.query;
+
+    if (!doctorId) {
+        return res.status(400).json({ error: 'Doctor ID is required' });
+    }
+
+    try {
+        const connection = await pool.getConnection();
+        const [rows] = await connection.execute(
+            `
+            SELECT CONCAT(first_name, ' ', last_name) AS doctor_name
+            FROM Users
+            WHERE id = ? AND role = 'Doctor'
+            `,
+            [doctorId]
         );
         connection.release();
 
         if (rows.length === 0) {
-            return res.status(404).json({ message: 'No appointments found' });
+            return res.status(404).json({ error: 'Doctor not found' });
         }
 
-        return res.status(200).json(rows);
+        res.status(200).json({ doctorName: rows[0].doctor_name });
     } catch (error) {
-        console.error('Error getting appointments:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-app.get('/api/appointments/:doctor_id', async (req, res) => {
-    const { patient_id } = req.params;
-    try { //gets connection
-        const connection = await pool.getConnection();
-        const [rows] = await connection.execute(
-            'SELECT * FROM appointments WHERE doctor_id = ?',
-            [patient_id]
-        );
-        connection.release();
-
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'No appointments found' });
-        }
-
-        return res.status(200).json(rows);
-    } catch (error) {
-        console.error('Error getting appointments:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error fetching doctor details:', error);
+        res.status(500).json({ error: 'Failed to fetch doctor details' });
     }
 });
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-}); // Listen for incoming requests
+  console.log(`Server running on port ${PORT}`);
+});
