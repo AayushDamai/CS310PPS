@@ -5,23 +5,23 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
 
-const DoctorCalendar = () => {
+const PatientCalendar = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null); // State to track the selected event
-  const doctor_id = localStorage.getItem('userId'); // Retrieve doctor_id from localStorage
+  const patient_id = localStorage.getItem('userId'); // Retrieve patient_id from localStorage
 
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        console.log('Fetching appointments for doctor_id:', doctor_id);
+        console.log('Fetching appointments for patient_id:', patient_id);
 
-        if (!doctor_id) {
-          console.error('No doctor_id provided');
+        if (!patient_id) {
+          console.error('No patient_id provided');
           return;
         }
 
         // Make the API call to fetch appointments
-        const response = await fetch(`http://localhost:5000/api/appointments?doctorId=${doctor_id}`);
+        const response = await fetch(`http://localhost:5000/api/appointments?patientId=${patient_id}`);
         if (!response.ok) {
           console.error('Failed to fetch appointments:', response.statusText);
           return;
@@ -33,11 +33,11 @@ const DoctorCalendar = () => {
         // Format the appointments for the calendar
         const formattedEvents = data.map((appointment) => ({
           id: appointment.id,
-          title: `Patient: ${appointment.patient_name}`,
+          title: `Doctor: ${appointment.doctor_name}`,
           start: new Date(appointment.appointment_time),
           end: new Date(new Date(appointment.appointment_time).getTime() + 30 * 60 * 1000), // 30-minute block
           allDay: false,
-          patientName: appointment.patient_name,
+          doctorName: appointment.doctor_name,
           status: appointment.status,
         }));
         setEvents(formattedEvents);
@@ -47,9 +47,9 @@ const DoctorCalendar = () => {
     };
 
     fetchAppointments();
-  }, [doctor_id]);
+  }, [patient_id]);
 
-  if (!doctor_id) {
+  if (!patient_id) {
     return <div>Please log in to view your appointments.</div>;
   }
 
@@ -70,7 +70,7 @@ const DoctorCalendar = () => {
         endAccessor="end"
         style={{ height: 500 }}
         eventPropGetter={() => ({
-          style: { backgroundColor: 'blue', color: 'white' },
+          style: { backgroundColor: 'green', color: 'white' },
         })}
         onSelectEvent={handleEventClick} // Handle event click
       />
@@ -80,7 +80,7 @@ const DoctorCalendar = () => {
         <div className="popup">
           <div className="popup-content">
             <h2>Appointment Details</h2>
-            <p><strong>Patient Name:</strong> {selectedEvent.patientName}</p>
+            <p><strong>Doctor Name:</strong> {selectedEvent.doctorName}</p>
             <p><strong>Start Time:</strong> {selectedEvent.start.toLocaleString()}</p>
             <p><strong>End Time:</strong> {selectedEvent.end.toLocaleString()}</p>
             <p><strong>Status:</strong> {selectedEvent.status}</p>
@@ -92,4 +92,4 @@ const DoctorCalendar = () => {
   );
 };
 
-export default DoctorCalendar;
+export default PatientCalendar;

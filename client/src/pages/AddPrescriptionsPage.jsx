@@ -1,14 +1,15 @@
 import React from 'react';
-import AddPrescriptions from '../components/AddPrescriptions';
+import { useAuth } from '../hooks/AuthContext';
 import NavBar from '../components/NavBar';
+import AddPrescriptions from '../components/AddPrescriptions';
 
-
-const AddPrescriptionsPage = () => { 
-    const doctor_id = localStorage.getItem('userId'); 
-    return ( 
+const AddPrescriptionsPage = () => {
+    // const doctor_id = localStorage.getItem('userId');
+    const { user } = useAuth();
+    return (
         <div className="add-prescriptions-page">
-               <NavBar />
-               <AddPrescriptions doctor_id={doctor_id} />
+            <NavBar />
+            <AddPrescriptions doctor_id={user.userId} />
         </div>
     );
 };

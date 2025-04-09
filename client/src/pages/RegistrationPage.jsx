@@ -5,10 +5,10 @@ import RegistrationForm from '../components/RegistrationForm';
 
 const RegistrationPage = () => {
     return (
-    <div className="registration-page">
-      <NavBar />
-      <RegistrationForm />
-    </div>
+        <div className="registration-page">
+            <NavBar />
+            <RegistrationForm />
+        </div>
     );
 }
 
