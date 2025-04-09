@@ -16,7 +16,7 @@ const ViewPrescription = () => {
 
         console.log('Checking userId in ViewPrescription:', userId);
         if (!userId) {
-            console.log('Redirecting to login because userId is missing'); // this is mostly for debugging but if something goes wrong with prescriptions, this will help 
+            console.log('userId is missing'); // this is mostly for debugging but if something goes wrong with prescriptions, this will help 
             navigate('/login');
             return;
         }
