@@ -134,16 +134,17 @@ const ExistingPrescriptions = () => {
                 </form>
             ) : (
                 <ul className="prescription-list">
-                    {prescriptions.map((prescription) => (
-                        <li key={prescription.id} className="prescription-item">
-                            <strong>Patient ID:</strong> {prescription.patientId} <br />
-                            <strong>Medication:</strong> {prescription.medication} <br />
-                            <strong>Dosage:</strong> {prescription.dosage} <br />
-                            <strong>Instructions:</strong> {prescription.instructions} <br />
-                            <button onClick={() => handleEdit(prescription)}>Edit</button>
-                        </li>
-                    ))}
-                </ul>
+                {prescriptions.map((prescription) => (
+        <li key={prescription.id} className="prescription-item">
+            <strong>Patient ID:</strong> {prescription.patient_id} <br />
+            <strong>Patient Name:</strong> {prescription.patient_name} <br />
+            <strong>Medication:</strong> {prescription.medication} <br />
+            <strong>Dosage:</strong> {prescription.dosage} <br />
+            <strong>Instructions:</strong> {prescription.instructions} <br />
+            <button onClick={() => handleEdit(prescription)}>Edit</button>
+        </li>
+    ))}
+</ul>
             )}
         </div>
     );
