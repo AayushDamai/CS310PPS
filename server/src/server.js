@@ -10,6 +10,7 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
+const bcrypt = require('bcrypt');
 const app = express();
 const PORT = 5000;
 
@@ -50,35 +51,41 @@ app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Get a connection from the pool
         const connection = await pool.getConnection();
 
-        // Retrieve the user record along with their role
+        console.log('Login attempt for email:', email); // Debug log
+
         const [rows] = await connection.execute(
-            'SELECT id, role, password FROM users WHERE email = ?',
+            'SELECT id, role, password, first_name, last_name FROM users WHERE email = ?',
             [email]
         );
         connection.release();
 
-        if (rows.length == 0) {
+        if (rows.length === 0) {
+            console.log('Invalid email:', email); // Debug log
             return res.status(401).json({ message: 'Invalid email' });
         }
 
         const user = rows[0];
-        if (user.password !== password) {
-            return res.status(401).json({ message: `Invalid password for: ${email}` });
+        console.log('User found:', user); // Debug log
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            console.log('Invalid password for email:', email); // Debug log
+            return res.status(401).json({ message: 'Invalid password' });
         }
 
-        // If passwords match, login is successful
-        console.log(`User ${email} logged in`);
+        console.log('Login successful for user:', user.id); // Debug log
 
-        // Send back user data, including role
         res.status(200).json({
             message: 'Login successful',
             userId: user.id,
-            role: user.role,  // Include role in the response
+            role: user.role,
+            name: `${user.first_name} ${user.last_name}`, // Include full name
         });
     } catch (error) {
+        console.error('Error during login:', error);
         res.status(500).json({ error: 'Server error during login' });
     }
 });
@@ -517,3 +524,29 @@ app.delete('/api/doctors/:id', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+const handleLogin = async (email, password) => {
+    console.log('Attempting login with:', email, password); // Debug log
+
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+        console.log('Login response:', data); // Debug log
+
+        if (response.ok) {
+            localStorage.setItem('userId', data.userId);
+            localStorage.setItem('role', data.role);
+            navigate('/doctor-home'); // Redirect to the doctor homepage
+        } else {
+            alert(data.message || 'Login failed');
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        alert('An error occurred during login.');
+    }
+};
