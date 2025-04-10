@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 const ManageDoctors = () => {
+    const [activeSubTab, setActiveSubTab] = useState('add'); // State to track the active sub-tab
     const [doctors, setDoctors] = useState([]);
     const [newDoctor, setNewDoctor] = useState({ name: '', specialty: '' });
 
@@ -44,7 +45,7 @@ const ManageDoctors = () => {
         try {
             const response = await fetch(`/api/doctors/${id}`, { method: 'DELETE' });
             if (response.ok) {
-                setDoctors(doctors.filter((doctor) => doctor.id !== id));
+                setDoctors(doctors.filter((doctor) => doctor.user_id !== id));
             } else {
                 console.error('Failed to delete doctor');
             }
@@ -57,36 +58,55 @@ const ManageDoctors = () => {
         <div>
             <h2>Manage Doctors</h2>
 
-            {/* Add Doctor Form */}
-            <div>
-                <h3>Add New Doctor</h3>
-                <input
-                    type="text"
-                    placeholder="Name"
-                    value={newDoctor.name}
-                    onChange={(e) => setNewDoctor({ ...newDoctor, name: e.target.value })}
-                />
-                <input
-                    type="text"
-                    placeholder="Specialty"
-                    value={newDoctor.specialty}
-                    onChange={(e) => setNewDoctor({ ...newDoctor, specialty: e.target.value })}
-                />
-                <button onClick={handleAddDoctor}>Add Doctor</button>
+            {/* Sub-Tabs */}
+            <div className="sub-tabs">
+                <button
+                    className={activeSubTab === 'add' ? 'active-link' : ''}
+                    onClick={() => setActiveSubTab('add')}
+                >
+                    Add Doctor
+                </button>
+                <button
+                    className={activeSubTab === 'list' ? 'active-link' : ''}
+                    onClick={() => setActiveSubTab('list')}
+                >
+                    Doctors List
+                </button>
             </div>
 
-            {/* Doctors List */}
-            <div>
-                <h3>Doctors List</h3>
-                <ul>
-                    {doctors.map((doctor) => (
-                        <li key={doctor.id}>
-                            {doctor.name} - {doctor.specialty}
-                            <button onClick={() => handleDeleteDoctor(doctor.id)}>Delete</button>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+            {/* Sub-Tab Content */}
+            {activeSubTab === 'add' && (
+                <div className="dashboard-section">
+                    <h3>Add New Doctor</h3>
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        value={newDoctor.name}
+                        onChange={(e) => setNewDoctor({ ...newDoctor, name: e.target.value })}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Specialty"
+                        value={newDoctor.specialty}
+                        onChange={(e) => setNewDoctor({ ...newDoctor, specialty: e.target.value })}
+                    />
+                    <button onClick={handleAddDoctor}>Add Doctor</button>
+                </div>
+            )}
+
+            {activeSubTab === 'list' && (
+                <div className="dashboard-section">
+                    <h3>Doctors List</h3>
+                    <ul>
+                        {doctors.map((doctor) => (
+                            <li key={doctor.user_id}>
+                                <strong>Name:</strong> {doctor.name} | <strong>Specialization:</strong> {doctor.specialization}
+                                <button onClick={() => handleDeleteDoctor(doctor.user_id)}>Delete</button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };

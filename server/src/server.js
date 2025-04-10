@@ -473,6 +473,46 @@ app.get('/api/doctor-details', async (req, res) => {
     }
 });
 
+// Fetch all doctors
+app.get('/api/doctors', async (req, res) => {
+    try {
+        const connection = await pool.getConnection();
+        const [rows] = await connection.execute(`
+            SELECT d.user_id, CONCAT(u.first_name, ' ', u.last_name) AS name, d.specialization
+            FROM Doctors d
+            JOIN Users u ON d.user_id = u.id
+        `);
+        connection.release();
+
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error fetching doctors:', error);
+        res.status(500).json({ error: 'Failed to fetch doctors' });
+    }
+});
+
+// Delete a doctor by user_id
+app.delete('/api/doctors/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const connection = await pool.getConnection();
+
+        // Delete the doctor from the Doctors table
+        await connection.execute('DELETE FROM Doctors WHERE user_id = ?', [id]);
+
+        // Optionally, delete the user from the Users table
+        await connection.execute('DELETE FROM Users WHERE id = ?', [id]);
+
+        connection.release();
+
+        res.status(200).json({ message: 'Doctor deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting doctor:', error);
+        res.status(500).json({ error: 'Failed to delete doctor' });
+    }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

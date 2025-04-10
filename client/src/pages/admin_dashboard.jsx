@@ -5,6 +5,7 @@ import ManageDoctors from '../components/ManageDoctors';
 import ManageUsers from '../components/ManageUsers';
 import ManageAppointments from '../components/ManageAppointments';
 import ManageMessages from '../components/ManageMessages';
+import ManageDoctorsList from '../components/ManageDoctorsList'; // Import the new component
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -62,6 +63,12 @@ const AdminDashboard = () => {
                     >
                         Manage Messages
                     </button>
+                    <button
+                        className={activeTab === 'manage-doctors-list' ? 'active-link' : ''}
+                        onClick={() => setActiveTab('manage-doctors-list')}
+                    >
+                        Manage Doctors List
+                    </button>
                 </nav>
             </div>
 
@@ -94,6 +101,11 @@ const AdminDashboard = () => {
                     {activeTab === 'manage-messages' && (
                         <div className="dashboard-section">
                             <ManageMessages />
+                        </div>
+                    )}
+                    {activeTab === 'manage-doctors-list' && (
+                        <div className="dashboard-section">
+                            <ManageDoctorsList />
                         </div>
                     )}
                 </div>
