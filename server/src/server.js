@@ -10,7 +10,6 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
-const bcrypt = require('bcrypt');
 const app = express();
 const PORT = 5000;
 
@@ -51,41 +50,35 @@ app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        // Get a connection from the pool
         const connection = await pool.getConnection();
 
-        console.log('Login attempt for email:', email); // Debug log
-
+        // Retrieve the user record along with their role
         const [rows] = await connection.execute(
-            'SELECT id, role, password, first_name, last_name FROM users WHERE email = ?',
+            'SELECT id, role, password FROM users WHERE email = ?',
             [email]
         );
         connection.release();
 
-        if (rows.length === 0) {
-            console.log('Invalid email:', email); // Debug log
+        if (rows.length == 0) {
             return res.status(401).json({ message: 'Invalid email' });
         }
 
         const user = rows[0];
-        console.log('User found:', user); // Debug log
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-
-        if (!isPasswordValid) {
-            console.log('Invalid password for email:', email); // Debug log
-            return res.status(401).json({ message: 'Invalid password' });
+        if (user.password !== password) {
+            return res.status(401).json({ message: `Invalid password for: ${email}` });
         }
 
-        console.log('Login successful for user:', user.id); // Debug log
+        // If passwords match, login is successful
+        console.log(`User ${email} logged in`);
 
+        // Send back user data, including role
         res.status(200).json({
             message: 'Login successful',
             userId: user.id,
-            role: user.role,
-            name: `${user.first_name} ${user.last_name}`, // Include full name
+            role: user.role,  // Include role in the response
         });
     } catch (error) {
-        console.error('Error during login:', error);
         res.status(500).json({ error: 'Server error during login' });
     }
 });
@@ -480,73 +473,7 @@ app.get('/api/doctor-details', async (req, res) => {
     }
 });
 
-// Fetch all doctors
-app.get('/api/doctors', async (req, res) => {
-    try {
-        const connection = await pool.getConnection();
-        const [rows] = await connection.execute(`
-            SELECT d.user_id, CONCAT(u.first_name, ' ', u.last_name) AS name, d.specialization
-            FROM Doctors d
-            JOIN Users u ON d.user_id = u.id
-        `);
-        connection.release();
-
-        res.status(200).json(rows);
-    } catch (error) {
-        console.error('Error fetching doctors:', error);
-        res.status(500).json({ error: 'Failed to fetch doctors' });
-    }
-});
-
-// Delete a doctor by user_id
-app.delete('/api/doctors/:id', async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const connection = await pool.getConnection();
-
-        // Delete the doctor from the Doctors table
-        await connection.execute('DELETE FROM Doctors WHERE user_id = ?', [id]);
-
-        // Optionally, delete the user from the Users table
-        await connection.execute('DELETE FROM Users WHERE id = ?', [id]);
-
-        connection.release();
-
-        res.status(200).json({ message: 'Doctor deleted successfully' });
-    } catch (error) {
-        console.error('Error deleting doctor:', error);
-        res.status(500).json({ error: 'Failed to delete doctor' });
-    }
-});
-
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-const handleLogin = async (email, password) => {
-    console.log('Attempting login with:', email, password); // Debug log
-
-    try {
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-        });
-
-        const data = await response.json();
-        console.log('Login response:', data); // Debug log
-
-        if (response.ok) {
-            localStorage.setItem('userId', data.userId);
-            localStorage.setItem('role', data.role);
-            navigate('/doctor-home'); // Redirect to the doctor homepage
-        } else {
-            alert(data.message || 'Login failed');
-        }
-    } catch (error) {
-        console.error('Error during login:', error);
-        alert('An error occurred during login.');
-    }
-};
