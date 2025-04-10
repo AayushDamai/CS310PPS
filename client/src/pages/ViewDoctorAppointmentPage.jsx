@@ -3,7 +3,7 @@ import React from 'react';
 import NavBar from '../components/NavBar';
 import DoctorAppointment from '../components/Appointment';
 
-const ViewDoctorAppoitmentPage = () => {
+const ViewDoctorAppointmentPage = () => {
     return (
         <div className="forgot-info-page">
           <NavBar />
