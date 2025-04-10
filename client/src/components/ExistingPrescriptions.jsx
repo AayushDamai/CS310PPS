@@ -79,7 +79,7 @@ const ExistingPrescriptions = () => {
 
     return (
         <div className="existing-prescriptions">
-            <h2>Existing Prescriptions1</h2>
+            <h2>Existing Prescriptions</h2>
             {editingPrescription ? (
                 <form className="edit-prescription-form" onSubmit={handleSave}>
                     <div className="form-group">
