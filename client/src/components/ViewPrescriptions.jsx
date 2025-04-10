@@ -41,7 +41,7 @@ const ViewPrescriptions = ({ patientId }) => {
 
     return (
         <div>
-            <h3>Your Prescriptions</h3>
+         
             {prescriptions.length > 0 ? (
                 <ul className="prescription-list">
                     {prescriptions.map((prescription) => (
