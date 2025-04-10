@@ -6,10 +6,10 @@ import ForgotInfoForm from '../components/ForgotInfoForm';
 const ForgotInfoPage = () => {
     return (
         <div className="forgot-info-page">
-          <NavBar />
-          <ForgotInfoForm />
+            <NavBar />
+            <ForgotInfoForm />
         </div>
     );
-}
+};
 
 export default ForgotInfoPage;

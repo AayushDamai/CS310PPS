@@ -12,10 +12,13 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AddAppointmentPage from './pages/AddAppointmentPage';
 import ViewPrescription from './pages/ViewPrescription';
 import DoctorHomePage from './pages/DoctorHomePage';
-import AddPrescriptionsPage from './pages/AddPrescriptionsPage'
-
+import AddPrescriptionsPage from './pages/AddPrescriptionsPage';
+import MessagesPage from './components/MessagesPage';
+import AdminLogin from './components/AdminLogin';
+import AdminPage from './pages/admin_dashboard'; // Import the admin dashboard page
 
 const App = () => {
+
   return (
     <div className="App">
       <AuthProvider>
@@ -27,16 +30,19 @@ const App = () => {
           <Route path="/contactUs" element={<ContactUs />} />
           <Route path="/add-appointment-page" element={<AddAppointmentPage/>} />
           <Route path="/prescriptions/:patient_id" element={<ViewPrescription />} />
-          <Route path="/prescriptions" element={<Navigate to="/prescriptions/1" />} />
           <Route path="/doctor-dashboard" element={<DoctorHomePage />} />
           <Route path="/doctor/add-prescription" element={<AddPrescriptionsPage/>} />
           <Route path="/patient-portal" element={<ProtectedRoute> <PatientPortalPage /> </ProtectedRoute>}/>
           <Route path="/appointment-page" element={<ProtectedRoute> <ViewAppointmentPage /> </ProtectedRoute>} />
           <Route path="/doctor-appointment-page" element={<ProtectedRoute> <ViewDoctorAppointmentPage /> </ProtectedRoute>} />
+          <Route path="/doctor/messages" element={<MessagesPage doctorId={localStorage.getItem('userId')} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-dashboard" element={<ProtectedRoute> <AdminPage /> </ProtectedRoute>} />                                       
         </Routes>
       </AuthProvider>
     </div>
   );
+
 };
 
 export default App;

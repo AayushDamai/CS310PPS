@@ -80,6 +80,7 @@ const Appointment = () => {
     <div dangerouslySetInnerHTML={{ __html: appointmentData }} />
     </section>
   );
+
 };
 
 export default Appointment;

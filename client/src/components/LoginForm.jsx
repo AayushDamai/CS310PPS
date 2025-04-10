@@ -20,51 +20,54 @@ const LoginForm = () => {
             .catch(() => setStatus('Failed to connect to backend')); // Handle errors
     }, []); // Empty array = run once
 
-   
-    const sendLoginInfo = async () => {
 
+    const sendLoginInfo = async () => {
         try {
             const res = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password }),
             });
-    
+
             const data = await res.json();
+
             if (res.ok) {
-                // this stores the userId in the local storage, so if the userId is a doctor it will allow verification 
-                localStorage.setItem('userId', data.userId);
-                login({userId: data.userId});
-    
+                login(data); // Store user data in context or localStorage
+                localStorage.setItem('userName', data.name); // Store the user's name
+                localStorage.setItem('userId', data.userId); // Store the user's ID
+                localStorage.setItem('role', data.role); // Store the user's role
+
                 if (data.role === 'Doctor') {
                     navigate('/doctor-dashboard');
+                } else if (data.role === 'Admin') {
+                    navigate('/admin-dashboard');
                 } else {
-                    navigate('/patient-portal');  
+                    navigate('/patient-portal');
                 }
-        } else {
-            setResponse(data.message);
-        }
-    } catch (error) {
-        setResponse('Error sending data to server');
+            } else {
+                setResponse(data.message);
+            }
+        } catch (error) {
+            setResponse('Error sending data to server');
         }
     };
-  
+
     return (
         <div className="input-form">
             <p>Backend Status: {status}</p>
             <h2>Login to your account</h2>
-            <input 
+            <input
                 type="email"
                 id='email'
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
             />
-            <input 
+            <input
                 type="password"
                 id='password'
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
             />
             <button onClick={sendLoginInfo}>Login</button>

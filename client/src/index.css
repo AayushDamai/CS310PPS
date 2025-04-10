@@ -4,7 +4,9 @@
 */
 
 /* Minimal Reset */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -22,9 +24,12 @@ body {
 
 .sections-container {
   display: flex;
-  justify-content: space-between; /* Puts space between them */
-  align-items: flex-start; /* Aligns them at the top */
-  gap: 20px; /* Adds spacing between sections */
+  justify-content: space-between;
+  /* Puts space between them */
+  align-items: flex-start;
+  /* Aligns them at the top */
+  gap: 20px;
+  /* Adds spacing between sections */
   padding: 20px;
   background-color: #fff;
 }

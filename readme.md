@@ -62,4 +62,6 @@ https://www.freecodecamp.org/news/how-to-install-react-a-step-by-step-guide/
 ```bash
   npm install react-big-calendar
   npm install moment
+  npm install react-time-picker
+  npm install react-datepicker
 ```

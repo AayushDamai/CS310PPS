@@ -16,7 +16,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 // Render application with strict mode checks
 root.render(
-  <HashRouter>   
-    <App />            {/* Main application component */}
-  </HashRouter>
+    <HashRouter>
+        <App />            {/* Main application component */}
+    </HashRouter>
 );

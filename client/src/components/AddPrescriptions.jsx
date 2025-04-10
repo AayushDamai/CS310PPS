@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useAuth } from '../hooks/AuthContext';
 
 const AddPrescriptions = () => {
-    const doctor_id = localStorage.getItem('userId'); //get doctorId 
-    const navigate = useNavigate();
-    
+    // const doctor_id = localStorage.getItem('userId'); //get doctorId 
+    const { user } = useAuth(); //get userId from AuthContext
+
     const [prescData, setPrescData] = useState({
         patient_id: '',
         medication: '',
@@ -12,7 +12,7 @@ const AddPrescriptions = () => {
         instructions: '',
         prescription_date: new Date().toISOString().split('T')[0] //this pulls up todays date only
     });
-    
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,19 +21,19 @@ const AddPrescriptions = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
-            const response = await fetch('http://localhost:5000/api/addprescriptions', { 
+            const response = await fetch('http://localhost:5000/api/addprescriptions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     ...prescData,
-                    doctor_id: doctor_id
+                    doctor_id: user.userId //send doctorId to backend
                 })
             });
-            
+
             if (response.ok) {
                 alert('Prescription has been added!');
                 setPrescData({
@@ -41,7 +41,7 @@ const AddPrescriptions = () => {
                     medication: '',
                     dosage: '',
                     instructions: '',
-                    prescription_date: new Date().toISOString().split('T')[0]  
+                    prescription_date: new Date().toISOString().split('T')[0]
                 });
             } else {
                 const errorData = await response.json();
@@ -57,7 +57,7 @@ const AddPrescriptions = () => {
         <form onSubmit={handleSubmit}>
             <h2>Add a Prescription</h2>
             <label>
-                Patient ID:
+                Patient ID: 
                 <input
                     type="text"
                     name="patient_id"
