@@ -311,39 +311,50 @@ app.post('/api/messages', async (req, res) => {
     }
 });
 
-// Endpoint to fetch all prescriptions
+// Updated endpoint to fetch all prescriptions or prescriptions for a specific patient
 app.get('/api/prescriptions', async (req, res) => {
-  try {
-    // Get a connection from the pool
-    const connection = await pool.getConnection();
+    const { patientId } = req.query; // Get patientId from query parameters
 
-    // Query to fetch all prescriptions
-    const [rows] = await connection.execute(
-      `
-      SELECT 
-        p.id, 
-        p.patient_id, 
-        CONCAT(u.first_name, ' ', u.last_name) AS patient_name,
-        p.doctor_id,
-        CONCAT(d.first_name, ' ', d.last_name) AS doctor_name,
-        p.medication, 
-        p.dosage, 
-        p.instructions, 
-        p.prescription_date
-      FROM Prescriptions p
-      JOIN Users u ON p.patient_id = u.id
-      JOIN Users d ON p.doctor_id = d.id
-      `
-    );
+    try {
+        // Get a connection from the pool
+        const connection = await pool.getConnection();
 
-    connection.release();
+        let query = `
+            SELECT 
+                p.id, 
+                p.patient_id, 
+                CONCAT(u.first_name, ' ', u.last_name) AS patient_name,
+                p.doctor_id,
+                CONCAT(d.first_name, ' ', d.last_name) AS doctor_name,
+                p.medication, 
+                p.dosage, 
+                p.instructions, 
+                p.prescription_date
+            FROM Prescriptions p
+            JOIN Users u ON p.patient_id = u.id
+            JOIN Users d ON p.doctor_id = d.id
+        `;
 
-    // Return the prescriptions as JSON
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error('Error fetching prescriptions:', error);
-    res.status(500).json({ error: 'Failed to fetch prescriptions' });
-  }
+        const params = [];
+
+        // If patientId is provided, filter by patientId
+        if (patientId) {
+            query += `WHERE p.patient_id = ? `;
+            params.push(patientId);
+        }
+
+        query += `ORDER BY p.prescription_date DESC`;
+
+        // Execute the query
+        const [rows] = await connection.execute(query, params);
+        connection.release();
+
+        // Return the prescriptions as JSON
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error fetching prescriptions:', error);
+        res.status(500).json({ error: 'Failed to fetch prescriptions' });
+    }
 });
 
 // Endpoint to update a prescription

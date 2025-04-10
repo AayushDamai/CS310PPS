@@ -9,31 +9,37 @@ const ViewPrescription = () => {
     const navigate = useNavigate();
     const [prescriptions, setPrescriptions] = useState([]);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
     const { user } = useAuth();
 
     useEffect(() => {
         const userId = user.userId;
 
-        console.log('Checking userId in ViewPrescription:', userId);
-        if (!userId) {
-            console.log('Redirecting to login because userId is missing'); // this is mostly for debugging but if something goes wrong with prescriptions, this will help 
-            navigate('/login');
+        // Ensure the logged-in user matches the patient_id
+        if (userId !== patient_id) {
+            console.error('Unauthorized access: patient_id does not match logged-in user.');
+            setError('You are not authorized to view these prescriptions.');
+            setLoading(false);
             return;
         }
 
         const fetchPrescriptions = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/prescriptions/${patient_id}`); //get patient id
-                if (response.ok) {
-                    const data = await response.json();
-                    setPrescriptions(data); //if good, set prescriptions to that patient
-                } else {
-                    const errorData = await response.json();
-                    setError(errorData.message || 'Failed to fetch prescriptions');
+                const response = await fetch(`/api/prescriptions?patientId=${patient_id}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`, // Include token if needed
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch prescriptions');
                 }
-            } catch (err) {
-                console.error('Error fetching prescriptions:', err);
-                setError('Error fetching prescriptions');
+                const data = await response.json();
+                setPrescriptions(data);
+            } catch (error) {
+                console.error('Error fetching prescriptions:', error);
+                setError('Failed to load prescriptions. Please try again later.');
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -42,8 +48,13 @@ const ViewPrescription = () => {
         return () => {
             setPrescriptions([]);
             setError(null);
+            setLoading(true);
         };
-    }, [patient_id, navigate]);
+    }, [patient_id, user.userId]);
+
+    if (loading) {
+        return <p>Loading...</p>;
+    }
 
     if (error) {
         return <p>{error}</p>;
