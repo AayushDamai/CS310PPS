@@ -398,15 +398,20 @@ app.put('/api/prescriptions/:id', async (req, res) => {
 });
 
 app.get('/api/appointments/:doctor_id', async (req, res) => {
-  const {doctor_id} = req.params;
-  try { //gets connection
-    const connection = await pool.getConnection();
-    const [rows] = await connection.execute(
-        'SELECT * FROM appointments WHERE doctor_id = ?',
-        [doctor_id]
-    );
-    connection.release(); 
+    const {doctor_id} = req.params;
+    try { //gets connection
+      const connection = await pool.getConnection();
+      const [rows] = await connection.execute(
+          'SELECT * FROM appointments WHERE doctor_id = ?',
+          [doctor_id]
+      );
+      connection.release(); 
+  } catch (error) {
+    console.log('Error - Appointments could not be fetched:', error);
+    return res.status(500).json({error: 'Appointments could not be fetched'});
+  }
 });
+
   
 app.get('/api/lab-tests', async (req, res) => {
     const { doctorId } = req.query;
