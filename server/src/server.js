@@ -244,31 +244,33 @@ app.put('/api/appointments/:id', async (req, res) => {
 app.get('/api/messages', async (req, res) => {
     const { doctorId, patientId } = req.query;
 
-    if (!doctorId) {
-        return res.status(400).json({ error: 'Doctor ID is required' });
+    if (!doctorId && !patientId) {
+        return res.status(400).json({ error: 'Doctor ID or Patient ID is required' });
     }
 
     try {
         const connection = await pool.getConnection();
 
-        // Base query to fetch messages for the doctor
-        let query = `
-            SELECT * FROM Messages
-            WHERE doctor_id = ?
-        `;
-        const params = [doctorId];
+        let query = `SELECT * FROM Messages WHERE `;
+        const params = [];
 
-        // If a patientId is provided, add it to the query
+        if (doctorId) {
+            query += `doctor_id = ? `;
+            params.push(doctorId);
+        }
+
         if (patientId) {
-            query += ` AND patient_id = ?`;
+            if (doctorId) query += `AND `;
+            query += `patient_id = ? `;
             params.push(patientId);
         }
 
-        query += ` ORDER BY patient_id, date ASC`;
+        query += `ORDER BY date ASC`;
 
         const [rows] = await connection.execute(query, params);
         connection.release();
 
+        console.log('Messages fetched:', rows); // Debug log
         res.status(200).json(rows);
     } catch (error) {
         console.error('Error fetching messages:', error);

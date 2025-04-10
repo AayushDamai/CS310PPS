@@ -12,11 +12,8 @@ const MessagesPagePatient = ({ patientId }) => {
         try {
             const response = await fetch(`/api/messages?patientId=${patientId}`);
             const data = await response.json();
-
-            console.log('Fetched messages:', data); // Debug log
-
             if (Array.isArray(data)) {
-                setMessageHistory(data); // Ensure data is an array before setting state
+                setMessageHistory(data); // Set the state only if the response is an array
             } else {
                 console.error('Unexpected response format:', data);
                 setMessageHistory([]); // Fallback to an empty array
@@ -120,17 +117,17 @@ const MessagesPagePatient = ({ patientId }) => {
                     <table>
                         <thead>
                             <tr>
-                                <th>Doctor ID</th>
+                                <th>ID</th>
                                 <th>Message</th>
                                 <th>Sent By</th>
                                 <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {messageHistory.length > 0 ? (
+                            {Array.isArray(messageHistory) && messageHistory.length > 0 ? (
                                 messageHistory.map((message, index) => (
                                     <tr key={index}>
-                                        <td>{message.doctor_id}</td>
+                                        <td>{message.doctor_id}</td> {/* Ensure this key exists in the response */}
                                         <td>{message.message}</td>
                                         <td>{message.sent_by === 'patient' ? 'You' : 'Doctor'}</td>
                                         <td>{new Date(message.date).toLocaleString()}</td>
