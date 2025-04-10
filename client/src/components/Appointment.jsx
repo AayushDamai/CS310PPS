@@ -1,14 +1,41 @@
 // Appointment.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/AuthContext'; 
 
 
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString(undefined, options);
+  };
+  
+const getName = async (Id) => { // Changed to async function
+  try {
+    console.log(`Sending userId: ${Id}`);
+    const res = await fetch('/api/name', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: Id })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      return data.name; 
+    } else {
+      return "Error Bacon";
+      
+    }
+  } catch (error) {
+    console.error('Error sending data to server:', error);
+    return "Error fetching name";
+  }
+};
+
 const Appointment = () => {
-  const [status, setStatus] = React.useState('');
-  const [appointmentData, setAppointmentData] = React.useState('');
-  const {user} = useAuth();
-       
-  // useEffect to check backend connection status
+  const [status, setStatus] = useState('');
+  const [appointmentData, setAppointmentData] = useState('');
+  const { user } = useAuth();
+
   useEffect(() => {
     fetch('/api')
       .then(res => res.text())         // Parse text response
@@ -17,41 +44,40 @@ const Appointment = () => {
 
     const sendAppointmentData = async () => {
       try {
-        console.log(`Sending userId: ${user}`); // Debugging line to check status
+        console.log(`Sending userId: ${user.userId}`); // Debugging line to check status
         const res = await fetch('/api/appointments/:patient_id', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({user_id: user.userId})
+          body: JSON.stringify({ user_id: user.userId })
         });
-              
+
         const data = await res.json();
         if (res.ok) {
           let outputString = "";
           for (let index = 0; index < data.length; index++) {
             const appointmentJSON = data[index];
-            for (const p in appointmentJSON){
-              const appointmentField = appointmentJSON[p];
-              outputString += p+": "+appointmentField +"\n";
+            const currentDoctorName = await getName(appointmentJSON['doctor_id']); // Await the async function
+            
+            outputString += `<div>See Dr.: ${currentDoctorName}<br>`;
+            outputString += `Location: ${appointmentJSON['location']}<br>`;
+            const formattedDate = formatDate(appointmentJSON['appointment_time']); // Format the date
+            outputString += `Date: ${formattedDate}</div><br>`;
 
-            }
-            
+
           }
-            
-            setAppointmentData(outputString); 
-        } else {
+          setAppointmentData(outputString);
         }
       } catch (error) {
-          console.log('Error sending data to server:', error);
+        console.log('Error sending data to server:', error);
       }
-    }
+    };
     sendAppointmentData(); // Call the function to send data
-  }, []);
+  }, [user]);
 
   return (
     <section className='project-source-card'>
-      <p>{appointmentData}</p>
-      
-      
+
+    <div dangerouslySetInnerHTML={{ __html: appointmentData }} />
     </section>
   );
 };
