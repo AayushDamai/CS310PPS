@@ -6,8 +6,8 @@ import NavPanel from '../components/NavPanel';
 import '../styles/PatientPortal.css';
 import '../styles/Dochomepage.css';
 import PatientCalendar from '../components/PatientCalendar';
-import ViewPrescriptions from '../components/ViewPrescriptions';
-import MessagesPage from '../components/MessagesPage';
+import ViewPrescriptions from '../components/Prescription';
+import MessagesPagePatient from '../components/MessagesPagePatient';
 import LabTestResultsPage from '../components/LabTestResultsPage';
 
 const PatientPortalPage = () => {
@@ -110,7 +110,7 @@ const PatientPortalPage = () => {
                 )}
                 {activeTab === 'messages' && (
                     <div className="dashboard-section">
-                        <MessagesPage patientId={patientId} />
+                        <MessagesPagePatient patientId={patientId} />
                     </div>
                 )}
                 {activeTab === 'lab-tests' && (
