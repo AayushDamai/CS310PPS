@@ -31,7 +31,7 @@ const getName = async (Id) => { // Changed to async function
   }
 };
 
-const Appointment = () => {
+const DoctorAppointment = () => {
   const [status, setStatus] = useState('');
   const [appointmentData, setAppointmentData] = useState('');
   const { user } = useAuth();
@@ -45,7 +45,7 @@ const Appointment = () => {
     const sendAppointmentData = async () => {
       try {
         console.log(`Sending userId: ${user.userId}`); // Debugging line to check status
-        const res = await fetch('/api/appointments/:patient_id', {
+        const res = await fetch('/api/appointments/:doctor_id', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: user.userId })
@@ -56,13 +56,14 @@ const Appointment = () => {
           let outputString = "";
           for (let index = 0; index < data.length; index++) {
             const appointmentJSON = data[index];
-            const currentDoctorName = await getName(appointmentJSON['doctor_id']); // Await the async function
-            if (appointmentJSON['status']== 'Scheduled'){
-            outputString += `<div>See Dr.: ${currentDoctorName}<br>`;
+            const currentPatientName = await getName(appointmentJSON['patient_id']); // Await the async function
+            
+            outputString += `<div>See Patient: ${currentPatientName}<br>`;
             outputString += `Location: ${appointmentJSON['location']}<br>`;
             const formattedDate = formatDate(appointmentJSON['appointment_time']); // Format the date
             outputString += `Date: ${formattedDate}</div><br>`;
-            }
+            outputString += `Date: ${appointmentJSON['status']}</div><br>`;
+
 
           }
           setAppointmentData(outputString);
@@ -80,7 +81,6 @@ const Appointment = () => {
     <div dangerouslySetInnerHTML={{ __html: appointmentData }} />
     </section>
   );
-
 };
 
 export default Appointment;
