@@ -115,7 +115,7 @@ const PatientPortalPage = () => {
                 )}
                 {activeTab === 'lab-tests' && (
                     <div className="dashboard-section">
-                        <LabTestResultsPage patientId={patientId} />
+                        <LabTestResultsPage patientId={patientId} role={localStorage.getItem('role')} />
                     </div>
                 )}
             </div>
