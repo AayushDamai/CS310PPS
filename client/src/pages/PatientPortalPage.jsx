@@ -6,8 +6,8 @@ import NavPanel from '../components/NavPanel';
 import '../styles/PatientPortal.css';
 import '../styles/Dochomepage.css';
 import PatientCalendar from '../components/PatientCalendar';
-import ViewPrescriptions from '../components/ViewPrescriptions';
-import MessagesPage from '../components/MessagesPage';
+import ViewPrescriptions from '../components/ViewPrescriptions'; // Correct import
+import MessagesPagePatient from '../components/MessagesPagePatient';
 import LabTestResultsPage from '../components/LabTestResultsPage';
 
 const PatientPortalPage = () => {
@@ -105,17 +105,17 @@ const PatientPortalPage = () => {
                 {activeTab === 'prescriptions' && (
                     <div className="dashboard-section">
                         <h2>Your Prescriptions</h2>
-                        <ViewPrescriptions patientId={patientId} />
+                        <ViewPrescriptions patientId={patientId} /> {/* Correct usage */}
                     </div>
                 )}
                 {activeTab === 'messages' && (
                     <div className="dashboard-section">
-                        <MessagesPage patientId={patientId} />
+                        <MessagesPagePatient patientId={patientId} />
                     </div>
                 )}
                 {activeTab === 'lab-tests' && (
                     <div className="dashboard-section">
-                        <LabTestResultsPage patientId={patientId} />
+                        <LabTestResultsPage patientId={patientId} role={localStorage.getItem('role')} />
                     </div>
                 )}
             </div>
