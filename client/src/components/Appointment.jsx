@@ -57,12 +57,12 @@ const Appointment = () => {
           for (let index = 0; index < data.length; index++) {
             const appointmentJSON = data[index];
             const currentDoctorName = await getName(appointmentJSON['doctor_id']); // Await the async function
-            
+            if (appointmentJSON['status']== 'Scheduled'){
             outputString += `<div>See Dr.: ${currentDoctorName}<br>`;
             outputString += `Location: ${appointmentJSON['location']}<br>`;
             const formattedDate = formatDate(appointmentJSON['appointment_time']); // Format the date
             outputString += `Date: ${formattedDate}</div><br>`;
-
+            }
 
           }
           setAppointmentData(outputString);
