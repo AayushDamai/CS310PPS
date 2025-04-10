@@ -32,6 +32,7 @@ const App = () => {
           <Route path="/doctor/add-prescription" element={<AddPrescriptionsPage/>} />
           <Route path="/patient-portal" element={<ProtectedRoute> <PatientPortalPage /> </ProtectedRoute>}/>
           <Route path="/appointment-page" element={<ProtectedRoute> <ViewAppointmentPage /> </ProtectedRoute>} />
+          <Route path="/doctor-appointment-page" element={<ProtectedRoute> <ViewDoctorAppointmentPage /> </ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </div>
