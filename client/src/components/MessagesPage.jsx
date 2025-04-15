@@ -93,7 +93,7 @@ const MessagesPage = ({ doctorId }) => {
                 <div className="new-message">
                     <h3>Send a New Message</h3>
                     <div>
-                        <label>Select Patient ID:</label>
+                        <label>ID:</label>
                         <input
                             type="text"
                             value={selectedPatientId}
@@ -119,7 +119,7 @@ const MessagesPage = ({ doctorId }) => {
                     <table>
                         <thead>
                             <tr>
-                                <th>Patient ID</th>
+                                <th>ID</th>
                                 <th>Message</th>
                                 <th>Sent By</th>
                                 <th>Date</th>
