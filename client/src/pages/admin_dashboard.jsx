@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/AdminDashboard.css';
 import ManageDoctors from '../components/ManageDoctors';
 import ManageUsers from '../components/ManageUsers';
-import AddAppointmentForm from '../components/AddAppointmentForm'; // Import AddAppointmentForm
+import AddAppointmentForm from '../components/AddAppointmentForm';
 import ManageMessages from '../components/ManageMessages';
-import ManageDoctorsList from '../components/ManageDoctorsList';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -63,12 +62,6 @@ const AdminDashboard = () => {
                     >
                         Manage Messages
                     </button>
-                    <button
-                        className={activeTab === 'manage-doctors-list' ? 'active-link' : ''}
-                        onClick={() => setActiveTab('manage-doctors-list')}
-                    >
-                        Manage Doctors List
-                    </button>
                 </nav>
             </div>
 
@@ -96,17 +89,12 @@ const AdminDashboard = () => {
                     {activeTab === 'manage-appointments' && (
                         <div className="dashboard-section">
                             <h2>Manage Appointments</h2>
-                            <AddAppointmentForm /> {/* Add the AddAppointmentForm here */}
+                            <AddAppointmentForm />
                         </div>
                     )}
                     {activeTab === 'manage-messages' && (
                         <div className="dashboard-section">
                             <ManageMessages />
-                        </div>
-                    )}
-                    {activeTab === 'manage-doctors-list' && (
-                        <div className="dashboard-section">
-                            <ManageDoctorsList />
                         </div>
                     )}
                 </div>

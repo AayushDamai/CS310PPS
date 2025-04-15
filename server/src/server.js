@@ -517,10 +517,21 @@ app.post('/api/sendAppointmentData', async (req, res) => {
 
 // Endpoint to add a new doctor
 app.post('/api/doctors', async (req, res) => {
-    const { firstName, lastName, email, password, specialty } = req.body;
+    console.log('Request body:', req.body); // Debug log
+    const {
+        firstName,
+        lastName,
+        email,
+        password,
+        dateOfBirth = '1980-07-01', // Default value
+        sex,
+        address1,
+        address2 = null, // Optional
+        specialty = 'Doctor', // Default value
+    } = req.body;
 
-    if (!firstName || !lastName || !email || !password || !specialty) {
-        return res.status(400).json({ error: 'All fields are required' });
+    if (!firstName || !lastName || !email || !password || !specialty || !sex || !address1) {
+        return res.status(400).json({ error: 'All required fields must be provided' });
     }
 
     try {
@@ -529,10 +540,10 @@ app.post('/api/doctors', async (req, res) => {
         // Insert the doctor into the Users table with the role "Doctor"
         const [result] = await connection.execute(
             `
-            INSERT INTO Users (first_name, last_name, email, password, role, specialty)
-            VALUES (?, ?, ?, ?, 'Doctor', ?)
+            INSERT INTO Users (first_name, last_name, email, password, date_of_birth, sex, address1, address2, role, specialty)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Doctor', ?)
             `,
-            [firstName, lastName, email, password, specialty]
+            [firstName, lastName, email, password, dateOfBirth, sex, address1, address2, specialty]
         );
 
         connection.release();
@@ -550,22 +561,25 @@ app.get('/api/doctors', async (req, res) => {
         const [rows] = await connection.execute(
             `
             SELECT 
-                u.id, 
-                u.first_name, 
-                u.last_name, 
-                u.email, 
-                u.role, 
-                d.specialization AS specialty
+                id, 
+                first_name, 
+                last_name, 
+                email, 
+                date_of_birth, 
+                sex, 
+                address1, 
+                address2, 
+                role, 
+                specialty
             FROM 
-                Users u
-            JOIN 
-                Doctors d ON u.id = d.user_id
+                Users
             WHERE 
-                u.role = 'Doctor'
+                role = 'Doctor'
             `
         );
         connection.release();
-        res.status(200).json(rows); // Ensure rows is an array
+        console.log('Fetched doctors:', rows); // Debug log
+        res.status(200).json(rows);
     } catch (error) {
         console.error('Error fetching doctors:', error);
         res.status(500).json({ error: 'Failed to fetch doctors' });
@@ -609,8 +623,30 @@ app.listen(PORT, () => {
 async function updateDatabaseSchema() {
     try {
         const connection = await pool.getConnection();
-        await connection.execute('ALTER TABLE Users ADD COLUMN specialty VARCHAR(255)');
-        console.log('Database schema updated: Added specialty column to Users table');
+
+        // Check if the 'specialty' column already exists
+        const [rows] = await connection.execute(`
+            SELECT COLUMN_NAME 
+            FROM INFORMATION_SCHEMA.COLUMNS 
+            WHERE TABLE_NAME = 'Users' AND COLUMN_NAME = 'specialty'
+        `);
+
+        if (rows.length === 0) {
+            // Add the 'specialty' column with a default value of 'Doctor' if it doesn't exist
+            await connection.execute(`
+                ALTER TABLE Users 
+                ADD COLUMN specialty VARCHAR(255) DEFAULT 'Doctor'
+            `);
+            console.log('Database schema updated: Added specialty column with default value to Users table');
+        } else {
+            // Ensure the column has a default value
+            await connection.execute(`
+                ALTER TABLE Users 
+                MODIFY COLUMN specialty VARCHAR(255) DEFAULT 'Doctor'
+            `);
+            console.log('Database schema updated: Ensured specialty column has default value');
+        }
+
         connection.release();
     } catch (error) {
         console.error('Error updating database schema:', error);
