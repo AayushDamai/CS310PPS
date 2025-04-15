@@ -159,41 +159,40 @@ app.post('/api/sendUserData', async (req, res) => {
     }
 });
 
-// Endpoint to fetch appointments for a specific doctor
+// Endpoint to fetch appointments for a specific doctor or patient
 app.get('/api/appointments', async (req, res) => {
-  const { doctorId } = req.query; // Get doctorId from query parameters
+    const { doctorId, patientId } = req.query; // Get doctorId or patientId from query parameters
 
-  if (!doctorId) {
-    return res.status(400).json({ error: 'Doctor ID is required' });
-  }
+    if (!doctorId && !patientId) {
+        return res.status(400).json({ error: 'Doctor ID or Patient ID is required' });
+    }
 
-  try {
-    // Get a connection from the pool
-    const connection = await pool.getConnection();
+    try {
+        // Get a connection from the pool
+        const connection = await pool.getConnection();
 
-    // Query to fetch appointments for the given doctor
-    const [rows] = await connection.execute(
-      `
-      SELECT 
-        a.id, 
-        a.appointment_time, 
-        a.status, 
-        CONCAT(p.first_name, ' ', p.last_name) AS patient_name
-      FROM Appointments a
-      JOIN Users p ON a.patient_id = p.id
-      WHERE a.doctor_id = ?
-      `,
-      [doctorId]
-    );
+        let query = `
+            SELECT 
+                a.id, 
+                a.appointment_time, 
+                a.status, 
+                a.location,
+                CONCAT(u.first_name, ' ', u.last_name) AS user_name
+            FROM Appointments a
+            JOIN Users u ON a.${doctorId ? 'patient_id' : 'doctor_id'} = u.id
+            WHERE a.${doctorId ? 'doctor_id' : 'patient_id'} = ?
+        `;
+        const params = [doctorId || patientId];
 
-    connection.release();
+        const [rows] = await connection.execute(query, params);
+        connection.release();
 
-    // Return the appointments as JSON
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error('Error fetching appointments:', error);
-    res.status(500).json({ error: 'Failed to fetch appointments' });
-  }
+        // Return the appointments as JSON
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error fetching appointments:', error);
+        res.status(500).json({ error: 'Failed to fetch appointments' });
+    }
 });
 
 // Endpoint to update an appointment
