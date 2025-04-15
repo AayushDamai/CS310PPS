@@ -396,16 +396,16 @@ app.put('/api/prescriptions/:id', async (req, res) => {
 });
 
 app.get('/api/lab-tests', async (req, res) => {
-    const { doctorId } = req.query;
+    const { doctorId, patientId } = req.query;
 
-    if (!doctorId) {
-        return res.status(400).json({ error: 'Doctor ID is required' });
+    if (!doctorId && !patientId) {
+        return res.status(400).json({ error: 'Doctor ID or Patient ID is required' });
     }
 
     try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute(
-            `
+
+        let query = `
             SELECT 
                 l.id, 
                 l.patient_id, 
@@ -415,11 +415,20 @@ app.get('/api/lab-tests', async (req, res) => {
                 l.test_date
             FROM LabTestResults l
             JOIN Users p ON l.patient_id = p.id
-            WHERE l.doctor_id = ?
-            ORDER BY l.test_date DESC
-            `,
-            [doctorId]
-        );
+        `;
+        const params = [];
+
+        if (doctorId) {
+            query += `WHERE l.doctor_id = ? `;
+            params.push(doctorId);
+        } else if (patientId) {
+            query += `WHERE l.patient_id = ? `;
+            params.push(patientId);
+        }
+
+        query += `ORDER BY l.test_date DESC`;
+
+        const [rows] = await connection.execute(query, params);
         connection.release();
 
         res.status(200).json(rows);
@@ -487,23 +496,107 @@ app.get('/api/doctor-details', async (req, res) => {
 
 // Endpoint to send appointment data
 app.post('/api/sendAppointmentData', async (req, res) => {
-    const { patientID, doctorID, appointmentLocation, appointment_time } = req.body;
+    const { patientID, doctorID, appointmentLocation, appointment_time, status } = req.body;
 
-    if (!patientID || !doctorID || !appointmentLocation || !appointment_time) {
+    if (!patientID || !doctorID || !appointmentLocation || !appointment_time || !status) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
 
     try {
-        // Insert appointment into the database
         const [result] = await pool.query(
-            'INSERT INTO appointments (patient_id, doctor_id, location, appointment_time) VALUES (?, ?, ?, ?)',
-            [patientID, doctorID, appointmentLocation, appointment_time]
+            'INSERT INTO appointments (patient_id, doctor_id, location, appointment_time, status) VALUES (?, ?, ?, ?, ?)',
+            [patientID, doctorID, appointmentLocation, appointment_time, status]
         );
 
-        res.status(200).json({ message: 'Appointment added successfully' });
+        res.status(200).json({ message: 'Appointment scheduled successfully!' });
     } catch (error) {
-        console.error('Error adding appointment:', error);
+        console.error('Error scheduling appointment:', error);
         res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+// Endpoint to add a new doctor
+app.post('/api/doctors', async (req, res) => {
+    const { firstName, lastName, email, password, specialty } = req.body;
+
+    if (!firstName || !lastName || !email || !password || !specialty) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    try {
+        const connection = await pool.getConnection();
+
+        // Insert the doctor into the Users table with the role "Doctor"
+        const [result] = await connection.execute(
+            `
+            INSERT INTO Users (first_name, last_name, email, password, role, specialty)
+            VALUES (?, ?, ?, ?, 'Doctor', ?)
+            `,
+            [firstName, lastName, email, password, specialty]
+        );
+
+        connection.release();
+        res.status(201).json({ message: 'Doctor added successfully', id: result.insertId });
+    } catch (error) {
+        console.error('Error adding doctor:', error);
+        res.status(500).json({ error: 'Failed to add doctor' });
+    }
+});
+
+// Endpoint to fetch all doctors
+app.get('/api/doctors', async (req, res) => {
+    try {
+        const connection = await pool.getConnection();
+        const [rows] = await connection.execute(
+            `
+            SELECT 
+                u.id, 
+                u.first_name, 
+                u.last_name, 
+                u.email, 
+                u.role, 
+                d.specialization AS specialty
+            FROM 
+                Users u
+            JOIN 
+                Doctors d ON u.id = d.user_id
+            WHERE 
+                u.role = 'Doctor'
+            `
+        );
+        connection.release();
+        res.status(200).json(rows); // Ensure rows is an array
+    } catch (error) {
+        console.error('Error fetching doctors:', error);
+        res.status(500).json({ error: 'Failed to fetch doctors' });
+    }
+});
+
+// Endpoint to delete a doctor
+app.delete('/api/doctors/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const connection = await pool.getConnection();
+
+        const [result] = await connection.execute(
+            `
+            DELETE FROM Users
+            WHERE id = ? AND role = 'Doctor'
+            `,
+            [id]
+        );
+
+        connection.release();
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Doctor not found' });
+        }
+
+        res.status(200).json({ message: 'Doctor deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting doctor:', error);
+        res.status(500).json({ error: 'Failed to delete doctor' });
     }
 });
 
@@ -511,3 +604,17 @@ app.post('/api/sendAppointmentData', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// Database schema update
+async function updateDatabaseSchema() {
+    try {
+        const connection = await pool.getConnection();
+        await connection.execute('ALTER TABLE Users ADD COLUMN specialty VARCHAR(255)');
+        console.log('Database schema updated: Added specialty column to Users table');
+        connection.release();
+    } catch (error) {
+        console.error('Error updating database schema:', error);
+    }
+}
+
+updateDatabaseSchema();

@@ -10,6 +10,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import 'react-time-picker/dist/TimePicker.css';
 import MessagesPage from '../components/MessagesPage';
 import LabTestResultsPage from '../components/LabTestResultsPage';
+import AddAppointmentForDoctor from '../components/AddAppointmentForDoctor'; // Import the new component
+import DoctorLabTestResults from '../components/DoctorLabTestResults'; // Import the new component
 
 const DoctorHomePage = () => {
     const navigate = useNavigate();
@@ -117,6 +119,12 @@ const DoctorHomePage = () => {
                     Calendar
                 </button>
                 <button
+                    className={activeTab === 'add-appointment' ? 'active-link' : ''}
+                    onClick={() => setActiveTab('add-appointment')}
+                >
+                    Add Appointment
+                </button>
+                <button
                     className={activeTab === 'prescription' ? 'active-link' : ''}
                     onClick={() => setActiveTab('prescription')}
                 >
@@ -156,6 +164,12 @@ const DoctorHomePage = () => {
                     <div className="dashboard-section">
                         <h2>Upcoming Appointments</h2>
                         <DoctorCalendar doctorId={doctorId} />
+                    </div>
+                )}
+                {activeTab === 'add-appointment' && (
+                    <div className="dashboard-section">
+                        <h2>Schedule an Appointment</h2>
+                        <AddAppointmentForDoctor />
                     </div>
                 )}
                 {activeTab === 'prescription' && (
@@ -247,7 +261,7 @@ const DoctorHomePage = () => {
                 )}
                 {activeTab === 'lab-tests' && (
                     <div className="dashboard-section">
-                        <LabTestResultsPage doctorId={doctorId} />
+                        <DoctorLabTestResults />
                     </div>
                 )}
             </div>
