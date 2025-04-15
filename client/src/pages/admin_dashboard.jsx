@@ -5,6 +5,7 @@ import ManageDoctors from '../components/ManageDoctors';
 import ManageUsers from '../components/ManageUsers';
 import AddAppointmentForm from '../components/AddAppointmentForm';
 import ManageMessages from '../components/ManageMessages';
+import ManagePatients from '../components/ManagePatients';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -83,7 +84,7 @@ const AdminDashboard = () => {
                     )}
                     {activeTab === 'manage-users' && (
                         <div className="dashboard-section">
-                            <ManageUsers />
+                            <ManagePatients />
                         </div>
                     )}
                     {activeTab === 'manage-appointments' && (

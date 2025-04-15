@@ -1,0 +1,72 @@
+/* filepath: c:\Users\ethan\OneDrive\Documents\310\client\src\styles\ManagePatients.css */
+
+.manage-patients {
+    padding: 20px;
+}
+
+.add-patient-form {
+    margin-bottom: 30px;
+}
+
+.add-patient-form h3 {
+    margin-bottom: 15px;
+}
+
+.add-patient-form input,
+.add-patient-form select,
+.add-patient-form textarea,
+.add-patient-form button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.add-patient-form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.add-patient-form button:hover {
+    background-color: #0056b3;
+}
+
+.patient-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.patient-list table th,
+.patient-list table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.patient-list table th {
+    background-color: #f4f4f4;
+}
+
+.patient-list table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.patient-list table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.patient-list button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.patient-list button:hover {
+    background-color: #c82333;
+}

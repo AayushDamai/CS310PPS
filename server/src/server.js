@@ -530,7 +530,7 @@ app.post('/api/doctors', async (req, res) => {
         specialty = 'Doctor', // Default value
     } = req.body;
 
-    if (!firstName || !lastName || !email || !password || !specialty || !sex || !address1) {
+    if (!firstName || !lastName || !email || !password || !dateOfBirth || !sex || !address1) {
         return res.status(400).json({ error: 'All required fields must be provided' });
     }
 
@@ -551,6 +551,43 @@ app.post('/api/doctors', async (req, res) => {
     } catch (error) {
         console.error('Error adding doctor:', error);
         res.status(500).json({ error: 'Failed to add doctor' });
+    }
+});
+
+// Endpoint to add a new patient
+app.post('/api/patients', async (req, res) => {
+    const {
+        firstName,
+        lastName,
+        email,
+        password,
+        dateOfBirth,
+        sex,
+        address1,
+        address2 = null,
+    } = req.body;
+
+    if (!firstName || !lastName || !email || !password || !dateOfBirth || !sex || !address1) {
+        return res.status(400).json({ error: 'All required fields must be provided' });
+    }
+
+    try {
+        const connection = await pool.getConnection();
+
+        // Insert the patient into the Users table with the role "Patient"
+        const [result] = await connection.execute(
+            `
+            INSERT INTO Users (first_name, last_name, email, password, date_of_birth, sex, address1, address2, role)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Patient')
+            `,
+            [firstName, lastName, email, password, dateOfBirth, sex, address1, address2]
+        );
+
+        connection.release();
+        res.status(201).json({ message: 'Patient added successfully', id: result.insertId });
+    } catch (error) {
+        console.error('Error adding patient:', error);
+        res.status(500).json({ error: 'Failed to add patient' });
     }
 });
 
@@ -611,6 +648,64 @@ app.delete('/api/doctors/:id', async (req, res) => {
     } catch (error) {
         console.error('Error deleting doctor:', error);
         res.status(500).json({ error: 'Failed to delete doctor' });
+    }
+});
+
+// Endpoint to fetch all patients
+app.get('/api/patients', async (req, res) => {
+    try {
+        const connection = await pool.getConnection();
+        const [rows] = await connection.execute(
+            `
+            SELECT 
+                id, 
+                first_name, 
+                last_name, 
+                email, 
+                date_of_birth, 
+                sex, 
+                address1, 
+                address2
+            FROM 
+                Users
+            WHERE 
+                role = 'Patient'
+            `
+        );
+        connection.release();
+        console.log('Fetched patients:', rows); // Debug log
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error fetching patients:', error);
+        res.status(500).json({ error: 'Failed to fetch patients' });
+    }
+});
+
+// Endpoint to delete a patient
+app.delete('/api/patients/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const connection = await pool.getConnection();
+
+        const [result] = await connection.execute(
+            `
+            DELETE FROM Users
+            WHERE id = ? AND role = 'Patient'
+            `,
+            [id]
+        );
+
+        connection.release();
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+
+        res.status(200).json({ message: 'Patient deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting patient:', error);
+        res.status(500).json({ error: 'Failed to delete patient' });
     }
 });
 
