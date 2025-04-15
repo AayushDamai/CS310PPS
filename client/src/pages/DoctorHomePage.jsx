@@ -10,8 +10,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import 'react-time-picker/dist/TimePicker.css';
 import MessagesPage from '../components/MessagesPage';
 import LabTestResultsPage from '../components/LabTestResultsPage';
-import AddAppointmentForDoctor from '../components/AddAppointmentForDoctor'; // Import the new component
-import DoctorLabTestResults from '../components/DoctorLabTestResults'; // Import the new component
+import AddAppointmentForDoctor from '../components/AddAppointmentForDoctor';
+import DoctorLabTestResults from '../components/DoctorLabTestResults';
 
 const DoctorHomePage = () => {
     const navigate = useNavigate();
@@ -104,6 +104,31 @@ const DoctorHomePage = () => {
         } catch (error) {
             console.error('Error updating appointment:', error);
             alert('Error updating appointment.');
+        }
+    };
+
+    // Handle deleting an appointment
+    const handleDeleteAppointment = async (appointmentId) => {
+        if (!window.confirm('Are you sure you want to delete this appointment?')) return;
+
+        try {
+            const response = await fetch(`/api/appointments/${appointmentId}?doctorId=${doctorId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert('Appointment deleted successfully!');
+                setSelectedAppointment(null);
+                setUpdatedAppointment({});
+                setAppointments(appointments.filter((appt) => appt.id !== appointmentId));
+            } else {
+                const errorData = await response.json();
+                console.error('Error response from server:', errorData);
+                alert(errorData.error || 'Failed to delete appointment.');
+            }
+        } catch (error) {
+            console.error('Error deleting appointment:', error);
+            alert('Error deleting appointment.');
         }
     };
 
@@ -219,43 +244,51 @@ const DoctorHomePage = () => {
                             </select>
                         </div>
                         {selectedAppointment && (
-                            <form onSubmit={handleEditSubmit}>
-                                <label>
-                                    Appointment Date:
-                                    <DatePicker
-                                        selected={updatedAppointment.appointment_date ? new Date(updatedAppointment.appointment_date) : null}
-                                        onChange={(date) => handleEditChange({ target: { name: 'appointment_date', value: date.toISOString().split('T')[0] } })}
-                                        dateFormat="MM/dd/yyyy"
-                                        placeholderText="Select a date"
-                                        required
-                                    />
-                                </label>
-                                <label>
-                                    Appointment Time:
-                                    <TimePicker
-                                        value={updatedAppointment.appointment_time || ''}
-                                        onChange={(time) => handleEditChange({ target: { name: 'appointment_time', value: time } })}
-                                        disableClock={true}
-                                        format="hh:mm a"
-                                        required
-                                    />
-                                </label>
-                                <label>
-                                    Status:
-                                    <select
-                                        name="status"
-                                        value={updatedAppointment.status || ''}
-                                        onChange={handleEditChange}
-                                        required
-                                    >
-                                        <option value="">-- Select Status --</option>
-                                        <option value="Scheduled">Scheduled</option>
-                                        <option value="Completed">Completed</option>
-                                        <option value="Cancelled">Cancelled</option>
-                                    </select>
-                                </label>
-                                <button type="submit">Update Appointment</button>
-                            </form>
+                            <div>
+                                <form onSubmit={handleEditSubmit}>
+                                    <label>
+                                        Appointment Date:
+                                        <DatePicker
+                                            selected={updatedAppointment.appointment_date ? new Date(updatedAppointment.appointment_date) : null}
+                                            onChange={(date) => handleEditChange({ target: { name: 'appointment_date', value: date.toISOString().split('T')[0] } })}
+                                            dateFormat="MM/dd/yyyy"
+                                            placeholderText="Select a date"
+                                            required
+                                        />
+                                    </label>
+                                    <label>
+                                        Appointment Time:
+                                        <TimePicker
+                                            value={updatedAppointment.appointment_time || ''}
+                                            onChange={(time) => handleEditChange({ target: { name: 'appointment_time', value: time } })}
+                                            disableClock={true}
+                                            format="hh:mm a"
+                                            required
+                                        />
+                                    </label>
+                                    <label>
+                                        Status:
+                                        <select
+                                            name="status"
+                                            value={updatedAppointment.status || ''}
+                                            onChange={handleEditChange}
+                                            required
+                                        >
+                                            <option value="">-- Select Status --</option>
+                                            <option value="Scheduled">Scheduled</option>
+                                            <option value="Completed">Completed</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                        </select>
+                                    </label>
+                                    <button type="submit">Update Appointment</button>
+                                </form>
+                                <button
+                                    onClick={() => handleDeleteAppointment(selectedAppointment.id)}
+                                    style={{ marginTop: '10px', backgroundColor: 'red', color: 'white' }}
+                                >
+                                    Delete Appointment
+                                </button>
+                            </div>
                         )}
                     </div>
                 )}

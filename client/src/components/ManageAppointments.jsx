@@ -3,11 +3,15 @@ import React, { useState, useEffect } from 'react';
 const ManageAppointments = () => {
     const [appointments, setAppointments] = useState([]);
     const [newAppointment, setNewAppointment] = useState({
-        doctorId: '',
+        doctorId: localStorage.getItem('userId') || '', // Automatically set doctorId from localStorage
         patientId: '',
         date: '',
         time: '',
     });
+    const [selectedAppointment, setSelectedAppointment] = useState(null);
+
+    const doctorId = localStorage.getItem('userId'); // Retrieve doctorId from localStorage
+    console.log('Doctor ID from localStorage:', doctorId); // Debug log
 
     // Fetch appointments when the component loads
     useEffect(() => {
@@ -36,7 +40,7 @@ const ManageAppointments = () => {
             if (response.ok) {
                 const addedAppointment = await response.json();
                 setAppointments([...appointments, addedAppointment]);
-                setNewAppointment({ doctorId: '', patientId: '', date: '', time: '' });
+                setNewAppointment({ doctorId, patientId: '', date: '', time: '' });
             } else {
                 console.error('Failed to add appointment');
             }
@@ -46,16 +50,29 @@ const ManageAppointments = () => {
     };
 
     // Handle deleting an appointment
-    const handleDeleteAppointment = async (id) => {
+    const handleDeleteAppointment = async (appointmentId) => {
+        if (!window.confirm('Are you sure you want to delete this appointment?')) return;
+
+        console.log('Attempting to delete appointment with ID:', appointmentId);
+        console.log('Doctor ID:', doctorId);
+
         try {
-            const response = await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
+            const response = await fetch(`/api/appointments/${appointmentId}?doctorId=${doctorId}`, {
+                method: 'DELETE',
+            });
+
             if (response.ok) {
-                setAppointments(appointments.filter((appointment) => appointment.id !== id));
+                alert('Appointment deleted successfully!');
+                setAppointments(appointments.filter((appt) => appt.id !== appointmentId));
+                setSelectedAppointment(null);
             } else {
-                console.error('Failed to delete appointment');
+                const errorData = await response.json();
+                console.error('Error response from server:', errorData);
+                alert(errorData.error || 'Failed to delete appointment.');
             }
         } catch (error) {
             console.error('Error deleting appointment:', error);
+            alert('Error deleting appointment.');
         }
     };
 
@@ -71,6 +88,7 @@ const ManageAppointments = () => {
                     placeholder="Doctor ID"
                     value={newAppointment.doctorId}
                     onChange={(e) => setNewAppointment({ ...newAppointment, doctorId: e.target.value })}
+                    disabled // Doctor ID is fixed for the logged-in doctor
                 />
                 <input
                     type="text"
@@ -95,7 +113,7 @@ const ManageAppointments = () => {
             <div>
                 <h3>Appointments List</h3>
                 <ul>
-                    {Array.isArray(appointments) ? (
+                    {Array.isArray(appointments) && appointments.length > 0 ? (
                         appointments.map((appointment) => (
                             <li key={appointment.id}>
                                 Doctor ID: {appointment.doctorId}, Patient ID: {appointment.patientId}, Date: {appointment.date}, Time: {appointment.time}

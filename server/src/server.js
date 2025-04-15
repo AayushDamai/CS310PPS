@@ -239,6 +239,57 @@ app.put('/api/appointments/:id', async (req, res) => {
   }
 });
 
+// Endpoint to delete an appointment by a doctor
+app.delete('/api/appointments/:id', async (req, res) => {
+    const { id } = req.params; // Appointment ID
+    const { doctorId } = req.query; // Doctor ID from query parameters
+
+    console.log('Doctor ID:', doctorId); // Debug log
+    console.log('Appointment ID:', id); // Debug log
+
+    if (!doctorId) {
+        return res.status(400).json({ error: 'Doctor ID is required' });
+    }
+
+    try {
+        const connection = await pool.getConnection();
+
+        // Check if the appointment belongs to the doctor
+        const [appointment] = await connection.execute(
+            `
+            SELECT * FROM Appointments
+            WHERE id = ? AND doctor_id = ?
+            `,
+            [id, doctorId]
+        );
+
+        if (appointment.length === 0) {
+            connection.release();
+            return res.status(404).json({ error: 'Appointment not found or does not belong to the doctor' });
+        }
+
+        // Delete the appointment
+        const [result] = await connection.execute(
+            `
+            DELETE FROM Appointments
+            WHERE id = ?
+            `,
+            [id]
+        );
+
+        connection.release();
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Failed to delete appointment' });
+        }
+
+        res.status(200).json({ message: 'Appointment deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting appointment:', error);
+        res.status(500).json({ error: 'Failed to delete appointment' });
+    }
+});
+
 // Endpoint to fetch messages for a doctor (and optionally a specific patient)
 app.get('/api/messages', async (req, res) => {
     const { doctorId, patientId } = req.query;
@@ -749,3 +800,29 @@ async function updateDatabaseSchema() {
 }
 
 updateDatabaseSchema();
+
+const handleDeleteAppointment = async (appointmentId) => {
+    if (!window.confirm('Are you sure you want to delete this appointment?')) return;
+
+    console.log('Attempting to delete appointment with ID:', appointmentId);
+    console.log('Doctor ID:', doctorId);
+
+    try {
+        const response = await fetch(`/api/appointments/${appointmentId}?doctorId=${doctorId}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            alert('Appointment deleted successfully!');
+            setAppointments(appointments.filter((appt) => appt.id !== appointmentId));
+            setSelectedAppointment(null);
+        } else {
+            const errorData = await response.json();
+            console.error('Error response from server:', errorData);
+            alert(errorData.error || 'Failed to delete appointment.');
+        }
+    } catch (error) {
+        console.error('Error deleting appointment:', error);
+        alert('Error deleting appointment.');
+    }
+};
