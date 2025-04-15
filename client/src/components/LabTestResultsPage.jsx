@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/LabTestResultsPage.css';
 
-const LabTestResultsPage = ({ doctorId }) => {
+const LabTestResultsPage = ({ patientId, role }) => {
     const [labTests, setLabTests] = useState([]);
-    const [newLabTest, setNewLabTest] = useState({
-        patientId: '',
+    const [newTest, setNewTest] = useState({
         testType: '',
         result: '',
         testDate: '',
     });
-    const [activeTab, setActiveTab] = useState('view'); // 'view' or 'add'
 
-    // Fetch lab test results
+    // Fetch lab test results for the patient
     const fetchLabTests = async () => {
         try {
-            const response = await fetch(`/api/lab-tests?doctorId=${doctorId}`);
+            const response = await fetch(`/api/lab-tests?patientId=${patientId}`);
             const data = await response.json();
             setLabTests(data);
         } catch (error) {
@@ -24,30 +22,27 @@ const LabTestResultsPage = ({ doctorId }) => {
 
     useEffect(() => {
         fetchLabTests();
-    }, []);
+    }, [patientId]);
 
-    // Handle form input changes
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewLabTest({ ...newLabTest, [name]: value });
-    };
-
-    // Handle form submission
-    const handleSubmit = async (e) => {
+    // Handle adding a new lab test (for doctors only)
+    const handleAddLabTest = async (e) => {
         e.preventDefault();
-
         try {
             const response = await fetch('/api/lab-tests', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...newLabTest, doctorId }),
+                body: JSON.stringify({
+                    patientId,
+                    doctorId: localStorage.getItem('userId'), // Assuming doctorId is stored in localStorage
+                    testType: newTest.testType,
+                    result: newTest.result,
+                    testDate: newTest.testDate,
+                }),
             });
 
             if (response.ok) {
-                alert('Lab test result added successfully!');
-                setNewLabTest({ patientId: '', testType: '', result: '', testDate: '' });
+                setNewTest({ testType: '', result: '', testDate: '' });
                 fetchLabTests(); // Refresh the lab test results
-                setActiveTab('view'); // Switch back to the view tab
             } else {
                 console.error('Failed to add lab test result');
             }
@@ -59,100 +54,66 @@ const LabTestResultsPage = ({ doctorId }) => {
     return (
         <div className="lab-test-results-page">
             <h2>Lab Test Results</h2>
-
-            {/* Tabs */}
-            <div className="sub-tabs">
-                <button
-                    className={activeTab === 'view' ? 'active-link' : ''}
-                    onClick={() => setActiveTab('view')}
-                >
-                    View Lab Test Results
-                </button>
-                <button
-                    className={activeTab === 'add' ? 'active-link' : ''}
-                    onClick={() => setActiveTab('add')}
-                >
-                    Add lab test 
-                </button>
+            <div className="view-lab-tests">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Test Type</th>
+                            <th>Result</th>
+                            <th>Test Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {labTests.length > 0 ? (
+                            labTests.map((test) => (
+                                <tr key={test.id}>
+                                    <td>{test.test_type}</td>
+                                    <td>{test.result}</td>
+                                    <td>{new Date(test.test_date).toLocaleDateString()}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="3">No lab test results found.</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
 
-            {/* View Lab Test Results */}
-            {activeTab === 'view' && (
-                <div className="view-lab-tests">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Patient Name</th>
-                                <th>Test Type</th>
-                                <th>Result</th>
-                                <th>Test Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {labTests.length > 0 ? (
-                                labTests.map((test) => (
-                                    <tr key={test.id}>
-                                        <td>{test.patient_name}</td>
-                                        <td>{test.test_type}</td>
-                                        <td>{test.result}</td>
-                                        <td>{new Date(test.test_date).toLocaleDateString()}</td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="4">No lab test results found.</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-
-            {/* Add Lab Test Result */}
-            {activeTab === 'add' && (
+            {/* Show the form to add new lab tests only if the user is a doctor */}
+            {role === 'Doctor' && (
                 <div className="add-lab-test">
-                    <h3>Add Lab Test Result</h3>
-                    <form onSubmit={handleSubmit}>
-                        <label>
-                            Patient ID:
+                    <h3>Add New Lab Test</h3>
+                    <form onSubmit={handleAddLabTest}>
+                        <div>
+                            <label>Test Type:</label>
                             <input
                                 type="text"
-                                name="patientId"
-                                value={newLabTest.patientId}
-                                onChange={handleInputChange}
+                                value={newTest.testType}
+                                onChange={(e) => setNewTest({ ...newTest, testType: e.target.value })}
                                 required
                             />
-                        </label>
-                        <label>
-                            Test Type:
+                        </div>
+                        <div>
+                            <label>Result:</label>
                             <input
                                 type="text"
-                                name="testType"
-                                value={newLabTest.testType}
-                                onChange={handleInputChange}
+                                value={newTest.result}
+                                onChange={(e) => setNewTest({ ...newTest, result: e.target.value })}
                                 required
                             />
-                        </label>
-                        <label>
-                            Result:
-                            <textarea
-                                name="result"
-                                value={newLabTest.result}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </label>
-                        <label>
-                            Test Date:
+                        </div>
+                        <div>
+                            <label>Test Date:</label>
                             <input
                                 type="date"
-                                name="testDate"
-                                value={newLabTest.testDate}
-                                onChange={handleInputChange}
+                                value={newTest.testDate}
+                                onChange={(e) => setNewTest({ ...newTest, testDate: e.target.value })}
                                 required
                             />
-                        </label>
-                        <button type="submit">Add Lab Test Result</button>
+                        </div>
+                        <button type="submit">Add Lab Test</button>
                     </form>
                 </div>
             )}

@@ -17,7 +17,7 @@ const PORT = 5000;
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: 'password',
+  password: 'password',  ///insert your password here 
   database: 'cs310ppsdb',
   waitForConnections: true
 });
@@ -244,31 +244,33 @@ app.put('/api/appointments/:id', async (req, res) => {
 app.get('/api/messages', async (req, res) => {
     const { doctorId, patientId } = req.query;
 
-    if (!doctorId) {
-        return res.status(400).json({ error: 'Doctor ID is required' });
+    if (!doctorId && !patientId) {
+        return res.status(400).json({ error: 'Doctor ID or Patient ID is required' });
     }
 
     try {
         const connection = await pool.getConnection();
 
-        // Base query to fetch messages for the doctor
-        let query = `
-            SELECT * FROM Messages
-            WHERE doctor_id = ?
-        `;
-        const params = [doctorId];
+        let query = `SELECT * FROM Messages WHERE `;
+        const params = [];
 
-        // If a patientId is provided, add it to the query
+        if (doctorId) {
+            query += `doctor_id = ? `;
+            params.push(doctorId);
+        }
+
         if (patientId) {
-            query += ` AND patient_id = ?`;
+            if (doctorId) query += `AND `;
+            query += `patient_id = ? `;
             params.push(patientId);
         }
 
-        query += ` ORDER BY patient_id, date ASC`;
+        query += `ORDER BY date ASC`;
 
         const [rows] = await connection.execute(query, params);
         connection.release();
 
+        console.log('Messages fetched:', rows); // Debug log
         res.status(200).json(rows);
     } catch (error) {
         console.error('Error fetching messages:', error);
@@ -309,39 +311,50 @@ app.post('/api/messages', async (req, res) => {
     }
 });
 
-// Endpoint to fetch all prescriptions
+// Updated endpoint to fetch all prescriptions or prescriptions for a specific patient
 app.get('/api/prescriptions', async (req, res) => {
-  try {
-    // Get a connection from the pool
-    const connection = await pool.getConnection();
+    const { patientId } = req.query; // Get patientId from query parameters
 
-    // Query to fetch all prescriptions
-    const [rows] = await connection.execute(
-      `
-      SELECT 
-        p.id, 
-        p.patient_id, 
-        CONCAT(u.first_name, ' ', u.last_name) AS patient_name,
-        p.doctor_id,
-        CONCAT(d.first_name, ' ', d.last_name) AS doctor_name,
-        p.medication, 
-        p.dosage, 
-        p.instructions, 
-        p.prescription_date
-      FROM Prescriptions p
-      JOIN Users u ON p.patient_id = u.id
-      JOIN Users d ON p.doctor_id = d.id
-      `
-    );
+    try {
+        // Get a connection from the pool
+        const connection = await pool.getConnection();
 
-    connection.release();
+        let query = `
+            SELECT 
+                p.id, 
+                p.patient_id, 
+                CONCAT(u.first_name, ' ', u.last_name) AS patient_name,
+                p.doctor_id,
+                CONCAT(d.first_name, ' ', d.last_name) AS doctor_name,
+                p.medication, 
+                p.dosage, 
+                p.instructions, 
+                p.prescription_date
+            FROM Prescriptions p
+            JOIN Users u ON p.patient_id = u.id
+            JOIN Users d ON p.doctor_id = d.id
+        `;
 
-    // Return the prescriptions as JSON
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error('Error fetching prescriptions:', error);
-    res.status(500).json({ error: 'Failed to fetch prescriptions' });
-  }
+        const params = [];
+
+        // If patientId is provided, filter by patientId
+        if (patientId) {
+            query += `WHERE p.patient_id = ? `;
+            params.push(patientId);
+        }
+
+        query += `ORDER BY p.prescription_date DESC`;
+
+        // Execute the query
+        const [rows] = await connection.execute(query, params);
+        connection.release();
+
+        // Return the prescriptions as JSON
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error fetching prescriptions:', error);
+        res.status(500).json({ error: 'Failed to fetch prescriptions' });
+    }
 });
 
 // Endpoint to update a prescription
@@ -383,9 +396,24 @@ app.put('/api/prescriptions/:id', async (req, res) => {
   }
 });
 
+app.get('/api/appointments/:doctor_id', async (req, res) => {
+    const {doctor_id} = req.params;
+    try { //gets connection
+      const connection = await pool.getConnection();
+      const [rows] = await connection.execute(
+          'SELECT * FROM appointments WHERE doctor_id = ?',
+          [doctor_id]
+      );
+      connection.release(); 
+  } catch (error) {
+    console.log('Error - Appointments could not be fetched:', error);
+    return res.status(500).json({error: 'Appointments could not be fetched'});
+  }
+});
+
+  
 app.get('/api/lab-tests', async (req, res) => {
     const { doctorId } = req.query;
-
     if (!doctorId) {
         return res.status(400).json({ error: 'Doctor ID is required' });
     }
@@ -472,6 +500,28 @@ app.get('/api/doctor-details', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch doctor details' });
     }
 });
+
+app.post('/api/name', async (req, res) => {
+  const { user_id } = req.body; // Accessing user_id from req.body
+  try {
+    const connection = await pool.getConnection();
+    const [rows] = await connection.execute(
+      'SELECT first_name, last_name FROM users WHERE id = ?',
+      [user_id]
+    );
+    connection.release();
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No username found' });
+    }
+
+    return res.status(200).json({ name: `${rows[0].first_name} ${rows[0].last_name}` }); // Returning full name
+  } catch (error) {
+    console.error('Error getting name:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 // Start server
 app.listen(PORT, () => {

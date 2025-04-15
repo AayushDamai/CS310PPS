@@ -26,18 +26,21 @@ const LoginForm = () => {
             const res = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password }),
             });
 
             const data = await res.json();
 
-            if (res.ok) { 
-                login(data);
+            if (res.ok) {
+                login(data); // Store user data in context or localStorage
+                localStorage.setItem('userName', data.name); // Store the user's name
+                localStorage.setItem('userId', data.userId); // Store the user's ID
+                localStorage.setItem('role', data.role); // Store the user's role
 
                 if (data.role === 'Doctor') {
                     navigate('/doctor-dashboard');
                 } else if (data.role === 'Admin') {
-                    navigate('/admin-dashboard'); // Redirect admin to admin_dashboard.jsx
+                    navigate('/admin-dashboard');
                 } else {
                     navigate('/patient-portal');
                 }
