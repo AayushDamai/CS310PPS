@@ -486,6 +486,28 @@ app.get('/api/doctor-details', async (req, res) => {
     }
 });
 
+// Endpoint to send appointment data
+app.post('/api/sendAppointmentData', async (req, res) => {
+    const { patientID, doctorID, appointmentLocation, appointment_time } = req.body;
+
+    if (!patientID || !doctorID || !appointmentLocation || !appointment_time) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    try {
+        // Insert appointment into the database
+        const [result] = await pool.query(
+            'INSERT INTO appointments (patient_id, doctor_id, location, appointment_time) VALUES (?, ?, ?, ?)',
+            [patientID, doctorID, appointmentLocation, appointment_time]
+        );
+
+        res.status(200).json({ message: 'Appointment added successfully' });
+    } catch (error) {
+        console.error('Error adding appointment:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

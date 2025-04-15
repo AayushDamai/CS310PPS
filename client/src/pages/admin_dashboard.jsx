@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/AdminDashboard.css';
 import ManageDoctors from '../components/ManageDoctors';
 import ManageUsers from '../components/ManageUsers';
-import ManageAppointments from '../components/ManageAppointments';
+import AddAppointmentForm from '../components/AddAppointmentForm'; // Import AddAppointmentForm
 import ManageMessages from '../components/ManageMessages';
-import ManageDoctorsList from '../components/ManageDoctorsList'; // Import the new component
+import ManageDoctorsList from '../components/ManageDoctorsList';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -95,7 +95,8 @@ const AdminDashboard = () => {
                     )}
                     {activeTab === 'manage-appointments' && (
                         <div className="dashboard-section">
-                            <ManageAppointments />
+                            <h2>Manage Appointments</h2>
+                            <AddAppointmentForm /> {/* Add the AddAppointmentForm here */}
                         </div>
                     )}
                     {activeTab === 'manage-messages' && (
