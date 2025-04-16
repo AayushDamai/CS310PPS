@@ -4,6 +4,7 @@
 
 .lab-test-results-page h2 {
     margin-bottom: 20px;
+    font-size: 1.8rem; /* Adjust font size for better readability */
 }
 
 /* Tabs styling */
@@ -11,6 +12,7 @@
     margin-bottom: 20px;
     display: flex;
     gap: 10px;
+    flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
 }
 
 .sub-tabs button {
@@ -20,6 +22,8 @@
     cursor: pointer;
     font-size: 16px;
     border-radius: 4px;
+    flex: 1; /* Make buttons take equal space */
+    text-align: center;
 }
 
 .sub-tabs button.active-link {
@@ -38,6 +42,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    font-size: 1rem; /* Adjust font size for readability */
 }
 
 table th,
@@ -64,6 +69,7 @@ table tr:hover {
 form label {
     display: block;
     margin-bottom: 10px;
+    font-size: 1rem; /* Adjust label font size */
 }
 
 form input,
@@ -73,6 +79,7 @@ form textarea {
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 1rem; /* Adjust input font size */
 }
 
 form button {
@@ -81,8 +88,79 @@ form button {
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+    font-size: 1rem; /* Adjust button font size */
 }
 
 form button:hover {
     background-color: #45a049;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .lab-test-results-page {
+        padding: 15px; /* Reduce padding for smaller screens */
+    }
+
+    .lab-test-results-page h2 {
+        font-size: 1.5rem; /* Reduce font size for smaller screens */
+    }
+
+    .sub-tabs {
+        flex-direction: column; /* Stack tabs vertically */
+        gap: 5px; /* Reduce gap between tabs */
+    }
+
+    .sub-tabs button {
+        font-size: 14px; /* Reduce button font size */
+        padding: 8px 10px; /* Adjust padding */
+    }
+
+    table th,
+    table td {
+        font-size: 0.9rem; /* Reduce table font size */
+        padding: 6px; /* Adjust padding */
+    }
+
+    form label {
+        font-size: 0.9rem; /* Reduce label font size */
+    }
+
+    form input,
+    form textarea {
+        font-size: 0.9rem; /* Reduce input font size */
+        padding: 6px; /* Adjust padding */
+    }
+
+    form button {
+        font-size: 0.9rem; /* Reduce button font size */
+        padding: 8px 15px; /* Adjust padding */
+    }
+}
+
+@media (max-width: 480px) {
+    .lab-test-results-page h2 {
+        font-size: 1.3rem; /* Further reduce font size for very small screens */
+    }
+
+    .sub-tabs button {
+        font-size: 12px; /* Further reduce button font size */
+        padding: 6px 8px; /* Further adjust padding */
+    }
+
+    table th,
+    table td {
+        font-size: 0.8rem; /* Further reduce table font size */
+        padding: 5px; /* Further adjust padding */
+    }
+
+    form input,
+    form textarea {
+        font-size: 0.8rem; /* Further reduce input font size */
+        padding: 5px; /* Further adjust padding */
+    }
+
+    form button {
+        font-size: 0.8rem; /* Further reduce button font size */
+        padding: 6px 10px; /* Further adjust padding */
+    }
 }

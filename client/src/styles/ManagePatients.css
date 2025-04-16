@@ -108,3 +108,74 @@
     background-color: #c82333;
     transform: scale(1.05); /* Slight zoom effect on hover */
 }
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .manage-patients {
+        padding: 15px; /* Reduce padding for smaller screens */
+    }
+
+    .add-patient-form {
+        padding: 15px; /* Adjust padding */
+    }
+
+    .add-patient-form h3 {
+        font-size: 1.3rem; /* Reduce font size for smaller screens */
+    }
+
+    .add-patient-form input,
+    .add-patient-form select,
+    .add-patient-form textarea {
+        font-size: 0.9rem; /* Reduce input font size */
+        padding: 10px; /* Adjust padding */
+    }
+
+    .add-patient-form button {
+        font-size: 0.9rem; /* Reduce button font size */
+        padding: 10px; /* Adjust padding */
+    }
+
+    .patient-list table th,
+    .patient-list table td {
+        font-size: 0.9rem; /* Reduce table font size */
+        padding: 8px; /* Adjust padding */
+    }
+
+    .patient-list button {
+        font-size: 0.8rem; /* Reduce button font size */
+        padding: 6px 10px; /* Adjust padding */
+    }
+}
+
+@media (max-width: 480px) {
+    .add-patient-form {
+        padding: 10px; /* Further reduce padding for very small screens */
+    }
+
+    .add-patient-form h3 {
+        font-size: 1.2rem; /* Further reduce font size */
+    }
+
+    .add-patient-form input,
+    .add-patient-form select,
+    .add-patient-form textarea {
+        font-size: 0.8rem; /* Further reduce input font size */
+        padding: 8px; /* Further adjust padding */
+    }
+
+    .add-patient-form button {
+        font-size: 0.8rem; /* Further reduce button font size */
+        padding: 8px 10px; /* Further adjust padding */
+    }
+
+    .patient-list table th,
+    .patient-list table td {
+        font-size: 0.8rem; /* Further reduce table font size */
+        padding: 6px; /* Further adjust padding */
+    }
+
+    .patient-list button {
+        font-size: 0.7rem; /* Further reduce button font size */
+        padding: 5px 8px; /* Further adjust padding */
+    }
+}

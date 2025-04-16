@@ -17,11 +17,8 @@
 .hero {
   background: linear-gradient(135deg, #4A90E2, #20B2AA, #E67E22, #f2f2f2);
   background-size: 300% 300%;
-  /* Ensures smooth movement */
   animation: gradientAnimation 10s ease infinite;
-  /* Smooth animation */
   color: #555;
-  /* Ensures readability */
 
   /* Layout styles */
   flex: 1;
@@ -32,7 +29,6 @@
   padding: 50px 20px;
   text-align: center;
 }
-
 
 .hero h1 {
   font-size: 2.5rem;
@@ -49,18 +45,49 @@
   background-color: rgba(0, 0, 0, 0.2);
   padding: 15px 30px;
   text-decoration: none;
-  /* Removes underline */
   font-size: 1rem;
   border-radius: 5px;
-  /* Rounded corners */
   color: #fff;
-  transition: background-color 0.3s ease-in-out;
-  /* Smooth background transition */
-  transition: color 0.3s ease-in-out;
-  /* Smooth color transition */
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
 .button:hover {
   background-color: rgba(0, 0, 0, 0.4);
   color: #4A90E2;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .hero {
+    padding: 30px 15px; /* Reduce padding for smaller screens */
+  }
+
+  .hero h1 {
+    font-size: 2rem; /* Reduce font size for smaller screens */
+  }
+
+  .hero p {
+    font-size: 1rem; /* Adjust paragraph font size */
+    margin-bottom: 20px;
+  }
+
+  .button {
+    padding: 10px 20px; /* Adjust button padding */
+    font-size: 0.9rem; /* Reduce button font size */
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.8rem; /* Further reduce font size for very small screens */
+  }
+
+  .hero p {
+    font-size: 0.9rem; /* Adjust paragraph font size */
+  }
+
+  .button {
+    padding: 8px 15px; /* Further adjust button padding */
+    font-size: 0.8rem; /* Reduce button font size */
+  }
 }

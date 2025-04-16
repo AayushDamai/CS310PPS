@@ -42,3 +42,44 @@
   color: red;
   font-weight: bold;
 }
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .portal-container {
+    max-width: 100%; /* Use full width for smaller screens */
+    margin: 20px auto; /* Reduce margin */
+    padding: 15px; /* Adjust padding */
+  }
+
+  .portal-container h1 {
+    font-size: 1.8rem; /* Reduce font size for smaller screens */
+  }
+
+  .portal-container p {
+    font-size: 1rem; /* Adjust paragraph font size */
+  }
+
+  .appointment-item {
+    padding: 10px; /* Adjust padding */
+    font-size: 0.9rem; /* Reduce font size */
+  }
+}
+
+@media (max-width: 480px) {
+  .portal-container {
+    padding: 10px; /* Further reduce padding for very small screens */
+  }
+
+  .portal-container h1 {
+    font-size: 1.5rem; /* Further reduce font size */
+  }
+
+  .portal-container p {
+    font-size: 0.9rem; /* Further adjust paragraph font size */
+  }
+
+  .appointment-item {
+    padding: 8px; /* Further adjust padding */
+    font-size: 0.8rem; /* Further reduce font size */
+  }
+}

@@ -1,0 +1,27 @@
+/* General button styles */
+button {
+    background-color: black; /* Set the background color to black */
+    color: white; /* Set the text color to white for contrast */
+    border: none; /* Remove the border */
+    padding: 10px 20px; /* Add padding for better spacing */
+    border-radius: 5px; /* Add rounded corners */
+    cursor: pointer; /* Change the cursor to a pointer on hover */
+    font-size: 16px; /* Adjust the font size */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Add smooth transitions */
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: #333; /* Slightly lighter black on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    button {
+        font-size: 14px; /* Reduce font size for smaller screens */
+        padding: 8px 15px; /* Adjust padding */
+        width: 100%; /* Make buttons take full width */
+        margin-bottom: 10px; /* Add spacing between buttons */
+    }
+}

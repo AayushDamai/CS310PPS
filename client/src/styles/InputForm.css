@@ -73,7 +73,6 @@
   display: flex;
   justify-content: center;
   /* Evenly space buttons */
-  ;
   text-align: center;
 }
 
@@ -86,4 +85,55 @@
 
 .redirect-buttons a:hover {
   text-decoration: underline;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .input-form {
+    padding: 20px; /* Reduce padding for smaller screens */
+    margin: 1.5rem auto; /* Adjust margin */
+  }
+
+  .input-form h2 {
+    font-size: 1.3rem; /* Reduce font size for smaller screens */
+  }
+
+  .input-form input {
+    font-size: 0.9rem; /* Adjust input font size */
+    padding: 10px; /* Adjust padding */
+  }
+
+  .input-form button {
+    font-size: 0.9rem; /* Adjust button font size */
+    padding: 10px; /* Adjust padding */
+  }
+
+  .redirect-buttons a {
+    font-size: 12px; /* Reduce font size for links */
+    margin: 0 5px; /* Adjust spacing */
+  }
+}
+
+@media (max-width: 480px) {
+  .input-form {
+    padding: 15px; /* Further reduce padding for very small screens */
+  }
+
+  .input-form h2 {
+    font-size: 1.2rem; /* Further reduce font size */
+  }
+
+  .input-form input {
+    font-size: 0.8rem; /* Further adjust input font size */
+    padding: 8px; /* Further adjust padding */
+  }
+
+  .input-form button {
+    font-size: 0.8rem; /* Further adjust button font size */
+    padding: 8px; /* Further adjust padding */
+  }
+
+  .redirect-buttons a {
+    font-size: 11px; /* Further reduce font size for links */
+  }
 }

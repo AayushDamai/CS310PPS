@@ -5,12 +5,14 @@
   justify-content: center;
   align-items: center;
   width: 50%;
-  height: 50%;
+  height: auto; /* Adjust height for content */
   margin: 50px auto;
-  padding: 10px 10px;
+  padding: 20px; /* Increase padding for better spacing */
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff; /* Add a background color for better contrast */
+  text-align: center;
 }
 
 .h1 {
@@ -28,13 +30,46 @@
 }
 
 .link a {
-  margin: 0px 0px;
+  margin: 10px 0px; /* Add spacing between links */
   text-decoration: none;
   /* Removes underline */
   color: #333;
+  font-size: 1.2rem; /* Adjust font size for better readability */
   transition: color 0.3s ease-in-out;
 }
 
 .link a:hover {
   color: #4A90E2;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .link-card {
+    width: 80%; /* Increase width for smaller screens */
+    padding: 15px; /* Adjust padding */
+    margin: 30px auto; /* Reduce margin */
+  }
+
+  .h1 {
+    font-size: 2rem; /* Reduce font size for smaller screens */
+  }
+
+  .link a {
+    font-size: 1rem; /* Adjust font size for links */
+  }
+}
+
+@media (max-width: 480px) {
+  .link-card {
+    width: 90%; /* Further increase width for very small screens */
+    padding: 10px; /* Further adjust padding */
+  }
+
+  .h1 {
+    font-size: 1.8rem; /* Further reduce font size */
+  }
+
+  .link a {
+    font-size: 0.9rem; /* Further adjust font size for links */
+  }
 }

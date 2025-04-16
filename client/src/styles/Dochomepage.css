@@ -9,111 +9,106 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .portal-header {
+}
+
+/* Header styling */
+.portal-header {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 20px;
     color: #333;
-  }
-  
-  .tabs {
+}
+
+/* Tabs styling */
+.tabs {
     display: flex;
     justify-content: space-around;
     margin-bottom: 20px;
-  }
-  
-  button {
+    flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
+}
+
+button {
     background-color: black; /* Black background */
-    color: blue; /* Blue text */
+    color: white; /* White text */
     border: none;
     padding: 10px 20px;
     cursor: pointer;
     font-size: 16px;
     border-radius: 4px;
-  }
-  
-  button.active-tab {
+    flex: 1; /* Make buttons take equal space */
+    margin: 5px; /* Add spacing between buttons */
+}
+
+button.active-tab {
     background-color: #0056b3;
-  }
-  
-  button:hover {
+}
+
+button:hover {
     background-color: #333; /* Slightly lighter black on hover */
     color: lightblue; /* Lighter blue text on hover */
-  }
-  
-  .tab-content {
+}
+
+/* Tab content styling */
+.tab-content {
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .portal-container h1 {
-    color: #4a90e2;
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  .portal-container p {
-    font-size: 1.2rem;
-    color: #333;
-  }
-  
-  /* Appointment List Styles */
-  .appointment-list {
+}
+
+/* Appointment List Styles */
+.appointment-list {
     list-style: none;
     padding: 0;
     text-align: left;
-  }
-  
-  .appointment-item {
+}
+
+.appointment-item {
     background-color: #fff;
     padding: 15px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .error {
+}
+
+.error {
     color: red;
     font-weight: bold;
-  }
-  
-  /* Form styles */
-  .prescription-form {
+}
+
+/* Form styles */
+.prescription-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
-  }
-  
-  .form-group {
+}
+
+.form-group {
     margin-bottom: 15px;
-  }
-  
-  label {
+}
+
+label {
     font-weight: bold;
     margin-bottom: 5px;
     display: block;
-  }
-  
-  input,
-  textarea {
+}
+
+input,
+textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 14px;
-  }
-  
-  textarea {
+}
+
+textarea {
     resize: none;
     height: 80px;
-  }
-  
-  .btn-submit {
+}
+
+.btn-submit {
     background-color: #28a745;
     color: white;
     padding: 10px 20px;
@@ -121,134 +116,134 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-  }
-  
-  .btn-submit:hover {
+}
+
+.btn-submit:hover {
     background-color: #218838;
-  }
-  
-  /* Prescription list styles */
-  .prescription-list {
+}
+
+/* Prescription list styles */
+.prescription-list {
     list-style: none;
     padding: 0;
-  }
-  
-  .prescription-item {
+}
+
+.prescription-item {
     background-color: #f9f9f9;
     padding: 15px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
-  }
-  
-  /* Messages Section */
-  .messages-section {
+}
+
+/* Messages Section */
+.messages-section {
     text-align: left;
-  }
-  
-  .message-form {
+}
+
+.message-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
     margin-bottom: 20px;
-  }
-  
-  .message-list {
+}
+
+.message-list {
     list-style: none;
     padding: 0;
-  }
-  
-  .message-item {
+}
+
+.message-item {
     background-color: #f9f9f9;
     padding: 15px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* General layout */
-  body {
+}
+
+/* General layout */
+body {
     margin: 0;
     font-family: Arial, sans-serif;
-  }
-  
-  .doctor-dashboard {
+}
+
+.doctor-dashboard {
     display: flex;
     height: 100vh;
-  }
-  
-  /* Sidebar styling */
-  .sidebar {
-    position: fixed; /* Fix the sidebar to the left side */
-    top: 0; /* Align it to the top of the viewport */
-    left: 0; /* Align it to the left of the viewport */
+}
+
+/* Sidebar styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 200px;
-    background-color: #000; /* Set sidebar background to black */
+    background-color: #000; /* Black background */
     padding: 20px;
     box-sizing: border-box;
-    height: 100vh; /* Ensure it spans the full height of the viewport */
+    height: 100vh;
     overflow-y: auto; /* Add scrolling if content overflows */
-  }
-  
-  .sidebar .logo {
+}
+
+.sidebar .logo {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
-    color: #fff; /* Set logo text color to white */
-  }
-  
-  .sidebar a,
-  .sidebar button {
+    color: #fff; /* White text */
+}
+
+.sidebar a,
+.sidebar button {
     display: block;
     background: none;
     border: none;
-    color: #fff; /* Set text color to white */
+    color: #fff; /* White text */
     text-align: left;
     padding: 10px 0;
     font-size: 16px;
     text-decoration: none;
     cursor: pointer;
     width: 100%;
-  }
-  
-  .sidebar a:hover,
-  .sidebar button:hover {
-    color: #1e90ff; /* Set hover color to a light blue */
-  }
-  
-  .sidebar .active-link {
-    color: #1e90ff; /* Set active link color to a light blue */
+}
+
+.sidebar a:hover,
+.sidebar button:hover {
+    color: #1e90ff; /* Light blue on hover */
+}
+
+.sidebar .active-link {
+    color: #1e90ff; /* Light blue for active links */
     font-weight: bold;
-  }
-  
-  /* Main content styling */
-  .main-content {
+}
+
+/* Main content styling */
+.main-content {
     flex: 1;
     padding: 20px;
     box-sizing: border-box;
     margin-left: 200px; /* Add a margin equal to the sidebar's width */
-  }
-  
-  .header {
+}
+
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-  }
-  
-  .header .account a {
+}
+
+.header .account a {
     color: #0056b3;
     text-decoration: none;
     margin-left: 10px;
-  }
-  
-  .header .account a:hover {
+}
+
+.header .account a:hover {
     text-decoration: underline;
-  }
-  
-  /* Dashboard sections */
-  .dashboard-section {
+}
+
+/* Dashboard sections */
+.dashboard-section {
     border: 1px solid #ddd;
     padding: 20px;
     text-align: left;
@@ -257,34 +252,34 @@
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Form styling */
-  .prescription-form .form-group {
+}
+
+/* Form styling */
+.prescription-form .form-group {
     margin-bottom: 15px;
-  }
-  
-  .prescription-form label {
+}
+
+.prescription-form label {
     font-weight: bold;
     margin-bottom: 5px;
     display: block;
-  }
-  
-  .prescription-form input,
-  .prescription-form textarea {
+}
+
+.prescription-form input,
+.prescription-form textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 14px;
-  }
-  
-  .prescription-form textarea {
+}
+
+.prescription-form textarea {
     resize: none;
     height: 80px;
-  }
-  
-  .prescription-form .btn-submit {
+}
+
+.prescription-form .btn-submit {
     background-color: #28a745;
     color: white;
     padding: 10px 20px;
@@ -292,13 +287,13 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-  }
-  
-  .prescription-form .btn-submit:hover {
-    background-color: #218838;
-  }
+}
 
-  .sub-tabs {
+.prescription-form .btn-submit:hover {
+    background-color: #218838;
+}
+
+.sub-tabs {
     display: flex;
     justify-content: space-around; /* Evenly space the buttons */
     margin-bottom: 20px;
@@ -329,35 +324,67 @@
 }
 
 .popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
 }
 
 .popup-content {
-  text-align: left;
+    text-align: left;
 }
 
 .popup button {
-  margin-top: 10px;
-  padding: 5px 10px;
-  background-color: blue;
-  color: white;
-  border: none;
-  cursor: pointer;
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
 .popup button:hover {
-  background-color: darkblue;
+    background-color: darkblue;
 }
 
 button.active-link {
     background-color: #000; /* Keep black background for active buttons */
     color: deepskyblue; /* Highlight active button text */
     font-weight: bold;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .portal-container {
+        padding: 10px;
+    }
+
+    .tabs {
+        flex-direction: column; /* Stack tabs vertically */
+    }
+
+    button {
+        font-size: 14px; /* Reduce font size for smaller screens */
+        padding: 8px 10px; /* Adjust padding */
+    }
+
+    .sidebar {
+        position: relative; /* Make sidebar scroll with the page */
+        width: 100%; /* Full width for smaller screens */
+        height: auto; /* Adjust height */
+        margin-bottom: 20px; /* Add spacing below sidebar */
+    }
+
+    .main-content {
+        margin-left: 0; /* Remove left margin */
+    }
+
+    .dashboard-section {
+        font-size: 16px; /* Reduce font size for smaller screens */
+        padding: 15px; /* Adjust padding */
+    }
 }

@@ -22,6 +22,13 @@
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 1rem; /* Adjust font size for readability */
+}
+
+.add-doctor-form input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
 .add-doctor-form button {
@@ -31,16 +38,20 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 1rem; /* Adjust font size */
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .add-doctor-form button:hover {
     background-color: #0056b3;
+    transform: scale(1.05); /* Slight zoom effect */
 }
 
 .doctor-list table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    font-size: 1rem; /* Adjust font size for readability */
 }
 
 .doctor-list th, .doctor-list td {
@@ -61,8 +72,74 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 0.9rem; /* Adjust font size */
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .doctor-list button:hover {
     background-color: #c82333;
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .manage-doctors {
+        padding: 15px; /* Reduce padding for smaller screens */
+    }
+
+    .add-doctor-form {
+        padding: 10px; /* Adjust padding */
+    }
+
+    .add-doctor-form input {
+        font-size: 0.9rem; /* Reduce font size for inputs */
+        padding: 6px; /* Adjust padding */
+    }
+
+    .add-doctor-form button {
+        font-size: 0.9rem; /* Reduce button font size */
+        padding: 8px 12px; /* Adjust padding */
+    }
+
+    .doctor-list table {
+        font-size: 0.9rem; /* Reduce table font size */
+    }
+
+    .doctor-list th, .doctor-list td {
+        padding: 6px; /* Adjust padding */
+    }
+
+    .doctor-list button {
+        font-size: 0.8rem; /* Further reduce button font size */
+        padding: 5px 8px; /* Adjust padding */
+    }
+}
+
+@media (max-width: 480px) {
+    .add-doctor-form {
+        padding: 8px; /* Further reduce padding for very small screens */
+    }
+
+    .add-doctor-form input {
+        font-size: 0.8rem; /* Further reduce input font size */
+        padding: 5px; /* Further adjust padding */
+    }
+
+    .add-doctor-form button {
+        font-size: 0.8rem; /* Further reduce button font size */
+        padding: 6px 10px; /* Further adjust padding */
+    }
+
+    .doctor-list table {
+        font-size: 0.8rem; /* Further reduce table font size */
+    }
+
+    .doctor-list th, .doctor-list td {
+        padding: 5px; /* Further adjust padding */
+    }
+
+    .doctor-list button {
+        font-size: 0.7rem; /* Further reduce button font size */
+        padding: 4px 6px; /* Further adjust padding */
+    }
 }

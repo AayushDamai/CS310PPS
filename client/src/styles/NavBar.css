@@ -5,9 +5,10 @@
     align-items: center;
     background-color: #222;
     color: #fff;
-  }
-  
-  .logo {
+    padding: 0 15px; /* Add padding for better spacing */
+}
+
+.logo {
     list-style-type: none;
     display: flex;
     align-items: center;
@@ -16,26 +17,60 @@
     text-decoration: none;
     color: #fff;
     padding: 5px 15px;
-  }
-  
-  /* Right group: navigation links */
-  .navlinks {
+}
+
+/* Right group: navigation links */
+.navlinks {
     list-style: none;
     /* Removes bullet points */
     display: flex;
     padding: 5px 15px;
     gap: 15px;
-  }
-  
-  .navlinks a {
+}
+
+.navlinks a {
     text-decoration: none;
     /* Removes underline */
     font-size: 1rem;
     color: #fff;
     transition: color 0.3s ease-in-out;
     /* Smooth color transition */
-  }
-  
-  .navlinks a:hover {
+}
+
+.navlinks a:hover {
     color: #4A90E2;
-  }
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .nav {
+        flex-direction: column; /* Stack the navbar vertically */
+        height: auto; /* Adjust height */
+        padding: 10px; /* Adjust padding */
+    }
+
+    .logo {
+        font-size: 1.2rem; /* Reduce font size for smaller screens */
+        padding: 10px 0; /* Adjust padding */
+    }
+
+    .navlinks {
+        flex-direction: column; /* Stack links vertically */
+        gap: 10px; /* Reduce gap between links */
+        padding: 10px 0; /* Adjust padding */
+    }
+
+    .navlinks a {
+        font-size: 0.9rem; /* Reduce font size for links */
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1rem; /* Further reduce font size for very small screens */
+    }
+
+    .navlinks a {
+        font-size: 0.8rem; /* Further reduce font size for links */
+    }
+}
