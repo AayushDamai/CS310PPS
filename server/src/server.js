@@ -17,7 +17,7 @@ const PORT = 5000;
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: 'Beastmode#5292',
+  password: 'password',  ///insert your password here 
   database: 'cs310ppsdb',
   waitForConnections: true
 });
@@ -446,11 +446,28 @@ app.put('/api/prescriptions/:id', async (req, res) => {
   }
 });
 
+app.get('/api/appointments/:doctor_id', async (req, res) => {
+    const {doctor_id} = req.params;
+    try { //gets connection
+      const connection = await pool.getConnection();
+      const [rows] = await connection.execute(
+          'SELECT * FROM appointments WHERE doctor_id = ?',
+          [doctor_id]
+      );
+      connection.release(); 
+  } catch (error) {
+    console.log('Error - Appointments could not be fetched:', error);
+    return res.status(500).json({error: 'Appointments could not be fetched'});
+  }
+});
+
+  
 app.get('/api/lab-tests', async (req, res) => {
     const { doctorId, patientId } = req.query;
 
     if (!doctorId && !patientId) {
         return res.status(400).json({ error: 'Doctor ID or Patient ID is required' });
+
     }
 
     try {
@@ -759,6 +776,28 @@ app.delete('/api/patients/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to delete patient' });
     }
 });
+
+app.post('/api/name', async (req, res) => {
+  const { user_id } = req.body; // Accessing user_id from req.body
+  try {
+    const connection = await pool.getConnection();
+    const [rows] = await connection.execute(
+      'SELECT first_name, last_name FROM users WHERE id = ?',
+      [user_id]
+    );
+    connection.release();
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No username found' });
+    }
+
+    return res.status(200).json({ name: `${rows[0].first_name} ${rows[0].last_name}` }); // Returning full name
+  } catch (error) {
+    console.error('Error getting name:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 // Start server
 app.listen(PORT, () => {
