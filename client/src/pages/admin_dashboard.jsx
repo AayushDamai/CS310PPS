@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/AdminDashboard.css';
 import ManageDoctors from '../components/ManageDoctors';
 import ManageUsers from '../components/ManageUsers';
-import ManageAppointments from '../components/ManageAppointments';
+import AddAppointmentForm from '../components/AddAppointmentForm';
 import ManageMessages from '../components/ManageMessages';
-import ManageDoctorsList from '../components/ManageDoctorsList'; // Import the new component
+import ManagePatients from '../components/ManagePatients';
+import MessagesPage from '../components/MessagesPage'; // Import the MessagesPage component
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -64,10 +65,10 @@ const AdminDashboard = () => {
                         Manage Messages
                     </button>
                     <button
-                        className={activeTab === 'manage-doctors-list' ? 'active-link' : ''}
-                        onClick={() => setActiveTab('manage-doctors-list')}
+                        className={activeTab === 'messages-page' ? 'active-link' : ''}
+                        onClick={() => setActiveTab('messages-page')}
                     >
-                        Manage Doctors List
+                        Messages Page
                     </button>
                 </nav>
             </div>
@@ -90,12 +91,13 @@ const AdminDashboard = () => {
                     )}
                     {activeTab === 'manage-users' && (
                         <div className="dashboard-section">
-                            <ManageUsers />
+                            <ManagePatients />
                         </div>
                     )}
                     {activeTab === 'manage-appointments' && (
                         <div className="dashboard-section">
-                            <ManageAppointments />
+                            <h2>Manage Appointments</h2>
+                            <AddAppointmentForm />
                         </div>
                     )}
                     {activeTab === 'manage-messages' && (
@@ -103,9 +105,9 @@ const AdminDashboard = () => {
                             <ManageMessages />
                         </div>
                     )}
-                    {activeTab === 'manage-doctors-list' && (
+                    {activeTab === 'messages-page' && (
                         <div className="dashboard-section">
-                            <ManageDoctorsList />
+                            <MessagesPage doctorId="123" /> {/* Pass a sample doctorId */}
                         </div>
                     )}
                 </div>

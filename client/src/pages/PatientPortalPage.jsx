@@ -9,6 +9,7 @@ import PatientCalendar from '../components/PatientCalendar';
 import ViewPrescriptions from '../components/ViewPrescriptions'; // Correct import
 import MessagesPagePatient from '../components/MessagesPagePatient';
 import LabTestResultsPage from '../components/LabTestResultsPage';
+import PatientLabTestResults from '../components/PatientLabTestResults'; // Import PatientLabTestResults
 
 const PatientPortalPage = () => {
     const navigate = useNavigate();
@@ -115,7 +116,7 @@ const PatientPortalPage = () => {
                 )}
                 {activeTab === 'lab-tests' && (
                     <div className="dashboard-section">
-                        <LabTestResultsPage patientId={patientId} role={localStorage.getItem('role')} />
+                        <PatientLabTestResults />
                     </div>
                 )}
             </div>
