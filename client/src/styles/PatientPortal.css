@@ -14,4 +14,33 @@
     padding: 20px;
     overflow-y: auto;
   }
-  
+
+/* General tab styles */
+.sub-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.sub-tabs button {
+    background-color: black; /* Black background */
+    color: white; /* White text */
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sub-tabs button:hover {
+    background-color: #333; /* Slightly lighter black on hover */
+    color: lightgray; /* Lighter text color on hover */
+}
+
+.sub-tabs .active-link {
+    background-color: #555; /* Highlight active tab with a lighter black */
+    color: white; /* Keep text white for active tab */
+    font-weight: bold;
+}

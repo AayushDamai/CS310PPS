@@ -6,6 +6,8 @@ const MessagesPagePatient = ({ patientId }) => {
     const [newMessage, setNewMessage] = useState(''); // State for new message input
     const [selectedDoctorId, setSelectedDoctorId] = useState(''); // State for selected doctor ID
     const [messageHistory, setMessageHistory] = useState([]); // State to store all messages
+    const [selectedMessages, setSelectedMessages] = useState([]); // State for messages of the selected doctor
+    const [viewingMessages, setViewingMessages] = useState(false); // State to track if viewing messages
 
     // Fetch all messages for the patient
     const fetchMessageHistory = async () => {
@@ -31,6 +33,23 @@ const MessagesPagePatient = ({ patientId }) => {
         }
     }, [activeTab]);
 
+    // Handle selecting a doctor to view messages
+    const handleDoctorClick = (doctorId) => {
+        const doctorMessages = messageHistory.filter(
+            (message) => message.doctor_id === doctorId
+        );
+        setSelectedMessages(doctorMessages);
+        setSelectedDoctorId(doctorId);
+        setViewingMessages(true); // Switch to message view
+    };
+
+    // Handle going back to the doctor list
+    const handleBackClick = () => {
+        setViewingMessages(false); // Switch back to the doctor list
+        setSelectedMessages([]); // Clear selected messages
+        setSelectedDoctorId(''); // Clear selected doctor ID
+    };
+
     // Handle sending a message
     const sendMessage = async (e) => {
         e.preventDefault();
@@ -45,19 +64,23 @@ const MessagesPagePatient = ({ patientId }) => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    doctorId: selectedDoctorId,
                     patientId,
+                    doctorId: selectedDoctorId,
                     message: newMessage,
                     sentBy: 'patient',
                 }),
             });
 
             if (response.ok) {
+                const newMessageObject = {
+                    doctor_id: selectedDoctorId,
+                    message: newMessage,
+                    sent_by: 'patient',
+                    date: new Date().toISOString(),
+                };
+                setSelectedMessages((prevMessages) => [...prevMessages, newMessageObject]);
+                setMessageHistory((prevHistory) => [...prevHistory, newMessageObject]);
                 setNewMessage(''); // Clear the input field
-                alert('Message sent successfully!');
-                if (activeTab === 'history') {
-                    fetchMessageHistory(); // Refresh the message history
-                }
             } else {
                 console.error('Failed to send message');
             }
@@ -91,7 +114,7 @@ const MessagesPagePatient = ({ patientId }) => {
                 <div className="new-message">
                     <h3>Send a New Message</h3>
                     <div>
-                        <label>Select Doctor ID:</label>
+                        <label>ID:</label>
                         <input
                             type="text"
                             value={selectedDoctorId}
@@ -114,32 +137,61 @@ const MessagesPagePatient = ({ patientId }) => {
             {activeTab === 'history' && (
                 <div className="message-history">
                     <h3>Message History</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Message</th>
-                                <th>Sent By</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Array.isArray(messageHistory) && messageHistory.length > 0 ? (
-                                messageHistory.map((message, index) => (
-                                    <tr key={index}>
-                                        <td>{message.doctor_id}</td> {/* Ensure this key exists in the response */}
-                                        <td>{message.message}</td>
-                                        <td>{message.sent_by === 'patient' ? 'You' : 'Doctor'}</td>
-                                        <td>{new Date(message.date).toLocaleString()}</td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="4">No messages found.</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                    {!viewingMessages ? (
+                        <div className="doctor-list">
+                            <h4>Doctors</h4>
+                            <ul>
+                                {Array.from(
+                                    new Set(messageHistory.map((msg) => msg.doctor_id))
+                                ).map((doctorId) => (
+                                    <li
+                                        key={doctorId}
+                                        onClick={() => handleDoctorClick(doctorId)}
+                                        className="doctor-item"
+                                    >
+                                        Doctor ID: {doctorId}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : (
+                        <div className="chat-box">
+                            <button onClick={handleBackClick} className="back-button">
+                                Back to Doctor List
+                            </button>
+                            <h4>Messages with Doctor ID: {selectedDoctorId}</h4>
+                            <div className="messages">
+                                {selectedMessages.length > 0 ? (
+                                    selectedMessages.map((message, index) => (
+                                        <div
+                                            key={index}
+                                            className={`message ${
+                                                message.sent_by === 'patient'
+                                                    ? 'sent'
+                                                    : 'received'
+                                            }`}
+                                        >
+                                            <p>{message.message}</p>
+                                            <span className="timestamp">
+                                                {new Date(message.date).toLocaleString()}
+                                            </span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No messages found for this doctor.</p>
+                                )}
+                            </div>
+                            <form onSubmit={sendMessage} className="message-input-form">
+                                <textarea
+                                    value={newMessage}
+                                    onChange={(e) => setNewMessage(e.target.value)}
+                                    placeholder="Type your message here..."
+                                    required
+                                />
+                                <button type="submit">Send</button>
+                            </form>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

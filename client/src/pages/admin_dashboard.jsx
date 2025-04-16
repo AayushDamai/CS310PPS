@@ -4,9 +4,8 @@ import '../styles/AdminDashboard.css';
 import ManageDoctors from '../components/ManageDoctors';
 import ManageUsers from '../components/ManageUsers';
 import AddAppointmentForm from '../components/AddAppointmentForm';
-import ManageMessages from '../components/ManageMessages';
 import ManagePatients from '../components/ManagePatients';
-import MessagesPage from '../components/MessagesPage'; // Import the MessagesPage component
+import AdminMessagesPage from '../components/AdminMessagesPage'; // Import the AdminMessagesPage component
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -59,12 +58,6 @@ const AdminDashboard = () => {
                         Manage Appointments
                     </button>
                     <button
-                        className={activeTab === 'manage-messages' ? 'active-link' : ''}
-                        onClick={() => setActiveTab('manage-messages')}
-                    >
-                        Manage Messages
-                    </button>
-                    <button
                         className={activeTab === 'messages-page' ? 'active-link' : ''}
                         onClick={() => setActiveTab('messages-page')}
                     >
@@ -100,14 +93,9 @@ const AdminDashboard = () => {
                             <AddAppointmentForm />
                         </div>
                     )}
-                    {activeTab === 'manage-messages' && (
-                        <div className="dashboard-section">
-                            <ManageMessages />
-                        </div>
-                    )}
                     {activeTab === 'messages-page' && (
                         <div className="dashboard-section">
-                            <MessagesPage doctorId="123" /> {/* Pass a sample doctorId */}
+                            <AdminMessagesPage /> {/* Use the AdminMessagesPage component */}
                         </div>
                     )}
                 </div>

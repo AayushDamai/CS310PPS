@@ -1,19 +1,18 @@
-// filepath: c:\Users\ethan\OneDrive\Documents\310\client\src\pages\MessagesPage.jsx
 import React, { useState, useEffect } from 'react';
 import '../styles/MessagesPage.css';
 
-const MessagesPage = ({ doctorId }) => {
+const AdminMessagesPage = () => {
     const [activeTab, setActiveTab] = useState('new'); // State to track the active sub-tab
     const [newMessage, setNewMessage] = useState(''); // State for new message input
-    const [selectedPatientId, setSelectedPatientId] = useState(''); // State for selected patient ID
+    const [recipientId, setRecipientId] = useState(''); // State for recipient ID
     const [messageHistory, setMessageHistory] = useState([]); // State to store all messages
-    const [selectedMessages, setSelectedMessages] = useState([]); // State for messages of the selected patient
+    const [selectedMessages, setSelectedMessages] = useState([]); // State for messages with the selected recipient
     const [viewingMessages, setViewingMessages] = useState(false); // State to track if viewing messages
 
-    // Fetch all messages for the doctor
+    // Fetch all messages for the admin
     const fetchMessageHistory = async () => {
         try {
-            const response = await fetch(`/api/messages?doctorId=${doctorId}`);
+            const response = await fetch('/api/admin/messages');
             const data = await response.json();
             if (Array.isArray(data)) {
                 setMessageHistory(data); // Set the state only if the response is an array
@@ -34,49 +33,48 @@ const MessagesPage = ({ doctorId }) => {
         }
     }, [activeTab]);
 
-    // Handle selecting a patient to view messages
-    const handlePatientClick = (patientId) => {
-        const patientMessages = messageHistory.filter(
-            (message) => message.patient_id === patientId
+    // Handle selecting a recipient to view messages
+    const handleRecipientClick = (recipientId) => {
+        const recipientMessages = messageHistory.filter(
+            (message) => message.recipient_id === recipientId || message.sent_by === recipientId
         );
-        setSelectedMessages(patientMessages);
-        setSelectedPatientId(patientId);
+        setSelectedMessages(recipientMessages);
+        setRecipientId(recipientId);
         setViewingMessages(true); // Switch to message view
     };
 
-    // Handle going back to the patient list
+    // Handle going back to the recipient list
     const handleBackClick = () => {
-        setViewingMessages(false); // Switch back to the patient list
+        setViewingMessages(false); // Switch back to the recipient list
         setSelectedMessages([]); // Clear selected messages
-        setSelectedPatientId(''); // Clear selected patient ID
+        setRecipientId(''); // Clear selected recipient ID
     };
 
     // Handle sending a message
     const sendMessage = async (e) => {
         e.preventDefault();
 
-        if (!newMessage || !selectedPatientId) {
-            alert('Please enter a message and select a patient.');
+        if (!newMessage || !recipientId) {
+            alert('Please enter a message and recipient ID.');
             return;
         }
 
         try {
-            const response = await fetch('/api/messages', {
+            const response = await fetch('/api/admin/messages', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    doctorId,
-                    patientId: selectedPatientId,
+                    recipientId,
                     message: newMessage,
-                    sentBy: 'doctor',
+                    sentBy: 'admin',
                 }),
             });
 
             if (response.ok) {
                 const newMessageObject = {
-                    patient_id: selectedPatientId,
+                    recipient_id: recipientId,
                     message: newMessage,
-                    sent_by: 'doctor',
+                    sent_by: 'admin',
                     date: new Date().toISOString(),
                 };
                 setSelectedMessages((prevMessages) => [...prevMessages, newMessageObject]);
@@ -92,7 +90,7 @@ const MessagesPage = ({ doctorId }) => {
 
     return (
         <div className="messages-page">
-            <h2>Messaging System</h2>
+            <h2>Admin Messaging System</h2>
 
             {/* Sub-tabs for New Message and Message History */}
             <div className="sub-tabs">
@@ -115,12 +113,12 @@ const MessagesPage = ({ doctorId }) => {
                 <div className="new-message">
                     <h3>Send a New Message</h3>
                     <div>
-                        <label>ID:</label>
+                        <label>Recipient ID:</label>
                         <input
                             type="text"
-                            value={selectedPatientId}
-                            onChange={(e) => setSelectedPatientId(e.target.value)}
-                            placeholder="Enter Patient ID"
+                            value={recipientId}
+                            onChange={(e) => setRecipientId(e.target.value)}
+                            placeholder="Enter Recipient ID"
                         />
                     </div>
                     <form onSubmit={sendMessage}>
@@ -139,18 +137,22 @@ const MessagesPage = ({ doctorId }) => {
                 <div className="message-history">
                     <h3>Message History</h3>
                     {!viewingMessages ? (
-                        <div className="patient-list">
-                            <h4>Patients</h4>
+                        <div className="recipient-list">
+                            <h4>Recipients</h4>
                             <ul>
                                 {Array.from(
-                                    new Set(messageHistory.map((msg) => msg.patient_id))
-                                ).map((patientId) => (
+                                    new Set(
+                                        messageHistory.map(
+                                            (msg) => msg.recipient_id || msg.sent_by
+                                        )
+                                    )
+                                ).map((recipientId) => (
                                     <li
-                                        key={patientId}
-                                        onClick={() => handlePatientClick(patientId)}
-                                        className="patient-item"
+                                        key={recipientId}
+                                        onClick={() => handleRecipientClick(recipientId)}
+                                        className="recipient-item"
                                     >
-                                        Patient ID: {patientId}
+                                        Recipient ID: {recipientId}
                                     </li>
                                 ))}
                             </ul>
@@ -158,16 +160,16 @@ const MessagesPage = ({ doctorId }) => {
                     ) : (
                         <div className="chat-box">
                             <button onClick={handleBackClick} className="back-button">
-                                Back to Patient List
+                                Back to Recipient List
                             </button>
-                            <h4>Messages with Patient ID: {selectedPatientId}</h4>
+                            <h4>Messages with Recipient ID: {recipientId}</h4>
                             <div className="messages">
                                 {selectedMessages.length > 0 ? (
                                     selectedMessages.map((message, index) => (
                                         <div
                                             key={index}
                                             className={`message ${
-                                                message.sent_by === 'doctor'
+                                                message.sent_by === 'admin'
                                                     ? 'sent'
                                                     : 'received'
                                             }`}
@@ -179,7 +181,7 @@ const MessagesPage = ({ doctorId }) => {
                                         </div>
                                     ))
                                 ) : (
-                                    <p>No messages found for this patient.</p>
+                                    <p>No messages found for this recipient.</p>
                                 )}
                             </div>
                             <form onSubmit={sendMessage} className="message-input-form">
@@ -199,4 +201,4 @@ const MessagesPage = ({ doctorId }) => {
     );
 };
 
-export default MessagesPage;
+export default AdminMessagesPage;
