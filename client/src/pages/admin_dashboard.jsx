@@ -6,6 +6,7 @@ import ManageUsers from '../components/ManageUsers';
 import AddAppointmentForm from '../components/AddAppointmentForm';
 import ManageMessages from '../components/ManageMessages';
 import ManagePatients from '../components/ManagePatients';
+import MessagesPage from '../components/MessagesPage'; // Import the MessagesPage component
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -63,6 +64,12 @@ const AdminDashboard = () => {
                     >
                         Manage Messages
                     </button>
+                    <button
+                        className={activeTab === 'messages-page' ? 'active-link' : ''}
+                        onClick={() => setActiveTab('messages-page')}
+                    >
+                        Messages Page
+                    </button>
                 </nav>
             </div>
 
@@ -96,6 +103,11 @@ const AdminDashboard = () => {
                     {activeTab === 'manage-messages' && (
                         <div className="dashboard-section">
                             <ManageMessages />
+                        </div>
+                    )}
+                    {activeTab === 'messages-page' && (
+                        <div className="dashboard-section">
+                            <MessagesPage doctorId="123" /> {/* Pass a sample doctorId */}
                         </div>
                     )}
                 </div>
