@@ -47,8 +47,6 @@ const MessagesPage = ({ doctorId }) => {
     // Handle going back to the patient list
     const handleBackClick = () => {
         setViewingMessages(false); // Switch back to the patient list
-        setSelectedMessages([]); // Clear selected messages
-        setSelectedPatientId(''); // Clear selected patient ID
     };
 
     // Handle sending a message
