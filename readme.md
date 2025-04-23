@@ -65,3 +65,10 @@ https://www.freecodecamp.org/news/how-to-install-react-a-step-by-step-guide/
   npm install react-time-picker
   npm install react-datepicker
 ```
+
+- You might also have to set execution priviledges in powershell or cmd when you run 
+```bash
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+- also make sure to change your password in the server.js file to your password in MySQL. This is the same password you put in the workbench to access the server
+  
