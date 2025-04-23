@@ -37,7 +37,7 @@ https://dev.mysql.com/downloads/installer/
 https://www.mysql.com/products/workbench/
 
 ### 4. Workbench
-In the workbench, go over to the Database tab at the top, click Connect to Database... Make sure its running on Port 3306. Click OK. Now add the scripts and then run the scripts for the data (testdata and CS310PPSdb CreatedbScript (1)
+In the workbench, go over to the Database tab at the top, click Connect to Database... Make sure its running on Port 3306. Click OK. Now add the scripts and then run the scripts for the data (testdata and CS310PPSdb CreatedbScript (1))
 
 ### 3. Install dependencies
 ```bash
