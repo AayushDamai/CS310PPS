@@ -32,6 +32,7 @@ const AddAppointmentForm = () => {
             doctorID: doctorID,
             appointmentLocation: appointmentLocation,
             appointment_time: `${appointmentDate}T${appointmentTime}`, // Combine date and time
+            status: 'Scheduled', // Add a default status
         };
         try {
             const res = await fetch('/api/sendAppointmentData', {
