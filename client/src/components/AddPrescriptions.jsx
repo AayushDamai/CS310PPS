@@ -26,12 +26,12 @@ const AddPrescriptions = () => {
             const response = await fetch('http://localhost:5000/api/addprescriptions', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     ...prescData,
-                    doctor_id: user.userId //send doctorId to backend
-                })
+                    doctor_id: user.userId, // Send doctorId to backend
+                }),
             });
 
             if (response.ok) {
@@ -41,7 +41,7 @@ const AddPrescriptions = () => {
                     medication: '',
                     dosage: '',
                     instructions: '',
-                    prescription_date: new Date().toISOString().split('T')[0]
+                    prescription_date: new Date().toISOString().split('T')[0],
                 });
             } else {
                 const errorData = await response.json();
